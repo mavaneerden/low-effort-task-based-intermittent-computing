@@ -1,0 +1,6 @@
+# CMake build & installation folders
+install/
+build/
+
+# Auto-generated linker script
+linker/ink.ld

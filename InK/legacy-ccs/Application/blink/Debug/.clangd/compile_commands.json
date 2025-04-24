@@ -1,0 +1,12 @@
+[
+   {
+      "directory" : "/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo_ARCHIVE/InK/legacy-ccs/blink/Debug",
+      "command"   : "clang++ -I\"/home/marco/ti/ccs2011/ccs/ccs_base/msp430/include\" -I\"/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo_ARCHIVE/InK/legacy-ccs/blink\" -I\"/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo_ARCHIVE/InK/legacy-ccs/Kernel\" -I\"/home/marco/ti/ccs2011/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR5969__ -D_MPU_ENABLE -xc",
+      "file"      : "/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo_ARCHIVE/InK/legacy-ccs/blink/appinit.c"
+   },
+   {
+      "directory" : "/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo_ARCHIVE/InK/legacy-ccs/blink/Debug",
+      "command"   : "clang++ -I\"/home/marco/ti/ccs2011/ccs/ccs_base/msp430/include\" -I\"/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo_ARCHIVE/InK/legacy-ccs/blink\" -I\"/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo_ARCHIVE/InK/legacy-ccs/Kernel\" -I\"/home/marco/ti/ccs2011/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR5969__ -D_MPU_ENABLE -xc",
+      "file"      : "/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo_ARCHIVE/InK/legacy-ccs/blink/thread1.c"
+   }
+]

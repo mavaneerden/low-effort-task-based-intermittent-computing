@@ -1,0 +1,6 @@
+.*.swp
+*.o
+mspdebug
+mspdebug.exe
+inst/
+config.mk
