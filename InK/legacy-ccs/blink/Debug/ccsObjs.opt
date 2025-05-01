@@ -1,0 +1,7 @@
+"./appinit.obj"
+"./thread1.obj"
+"../lnk_msp430fr5969.cmd"
+-l"/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo/InK/legacy-ccs/Kernel/Debug/InK.lib"
+-llibmpu_init.a
+-llibmath.a
+-llibc.a

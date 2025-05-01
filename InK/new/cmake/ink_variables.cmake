@@ -1,0 +1,5 @@
+set(INK_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/../kernel/install/include)
+set(INK_LIB ${CMAKE_CURRENT_LIST_DIR}/../kernel/install/lib/libInK2.a)
+set(INK_LINKER_SCRIPT ${CMAKE_CURRENT_LIST_DIR}/../kernel/linker/ink.ld)
+set(INK_INIT_FUNCTION "__ink_init")
+set(INK_LINKER_FLAGS "-T${INK_LINKER_SCRIPT} -u ${INK_INIT_FUNCTION}")

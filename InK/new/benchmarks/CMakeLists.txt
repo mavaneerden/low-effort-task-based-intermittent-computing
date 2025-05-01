@@ -8,11 +8,15 @@ cmake_minimum_required(VERSION 3.22)
 
 project("InK_Benchmarks" LANGUAGES C)
 
-set(INK_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/../kernel)
-set(INK_LIB ${CMAKE_CURRENT_LIST_DIR}/../kernel/install/lib/libInKLegacy.a)
-set(INK_LINKER_SCRIPT ${CMAKE_CURRENT_LIST_DIR}/../kernel/linker/ink.ld)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/../cmake)
 
-set(CMAKE_EXE_LINKER_FLAGS "-T${INK_LINKER_SCRIPT} ${CMAKE_EXE_LINKER_FLAGS}")
+include(ink_variables)
+
+set(ARCHITECTURE_SPECIFIC_INCLUDES
+    ${PATH_MSP430_DRIVERS}
+)
+
+set(CMAKE_EXE_LINKER_FLAGS "${INK_LINKER_FLAGS} ${CMAKE_EXE_LINKER_FLAGS}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin)
 
 add_subdirectory(blink)

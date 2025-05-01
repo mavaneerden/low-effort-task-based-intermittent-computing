@@ -1,0 +1,22 @@
+MSP430FR5xx_6xx/CMakeFiles/driverlib.dir/cs.c.obj: \
+ /workspaces/Thesis_Repo/devices/msp430/driverlib/MSP430FR5xx_6xx/cs.c \
+ /workspaces/Thesis_Repo/devices/msp430/driverlib/MSP430FR5xx_6xx/inc/hw_memmap.h \
+ /workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include/msp430.h \
+ /workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include/msp430fr5969.h \
+ /workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include/iomacros.h \
+ /workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include/in430.h \
+ /workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include/msp430fr5xx_6xxgeneric.h \
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/lib/gcc/msp430-elf/9.3.1/include/stdint.h \
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/include/stdint.h \
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/include/machine/_default_types.h \
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/include/sys/features.h \
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/include/_newlib_version.h \
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/include/sys/_intsup.h \
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/include/sys/_stdint.h \
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/lib/gcc/msp430-elf/9.3.1/include/stdbool.h \
+ /workspaces/Thesis_Repo/devices/msp430/driverlib/MSP430FR5xx_6xx/cs.h \
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/include/assert.h \
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/include/_ansi.h \
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/include/newlib.h \
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/include/sys/config.h \
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/include/machine/ieeefp.h

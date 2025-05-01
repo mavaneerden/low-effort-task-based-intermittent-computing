@@ -11,8 +11,8 @@ set(BENCHMARK_NAME blink)
 project("${BENCHMARK_NAME}_${INK_VERSION}" LANGUAGES C)
 
 add_executable(${PROJECT_NAME}
-    "${CMAKE_CURRENT_SOURCE_DIR}/appinit.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/thread1.c"
+    main.c
+    thread_instrumented.c
 )
 
 # target_compile_options(
@@ -21,9 +21,10 @@ add_executable(${PROJECT_NAME}
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     ${INK_INCLUDE_DIR}
-    # ${ARCHITECTURE_SPECIFIC_INCLUDES}
+    ${ARCHITECTURE_SPECIFIC_INCLUDES}
 )
 
 target_link_libraries(${PROJECT_NAME}
     ${INK_LIB}
+    /usr/lib/libdriverlib.a
 )

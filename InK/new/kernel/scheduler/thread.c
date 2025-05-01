@@ -1,36 +1,6 @@
-// This file is part of InK.
-// 
-// author = "Kasım Sinan Yıldırım " 
-// maintainer = "Kasım Sinan Yıldırım "
-// email = "sinanyil81 [at] gmail.com" 
-//  
-// copyright = "Copyright 2018 Delft University of Technology" 
-// license = "LGPL" 
-// version = "3.0" 
-// status = "Production"
-//
-// 
-// InK is free software: you ca	n redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// 
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-/*
- * thread.c
- *
- *  Created on: 11 Feb 2018
- *
- */
-
 #include "ink.h"
+
+__nv uint8_t current_task_buffer_index = 0u;
 
 // prepares the stack of the thread for the task execution
 static inline void __prologue(thread_t *thread)
@@ -40,7 +10,7 @@ static inline void __prologue(thread_t *thread)
     __port_on(3,6);
 #endif
     // copy original stack to the temporary stack
-    __dma_word_copy(buffer->buf[buffer->idx],buffer->buf[buffer->idx ^ 1], buffer->size>>1);
+    __fram_word_copy(buffer->buf[buffer->idx],buffer->buf[buffer->idx ^ 1u], buffer->size >> 1u);
 #ifdef RAISE_PIN
     __port_off(3,6);
 #endif
@@ -50,7 +20,7 @@ static inline void __prologue(thread_t *thread)
 // runs one task inside the current thread
 void __tick(thread_t *thread)
 {
-    void *buf;
+    void *current_task_buffer = NULL;
     switch (thread->state)
     {
     case TASK_READY:
@@ -60,7 +30,8 @@ void __tick(thread_t *thread)
         // refresh thread stack
         __prologue(thread);
         // get thread buffer
-        buf = thread->buffer.buf[thread->buffer._idx^1];
+        current_task_buffer_index = thread->buffer._idx ^ 1u;
+        current_task_buffer = thread->buffer.buf[current_task_buffer_index];
         // Check if it is the entry task. The entry task always
         // consumes an event in the event queue.
         if(thread->next == thread->entry){
@@ -68,12 +39,13 @@ void __tick(thread_t *thread)
             // an event
             isr_event_t *event = __lock_event(thread);
             // push event data to the entry task
-            thread->next = (void *)((entry_task_t)thread->entry)(buf,(void *)event);
+            // thread->next = (void *)((entry_task_t)thread->entry)(buf,(void *)event);
+            thread->next = (void *)((entry_task_t)thread->entry)((void *)event);
             // the event should be released (deleted)
             thread->state = TASK_RELEASE_EVENT;
         }
         else{
-            thread->next = (void *)(((task_t)thread->next)(buf));
+            thread->next = (void *)(((task_t)thread->next)());
             thread->state = TASK_FINISHED;
             break;
         }

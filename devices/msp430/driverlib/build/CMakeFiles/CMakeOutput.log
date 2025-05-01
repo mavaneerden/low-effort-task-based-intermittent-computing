@@ -1,0 +1,417 @@
+The target system is: Generic -  - msp430
+The host system is: Linux - 6.8.0-57-generic - x86_64
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/msp430-elf-gcc 
+Build flags: -MD;-mmcu=msp430fr5969;-mhwmult=f5series;-msmall;-I/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include;-I/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf;-I/workspaces/Thesis_Repo/devices/msp430/toolchains/../driverlib/MSP430FR5xx_6xx;-g3;-gdwarf-2;-gstrict-dwarf;-ggdb
+Id flags: -c 
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CMakeCCompilerId.d"
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CMakeCCompilerId.o"
+
+The C compiler identification is GNU, found in "/workspaces/Thesis_Repo/devices/msp430/driverlib/build/CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.o"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/msp430-elf-g++ 
+Build flags: 
+Id flags:  
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+
+The CXX compiler identification is GNU, found in "/workspaces/Thesis_Repo/devices/msp430/driverlib/build/CMakeFiles/3.22.1/CompilerIdCXX/a.out"
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: /workspaces/Thesis_Repo/devices/msp430/driverlib/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_06065/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_06065.dir/build.make CMakeFiles/cmTC_06065.dir/build
+gmake[1]: Entering directory '/workspaces/Thesis_Repo/devices/msp430/driverlib/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_06065.dir/CMakeCCompilerABI.c.obj
+/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/msp430-elf-gcc   -MD -mmcu=msp430fr5969 -mhwmult=f5series -msmall -I/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include -I/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf -I/workspaces/Thesis_Repo/devices/msp430/toolchains/../driverlib/MSP430FR5xx_6xx -g3 -gdwarf-2 -gstrict-dwarf -ggdb    -v -o CMakeFiles/cmTC_06065.dir/CMakeCCompilerABI.c.obj -c /usr/share/cmake-3.22/Modules/CMakeCCompilerABI.c
+Using built-in specs.
+COLLECT_GCC=/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/msp430-elf-gcc
+Target: msp430-elf
+Configured with: ../../gcc/configure --target=msp430-elf --enable-languages=c,c++ --disable-nls --enable-initfini-array --enable-target-optspace --enable-newlib-nano-formatted-io --with-pkgversion=
+Thread model: single
+gcc version 9.3.1 () 
+COLLECT_GCC_OPTIONS='-MD' '-mmcu=msp430fr5969' '-mhwmult=f5series' '-msmall' '-I' '/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include' '-I' '/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf' '-I' '/workspaces/Thesis_Repo/devices/msp430/toolchains/../driverlib/MSP430FR5xx_6xx' '-g3' '-gdwarf-2' '-gstrict-dwarf' '-ggdb' '-v' '-o' 'CMakeFiles/cmTC_06065.dir/CMakeCCompilerABI.c.obj' '-c' '-mdevices-csv-loc=/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include/devices.csv' '-mcpu=msp430xv2'
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/cc1 -quiet -v -I /workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include -I /workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf -I /workspaces/Thesis_Repo/devices/msp430/toolchains/../driverlib/MSP430FR5xx_6xx -iprefix /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/ -MD CMakeFiles/cmTC_06065.dir/CMakeCCompilerABI.c.d -MQ CMakeFiles/cmTC_06065.dir/CMakeCCompilerABI.c.obj -dD /usr/share/cmake-3.22/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mmcu=msp430fr5969 -mhwmult=f5series -msmall -mdevices-csv-loc=/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include/devices.csv -mcpu=msp430xv2 -auxbase-strip CMakeFiles/cmTC_06065.dir/CMakeCCompilerABI.c.obj -g3 -gdwarf-2 -gstrict-dwarf -ggdb -version -o /tmp/ccOy7WrQ.s
+GNU C17 () version 9.3.1 (msp430-elf)
+	compiled by GNU C version 11.4.0, GMP version 6.1.0, MPFR version 3.1.4, MPC version 1.0.3, isl version isl-0.18-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring nonexistent directory "/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/sys-include"
+ignoring duplicate directory "/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/../../lib/gcc/msp430-elf/9.3.1/include"
+ignoring duplicate directory "/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/../../lib/gcc/msp430-elf/9.3.1/include-fixed"
+ignoring nonexistent directory "/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/../../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/sys-include"
+ignoring duplicate directory "/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/../../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include
+ /workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf
+ /workspaces/Thesis_Repo/devices/msp430/toolchains/../driverlib/MSP430FR5xx_6xx
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/include
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/include-fixed
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include
+End of search list.
+GNU C17 () version 9.3.1 (msp430-elf)
+	compiled by GNU C version 11.4.0, GMP version 6.1.0, MPFR version 3.1.4, MPC version 1.0.3, isl version isl-0.18-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+Compiler executable checksum: 153626901b9122ce682f59db8659a186
+COLLECT_GCC_OPTIONS='-MD' '-mmcu=msp430fr5969' '-mhwmult=f5series' '-msmall' '-I' '/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include' '-I' '/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf' '-I' '/workspaces/Thesis_Repo/devices/msp430/toolchains/../driverlib/MSP430FR5xx_6xx' '-g3' '-gdwarf-2' '-gstrict-dwarf' '-ggdb' '-v' '-o' 'CMakeFiles/cmTC_06065.dir/CMakeCCompilerABI.c.obj' '-c' '-mdevices-csv-loc=/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include/devices.csv' '-mcpu=msp430xv2'
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/bin/as --traditional-format -mP -mcpu=msp430xv2 -o CMakeFiles/cmTC_06065.dir/CMakeCCompilerABI.c.obj /tmp/ccOy7WrQ.s
+COMPILER_PATH=/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/bin/
+LIBRARY_PATH=/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib/
+COLLECT_GCC_OPTIONS='-MD' '-mmcu=msp430fr5969' '-mhwmult=f5series' '-msmall' '-I' '/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include' '-I' '/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf' '-I' '/workspaces/Thesis_Repo/devices/msp430/toolchains/../driverlib/MSP430FR5xx_6xx' '-g3' '-gdwarf-2' '-gstrict-dwarf' '-ggdb' '-v' '-o' 'CMakeFiles/cmTC_06065.dir/CMakeCCompilerABI.c.obj' '-c' '-mdevices-csv-loc=/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include/devices.csv' '-mcpu=msp430xv2'
+Linking C executable cmTC_06065
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_06065.dir/link.txt --verbose=1
+/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/msp430-elf-gcc -MD -mmcu=msp430fr5969 -mhwmult=f5series -msmall -I/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include -I/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf -I/workspaces/Thesis_Repo/devices/msp430/toolchains/../driverlib/MSP430FR5xx_6xx -g3 -gdwarf-2 -gstrict-dwarf -ggdb   -L/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include -Wl,--gc-sections -Wl,-Map,"CMAKE_TRY_COMPILE.map" -Wl,-lgcc -Wl,-lc -g -v CMakeFiles/cmTC_06065.dir/CMakeCCompilerABI.c.obj -o cmTC_06065 
+Using built-in specs.
+COLLECT_GCC=/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/msp430-elf-gcc
+COLLECT_LTO_WRAPPER=/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/lto-wrapper
+Target: msp430-elf
+Configured with: ../../gcc/configure --target=msp430-elf --enable-languages=c,c++ --disable-nls --enable-initfini-array --enable-target-optspace --enable-newlib-nano-formatted-io --with-pkgversion=
+Thread model: single
+gcc version 9.3.1 () 
+COMPILER_PATH=/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/bin/
+LIBRARY_PATH=/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib/
+COLLECT_GCC_OPTIONS='-MD' '-mmcu=msp430fr5969' '-mhwmult=f5series' '-msmall' '-I' '/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include' '-I' '/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf' '-I' '/workspaces/Thesis_Repo/devices/msp430/toolchains/../driverlib/MSP430FR5xx_6xx' '-g3' '-gdwarf-2' '-gstrict-dwarf' '-ggdb' '-L/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include' '-g' '-v' '-o' 'cmTC_06065' '-mdevices-csv-loc=/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include/devices.csv' '-mdevices-csv-loc=/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include/devices.csv' '-mcpu=msp430xv2'
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/collect2 -plugin /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/liblto_plugin.so -plugin-opt=/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/lto-wrapper -plugin-opt=-fresolution=/tmp/ccSinOJC.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmul_f5 -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lcrt -plugin-opt=-pass-through=-lnosys -plugin-opt=-pass-through=-lgcc -o cmTC_06065 /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib/crt0.o /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/crtbegin_no_eh.o -L/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include -L/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1 -L/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc -L/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib --gc-sections -Map CMAKE_TRY_COMPILE.map -lgcc -lc CMakeFiles/cmTC_06065.dir/CMakeCCompilerABI.c.obj -lgcc --start-group -lmul_f5 -lc -lgcc -lcrt -lnosys --end-group --script=msp430fr5969.ld -lgcc /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/crtend_no_eh.o -lgcc
+COLLECT_GCC_OPTIONS='-MD' '-mmcu=msp430fr5969' '-mhwmult=f5series' '-msmall' '-I' '/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include' '-I' '/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf' '-I' '/workspaces/Thesis_Repo/devices/msp430/toolchains/../driverlib/MSP430FR5xx_6xx' '-g3' '-gdwarf-2' '-gstrict-dwarf' '-ggdb' '-L/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include' '-g' '-v' '-o' 'cmTC_06065' '-mdevices-csv-loc=/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include/devices.csv' '-mdevices-csv-loc=/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include/devices.csv' '-mcpu=msp430xv2'
+gmake[1]: Leaving directory '/workspaces/Thesis_Repo/devices/msp430/driverlib/build/CMakeFiles/CMakeTmp'
+
+
+
+Parsed C implicit include dir info from above output: rv=done
+  found start of include info
+  found start of implicit include info
+    add: [/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include]
+    add: [/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf]
+    add: [/workspaces/Thesis_Repo/devices/msp430/toolchains/../driverlib/MSP430FR5xx_6xx]
+    add: [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/include]
+    add: [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/include-fixed]
+    add: [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include]
+  end of search list found
+  collapse include dir [/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include] ==> [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-support-files/include]
+  collapse include dir [/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf] ==> [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf]
+  collapse include dir [/workspaces/Thesis_Repo/devices/msp430/toolchains/../driverlib/MSP430FR5xx_6xx] ==> [/workspaces/Thesis_Repo/devices/msp430/driverlib/MSP430FR5xx_6xx]
+  collapse include dir [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/include] ==> [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/lib/gcc/msp430-elf/9.3.1/include]
+  collapse include dir [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/include-fixed] ==> [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/lib/gcc/msp430-elf/9.3.1/include-fixed]
+  collapse include dir [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include] ==> [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/include]
+  implicit include dirs: [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-support-files/include;/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf;/workspaces/Thesis_Repo/devices/msp430/driverlib/MSP430FR5xx_6xx;/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/lib/gcc/msp430-elf/9.3.1/include;/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/lib/gcc/msp430-elf/9.3.1/include-fixed;/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/include]
+
+
+Parsed C implicit link information from above output:
+  link line regex: [^( *|.*[/\])(msp430-elf-ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /workspaces/Thesis_Repo/devices/msp430/driverlib/build/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_06065/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_06065.dir/build.make CMakeFiles/cmTC_06065.dir/build]
+  ignore line: [gmake[1]: Entering directory '/workspaces/Thesis_Repo/devices/msp430/driverlib/build/CMakeFiles/CMakeTmp']
+  ignore line: [Building C object CMakeFiles/cmTC_06065.dir/CMakeCCompilerABI.c.obj]
+  ignore line: [/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/msp430-elf-gcc   -MD -mmcu=msp430fr5969 -mhwmult=f5series -msmall -I/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include -I/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf -I/workspaces/Thesis_Repo/devices/msp430/toolchains/../driverlib/MSP430FR5xx_6xx -g3 -gdwarf-2 -gstrict-dwarf -ggdb    -v -o CMakeFiles/cmTC_06065.dir/CMakeCCompilerABI.c.obj -c /usr/share/cmake-3.22/Modules/CMakeCCompilerABI.c]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/msp430-elf-gcc]
+  ignore line: [Target: msp430-elf]
+  ignore line: [Configured with: ../../gcc/configure --target=msp430-elf --enable-languages=c c++ --disable-nls --enable-initfini-array --enable-target-optspace --enable-newlib-nano-formatted-io --with-pkgversion=]
+  ignore line: [Thread model: single]
+  ignore line: [gcc version 9.3.1 () ]
+  ignore line: [COLLECT_GCC_OPTIONS='-MD' '-mmcu=msp430fr5969' '-mhwmult=f5series' '-msmall' '-I' '/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include' '-I' '/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf' '-I' '/workspaces/Thesis_Repo/devices/msp430/toolchains/../driverlib/MSP430FR5xx_6xx' '-g3' '-gdwarf-2' '-gstrict-dwarf' '-ggdb' '-v' '-o' 'CMakeFiles/cmTC_06065.dir/CMakeCCompilerABI.c.obj' '-c' '-mdevices-csv-loc=/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include/devices.csv' '-mcpu=msp430xv2']
+  ignore line: [ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/cc1 -quiet -v -I /workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include -I /workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf -I /workspaces/Thesis_Repo/devices/msp430/toolchains/../driverlib/MSP430FR5xx_6xx -iprefix /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/ -MD CMakeFiles/cmTC_06065.dir/CMakeCCompilerABI.c.d -MQ CMakeFiles/cmTC_06065.dir/CMakeCCompilerABI.c.obj -dD /usr/share/cmake-3.22/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mmcu=msp430fr5969 -mhwmult=f5series -msmall -mdevices-csv-loc=/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include/devices.csv -mcpu=msp430xv2 -auxbase-strip CMakeFiles/cmTC_06065.dir/CMakeCCompilerABI.c.obj -g3 -gdwarf-2 -gstrict-dwarf -ggdb -version -o /tmp/ccOy7WrQ.s]
+  ignore line: [GNU C17 () version 9.3.1 (msp430-elf)]
+  ignore line: [	compiled by GNU C version 11.4.0  GMP version 6.1.0  MPFR version 3.1.4  MPC version 1.0.3  isl version isl-0.18-GMP]
+  ignore line: []
+  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+  ignore line: [ignoring nonexistent directory "/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/sys-include"]
+  ignore line: [ignoring duplicate directory "/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/../../lib/gcc/msp430-elf/9.3.1/include"]
+  ignore line: [ignoring duplicate directory "/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/../../lib/gcc/msp430-elf/9.3.1/include-fixed"]
+  ignore line: [ignoring nonexistent directory "/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/../../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/sys-include"]
+  ignore line: [ignoring duplicate directory "/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/../../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include"]
+  ignore line: [#include "..." search starts here:]
+  ignore line: [#include <...> search starts here:]
+  ignore line: [ /workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include]
+  ignore line: [ /workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf]
+  ignore line: [ /workspaces/Thesis_Repo/devices/msp430/toolchains/../driverlib/MSP430FR5xx_6xx]
+  ignore line: [ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/include]
+  ignore line: [ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/include-fixed]
+  ignore line: [ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include]
+  ignore line: [End of search list.]
+  ignore line: [GNU C17 () version 9.3.1 (msp430-elf)]
+  ignore line: [	compiled by GNU C version 11.4.0  GMP version 6.1.0  MPFR version 3.1.4  MPC version 1.0.3  isl version isl-0.18-GMP]
+  ignore line: []
+  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+  ignore line: [Compiler executable checksum: 153626901b9122ce682f59db8659a186]
+  ignore line: [COLLECT_GCC_OPTIONS='-MD' '-mmcu=msp430fr5969' '-mhwmult=f5series' '-msmall' '-I' '/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include' '-I' '/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf' '-I' '/workspaces/Thesis_Repo/devices/msp430/toolchains/../driverlib/MSP430FR5xx_6xx' '-g3' '-gdwarf-2' '-gstrict-dwarf' '-ggdb' '-v' '-o' 'CMakeFiles/cmTC_06065.dir/CMakeCCompilerABI.c.obj' '-c' '-mdevices-csv-loc=/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include/devices.csv' '-mcpu=msp430xv2']
+  ignore line: [ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/bin/as --traditional-format -mP -mcpu=msp430xv2 -o CMakeFiles/cmTC_06065.dir/CMakeCCompilerABI.c.obj /tmp/ccOy7WrQ.s]
+  ignore line: [COMPILER_PATH=/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/bin/]
+  ignore line: [LIBRARY_PATH=/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-MD' '-mmcu=msp430fr5969' '-mhwmult=f5series' '-msmall' '-I' '/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include' '-I' '/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf' '-I' '/workspaces/Thesis_Repo/devices/msp430/toolchains/../driverlib/MSP430FR5xx_6xx' '-g3' '-gdwarf-2' '-gstrict-dwarf' '-ggdb' '-v' '-o' 'CMakeFiles/cmTC_06065.dir/CMakeCCompilerABI.c.obj' '-c' '-mdevices-csv-loc=/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include/devices.csv' '-mcpu=msp430xv2']
+  ignore line: [Linking C executable cmTC_06065]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_06065.dir/link.txt --verbose=1]
+  ignore line: [/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/msp430-elf-gcc -MD -mmcu=msp430fr5969 -mhwmult=f5series -msmall -I/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include -I/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf -I/workspaces/Thesis_Repo/devices/msp430/toolchains/../driverlib/MSP430FR5xx_6xx -g3 -gdwarf-2 -gstrict-dwarf -ggdb   -L/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include -Wl --gc-sections -Wl -Map "CMAKE_TRY_COMPILE.map" -Wl -lgcc -Wl -lc -g -v CMakeFiles/cmTC_06065.dir/CMakeCCompilerABI.c.obj -o cmTC_06065 ]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/msp430-elf-gcc]
+  ignore line: [COLLECT_LTO_WRAPPER=/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/lto-wrapper]
+  ignore line: [Target: msp430-elf]
+  ignore line: [Configured with: ../../gcc/configure --target=msp430-elf --enable-languages=c c++ --disable-nls --enable-initfini-array --enable-target-optspace --enable-newlib-nano-formatted-io --with-pkgversion=]
+  ignore line: [Thread model: single]
+  ignore line: [gcc version 9.3.1 () ]
+  ignore line: [COMPILER_PATH=/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/bin/]
+  ignore line: [LIBRARY_PATH=/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-MD' '-mmcu=msp430fr5969' '-mhwmult=f5series' '-msmall' '-I' '/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include' '-I' '/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf' '-I' '/workspaces/Thesis_Repo/devices/msp430/toolchains/../driverlib/MSP430FR5xx_6xx' '-g3' '-gdwarf-2' '-gstrict-dwarf' '-ggdb' '-L/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include' '-g' '-v' '-o' 'cmTC_06065' '-mdevices-csv-loc=/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include/devices.csv' '-mdevices-csv-loc=/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include/devices.csv' '-mcpu=msp430xv2']
+  link line: [ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/collect2 -plugin /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/liblto_plugin.so -plugin-opt=/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/lto-wrapper -plugin-opt=-fresolution=/tmp/ccSinOJC.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmul_f5 -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lcrt -plugin-opt=-pass-through=-lnosys -plugin-opt=-pass-through=-lgcc -o cmTC_06065 /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib/crt0.o /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/crtbegin_no_eh.o -L/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include -L/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1 -L/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc -L/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib --gc-sections -Map CMAKE_TRY_COMPILE.map -lgcc -lc CMakeFiles/cmTC_06065.dir/CMakeCCompilerABI.c.obj -lgcc --start-group -lmul_f5 -lc -lgcc -lcrt -lnosys --end-group --script=msp430fr5969.ld -lgcc /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/crtend_no_eh.o -lgcc]
+    arg [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/collect2] ==> ignore
+    arg [-plugin] ==> ignore
+    arg [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/liblto_plugin.so] ==> ignore
+    arg [-plugin-opt=/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/lto-wrapper] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccSinOJC.res] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmul_f5] ==> ignore
+    arg [-plugin-opt=-pass-through=-lc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lcrt] ==> ignore
+    arg [-plugin-opt=-pass-through=-lnosys] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_06065] ==> ignore
+    arg [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib/crt0.o] ==> obj [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib/crt0.o]
+    arg [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/crtbegin_no_eh.o] ==> obj [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/crtbegin_no_eh.o]
+    arg [-L/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include] ==> dir [/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include]
+    arg [-L/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1] ==> dir [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1]
+    arg [-L/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc] ==> dir [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc]
+    arg [-L/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib] ==> dir [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib]
+    arg [--gc-sections] ==> ignore
+    arg [-Map] ==> ignore
+    arg [CMAKE_TRY_COMPILE.map] ==> ignore
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lc] ==> lib [c]
+    arg [CMakeFiles/cmTC_06065.dir/CMakeCCompilerABI.c.obj] ==> ignore
+    arg [-lgcc] ==> lib [gcc]
+    arg [--start-group] ==> ignore
+    arg [-lmul_f5] ==> lib [mul_f5]
+    arg [-lc] ==> lib [c]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lcrt] ==> lib [crt]
+    arg [-lnosys] ==> lib [nosys]
+    arg [--end-group] ==> ignore
+    arg [--script=msp430fr5969.ld] ==> ignore
+    arg [-lgcc] ==> lib [gcc]
+    arg [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/crtend_no_eh.o] ==> obj [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/crtend_no_eh.o]
+    arg [-lgcc] ==> lib [gcc]
+  collapse obj [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib/crt0.o] ==> [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/lib/crt0.o]
+  collapse obj [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/crtbegin_no_eh.o] ==> [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/lib/gcc/msp430-elf/9.3.1/crtbegin_no_eh.o]
+  collapse obj [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/crtend_no_eh.o] ==> [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/lib/gcc/msp430-elf/9.3.1/crtend_no_eh.o]
+  collapse library dir [/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include] ==> [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-support-files/include]
+  collapse library dir [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1] ==> [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/lib/gcc/msp430-elf/9.3.1]
+  collapse library dir [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc] ==> [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/lib/gcc]
+  collapse library dir [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib] ==> [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/lib]
+  implicit libs: [gcc;c;gcc;mul_f5;c;gcc;crt;nosys;gcc;gcc]
+  implicit objs: [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/lib/crt0.o;/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/lib/gcc/msp430-elf/9.3.1/crtbegin_no_eh.o;/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/lib/gcc/msp430-elf/9.3.1/crtend_no_eh.o]
+  implicit dirs: [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-support-files/include;/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/lib/gcc/msp430-elf/9.3.1;/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/lib/gcc;/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/lib]
+  implicit fwks: []
+
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: /workspaces/Thesis_Repo/devices/msp430/driverlib/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_8db24/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_8db24.dir/build.make CMakeFiles/cmTC_8db24.dir/build
+gmake[1]: Entering directory '/workspaces/Thesis_Repo/devices/msp430/driverlib/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_8db24.dir/CMakeCXXCompilerABI.cpp.obj
+/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/msp430-elf-g++   -v -o CMakeFiles/cmTC_8db24.dir/CMakeCXXCompilerABI.cpp.obj -c /usr/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp
+Using built-in specs.
+COLLECT_GCC=/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/msp430-elf-g++
+Target: msp430-elf
+Configured with: ../../gcc/configure --target=msp430-elf --enable-languages=c,c++ --disable-nls --enable-initfini-array --enable-target-optspace --enable-newlib-nano-formatted-io --with-pkgversion=
+Thread model: single
+gcc version 9.3.1 () 
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_8db24.dir/CMakeCXXCompilerABI.cpp.obj' '-c'
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/cc1plus -quiet -v -iprefix /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/ /usr/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -auxbase-strip CMakeFiles/cmTC_8db24.dir/CMakeCXXCompilerABI.cpp.obj -version -fno-exceptions -o /tmp/ccgongFc.s
+GNU C++14 () version 9.3.1 (msp430-elf)
+	compiled by GNU C version 11.4.0, GMP version 6.1.0, MPFR version 3.1.4, MPC version 1.0.3, isl version isl-0.18-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring nonexistent directory "/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/sys-include"
+ignoring duplicate directory "/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/../../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include/c++/9.3.1"
+ignoring duplicate directory "/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/../../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include/c++/9.3.1/msp430-elf"
+ignoring duplicate directory "/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/../../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include/c++/9.3.1/backward"
+ignoring duplicate directory "/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/../../lib/gcc/msp430-elf/9.3.1/include"
+ignoring duplicate directory "/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/../../lib/gcc/msp430-elf/9.3.1/include-fixed"
+ignoring nonexistent directory "/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/../../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/sys-include"
+ignoring duplicate directory "/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/../../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include/c++/9.3.1
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include/c++/9.3.1/msp430-elf
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include/c++/9.3.1/backward
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/include
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/include-fixed
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include
+End of search list.
+GNU C++14 () version 9.3.1 (msp430-elf)
+	compiled by GNU C version 11.4.0, GMP version 6.1.0, MPFR version 3.1.4, MPC version 1.0.3, isl version isl-0.18-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+Compiler executable checksum: a5fad308ad8be1c5b9cc91ee5b069714
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_8db24.dir/CMakeCXXCompilerABI.cpp.obj' '-c'
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/bin/as --traditional-format -mP -o CMakeFiles/cmTC_8db24.dir/CMakeCXXCompilerABI.cpp.obj /tmp/ccgongFc.s
+COMPILER_PATH=/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/bin/
+LIBRARY_PATH=/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_8db24.dir/CMakeCXXCompilerABI.cpp.obj' '-c'
+Linking CXX executable cmTC_8db24
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_8db24.dir/link.txt --verbose=1
+/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/msp430-elf-g++  -L/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include -Wl,--gc-sections -Wl,-Map,"CMAKE_TRY_COMPILE.map" -Wl,-lgcc -Wl,-lc -g -v CMakeFiles/cmTC_8db24.dir/CMakeCXXCompilerABI.cpp.obj -o cmTC_8db24 
+Using built-in specs.
+COLLECT_GCC=/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/msp430-elf-g++
+COLLECT_LTO_WRAPPER=/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/lto-wrapper
+Target: msp430-elf
+Configured with: ../../gcc/configure --target=msp430-elf --enable-languages=c,c++ --disable-nls --enable-initfini-array --enable-target-optspace --enable-newlib-nano-formatted-io --with-pkgversion=
+Thread model: single
+gcc version 9.3.1 () 
+COMPILER_PATH=/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/bin/
+LIBRARY_PATH=/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib/
+COLLECT_GCC_OPTIONS='-L/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include' '-g' '-v' '-o' 'cmTC_8db24' '-mdevices-csv-loc=/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include/devices.csv'
+ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/collect2 -plugin /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/liblto_plugin.so -plugin-opt=/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/lto-wrapper -plugin-opt=-fresolution=/tmp/ccY6ZLft.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmul_none -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lcrt -plugin-opt=-pass-through=-lnosys -plugin-opt=-pass-through=-lgcc -o cmTC_8db24 /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib/crt0.o /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/crtbegin_no_eh.o -L/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include -L/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1 -L/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc -L/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib --gc-sections -Map CMAKE_TRY_COMPILE.map -lgcc -lc CMakeFiles/cmTC_8db24.dir/CMakeCXXCompilerABI.cpp.obj -lstdc++ -lm -lgcc --start-group -lmul_none -lc -lgcc -lcrt -lnosys --end-group -lgcc /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/crtend_no_eh.o -lgcc
+COLLECT_GCC_OPTIONS='-L/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include' '-g' '-v' '-o' 'cmTC_8db24' '-mdevices-csv-loc=/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include/devices.csv'
+gmake[1]: Leaving directory '/workspaces/Thesis_Repo/devices/msp430/driverlib/build/CMakeFiles/CMakeTmp'
+
+
+
+Parsed CXX implicit include dir info from above output: rv=done
+  found start of include info
+  found start of implicit include info
+    add: [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include/c++/9.3.1]
+    add: [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include/c++/9.3.1/msp430-elf]
+    add: [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include/c++/9.3.1/backward]
+    add: [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/include]
+    add: [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/include-fixed]
+    add: [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include]
+  end of search list found
+  collapse include dir [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include/c++/9.3.1] ==> [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/include/c++/9.3.1]
+  collapse include dir [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include/c++/9.3.1/msp430-elf] ==> [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/include/c++/9.3.1/msp430-elf]
+  collapse include dir [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include/c++/9.3.1/backward] ==> [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/include/c++/9.3.1/backward]
+  collapse include dir [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/include] ==> [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/lib/gcc/msp430-elf/9.3.1/include]
+  collapse include dir [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/include-fixed] ==> [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/lib/gcc/msp430-elf/9.3.1/include-fixed]
+  collapse include dir [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include] ==> [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/include]
+  implicit include dirs: [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/include/c++/9.3.1;/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/include/c++/9.3.1/msp430-elf;/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/include/c++/9.3.1/backward;/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/lib/gcc/msp430-elf/9.3.1/include;/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/lib/gcc/msp430-elf/9.3.1/include-fixed;/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/include]
+
+
+Parsed CXX implicit link information from above output:
+  link line regex: [^( *|.*[/\])(msp430-elf-ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /workspaces/Thesis_Repo/devices/msp430/driverlib/build/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_8db24/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_8db24.dir/build.make CMakeFiles/cmTC_8db24.dir/build]
+  ignore line: [gmake[1]: Entering directory '/workspaces/Thesis_Repo/devices/msp430/driverlib/build/CMakeFiles/CMakeTmp']
+  ignore line: [Building CXX object CMakeFiles/cmTC_8db24.dir/CMakeCXXCompilerABI.cpp.obj]
+  ignore line: [/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/msp430-elf-g++   -v -o CMakeFiles/cmTC_8db24.dir/CMakeCXXCompilerABI.cpp.obj -c /usr/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/msp430-elf-g++]
+  ignore line: [Target: msp430-elf]
+  ignore line: [Configured with: ../../gcc/configure --target=msp430-elf --enable-languages=c c++ --disable-nls --enable-initfini-array --enable-target-optspace --enable-newlib-nano-formatted-io --with-pkgversion=]
+  ignore line: [Thread model: single]
+  ignore line: [gcc version 9.3.1 () ]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_8db24.dir/CMakeCXXCompilerABI.cpp.obj' '-c']
+  ignore line: [ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/cc1plus -quiet -v -iprefix /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/ /usr/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -auxbase-strip CMakeFiles/cmTC_8db24.dir/CMakeCXXCompilerABI.cpp.obj -version -fno-exceptions -o /tmp/ccgongFc.s]
+  ignore line: [GNU C++14 () version 9.3.1 (msp430-elf)]
+  ignore line: [	compiled by GNU C version 11.4.0  GMP version 6.1.0  MPFR version 3.1.4  MPC version 1.0.3  isl version isl-0.18-GMP]
+  ignore line: []
+  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+  ignore line: [ignoring nonexistent directory "/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/sys-include"]
+  ignore line: [ignoring duplicate directory "/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/../../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include/c++/9.3.1"]
+  ignore line: [ignoring duplicate directory "/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/../../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include/c++/9.3.1/msp430-elf"]
+  ignore line: [ignoring duplicate directory "/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/../../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include/c++/9.3.1/backward"]
+  ignore line: [ignoring duplicate directory "/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/../../lib/gcc/msp430-elf/9.3.1/include"]
+  ignore line: [ignoring duplicate directory "/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/../../lib/gcc/msp430-elf/9.3.1/include-fixed"]
+  ignore line: [ignoring nonexistent directory "/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/../../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/sys-include"]
+  ignore line: [ignoring duplicate directory "/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/../../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include"]
+  ignore line: [#include "..." search starts here:]
+  ignore line: [#include <...> search starts here:]
+  ignore line: [ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include/c++/9.3.1]
+  ignore line: [ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include/c++/9.3.1/msp430-elf]
+  ignore line: [ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include/c++/9.3.1/backward]
+  ignore line: [ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/include]
+  ignore line: [ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/include-fixed]
+  ignore line: [ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/include]
+  ignore line: [End of search list.]
+  ignore line: [GNU C++14 () version 9.3.1 (msp430-elf)]
+  ignore line: [	compiled by GNU C version 11.4.0  GMP version 6.1.0  MPFR version 3.1.4  MPC version 1.0.3  isl version isl-0.18-GMP]
+  ignore line: []
+  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+  ignore line: [Compiler executable checksum: a5fad308ad8be1c5b9cc91ee5b069714]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_8db24.dir/CMakeCXXCompilerABI.cpp.obj' '-c']
+  ignore line: [ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/bin/as --traditional-format -mP -o CMakeFiles/cmTC_8db24.dir/CMakeCXXCompilerABI.cpp.obj /tmp/ccgongFc.s]
+  ignore line: [COMPILER_PATH=/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/bin/]
+  ignore line: [LIBRARY_PATH=/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_8db24.dir/CMakeCXXCompilerABI.cpp.obj' '-c']
+  ignore line: [Linking CXX executable cmTC_8db24]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_8db24.dir/link.txt --verbose=1]
+  ignore line: [/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/msp430-elf-g++  -L/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include -Wl --gc-sections -Wl -Map "CMAKE_TRY_COMPILE.map" -Wl -lgcc -Wl -lc -g -v CMakeFiles/cmTC_8db24.dir/CMakeCXXCompilerABI.cpp.obj -o cmTC_8db24 ]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/msp430-elf-g++]
+  ignore line: [COLLECT_LTO_WRAPPER=/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/lto-wrapper]
+  ignore line: [Target: msp430-elf]
+  ignore line: [Configured with: ../../gcc/configure --target=msp430-elf --enable-languages=c c++ --disable-nls --enable-initfini-array --enable-target-optspace --enable-newlib-nano-formatted-io --with-pkgversion=]
+  ignore line: [Thread model: single]
+  ignore line: [gcc version 9.3.1 () ]
+  ignore line: [COMPILER_PATH=/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/bin/]
+  ignore line: [LIBRARY_PATH=/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/:/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-L/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include' '-g' '-v' '-o' 'cmTC_8db24' '-mdevices-csv-loc=/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include/devices.csv']
+  link line: [ /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/collect2 -plugin /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/liblto_plugin.so -plugin-opt=/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/lto-wrapper -plugin-opt=-fresolution=/tmp/ccY6ZLft.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmul_none -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lcrt -plugin-opt=-pass-through=-lnosys -plugin-opt=-pass-through=-lgcc -o cmTC_8db24 /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib/crt0.o /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/crtbegin_no_eh.o -L/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include -L/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1 -L/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc -L/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib --gc-sections -Map CMAKE_TRY_COMPILE.map -lgcc -lc CMakeFiles/cmTC_8db24.dir/CMakeCXXCompilerABI.cpp.obj -lstdc++ -lm -lgcc --start-group -lmul_none -lc -lgcc -lcrt -lnosys --end-group -lgcc /workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/crtend_no_eh.o -lgcc]
+    arg [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/collect2] ==> ignore
+    arg [-plugin] ==> ignore
+    arg [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/liblto_plugin.so] ==> ignore
+    arg [-plugin-opt=/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../libexec/gcc/msp430-elf/9.3.1/lto-wrapper] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccY6ZLft.res] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmul_none] ==> ignore
+    arg [-plugin-opt=-pass-through=-lc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lcrt] ==> ignore
+    arg [-plugin-opt=-pass-through=-lnosys] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_8db24] ==> ignore
+    arg [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib/crt0.o] ==> obj [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib/crt0.o]
+    arg [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/crtbegin_no_eh.o] ==> obj [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/crtbegin_no_eh.o]
+    arg [-L/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include] ==> dir [/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include]
+    arg [-L/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1] ==> dir [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1]
+    arg [-L/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc] ==> dir [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc]
+    arg [-L/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib] ==> dir [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib]
+    arg [--gc-sections] ==> ignore
+    arg [-Map] ==> ignore
+    arg [CMAKE_TRY_COMPILE.map] ==> ignore
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lc] ==> lib [c]
+    arg [CMakeFiles/cmTC_8db24.dir/CMakeCXXCompilerABI.cpp.obj] ==> ignore
+    arg [-lstdc++] ==> lib [stdc++]
+    arg [-lm] ==> lib [m]
+    arg [-lgcc] ==> lib [gcc]
+    arg [--start-group] ==> ignore
+    arg [-lmul_none] ==> lib [mul_none]
+    arg [-lc] ==> lib [c]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lcrt] ==> lib [crt]
+    arg [-lnosys] ==> lib [nosys]
+    arg [--end-group] ==> ignore
+    arg [-lgcc] ==> lib [gcc]
+    arg [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/crtend_no_eh.o] ==> obj [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/crtend_no_eh.o]
+    arg [-lgcc] ==> lib [gcc]
+  collapse obj [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib/crt0.o] ==> [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/lib/crt0.o]
+  collapse obj [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/crtbegin_no_eh.o] ==> [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/lib/gcc/msp430-elf/9.3.1/crtbegin_no_eh.o]
+  collapse obj [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/crtend_no_eh.o] ==> [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/lib/gcc/msp430-elf/9.3.1/crtend_no_eh.o]
+  collapse library dir [/workspaces/Thesis_Repo/devices/msp430/toolchains/../msp430-gcc/msp430-gcc-support-files/include] ==> [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-support-files/include]
+  collapse library dir [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1] ==> [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/lib/gcc/msp430-elf/9.3.1]
+  collapse library dir [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc] ==> [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/lib/gcc]
+  collapse library dir [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/../lib/gcc/msp430-elf/9.3.1/../../../../msp430-elf/lib] ==> [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/lib]
+  implicit libs: [gcc;c;stdc++;m;gcc;mul_none;c;gcc;crt;nosys;gcc;gcc]
+  implicit objs: [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/lib/crt0.o;/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/lib/gcc/msp430-elf/9.3.1/crtbegin_no_eh.o;/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/lib/gcc/msp430-elf/9.3.1/crtend_no_eh.o]
+  implicit dirs: [/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-support-files/include;/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/lib/gcc/msp430-elf/9.3.1;/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/lib/gcc;/workspaces/Thesis_Repo/devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/msp430-elf/lib]
+  implicit fwks: []
+
+

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-project("InKLegacy" LANGUAGES C)
+project("InK2" LANGUAGES C)
 
 include(GNUInstallDirs)
 
@@ -8,18 +8,32 @@ set(INK_INSTALL_DIR ${CMAKE_SOURCE_DIR}/install)
 set(INK_LINKER_SCRIPT_TEMPLATE ${CMAKE_SOURCE_DIR}/linker/ink_template.ld)
 set(INK_LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/linker/ink.ld)
 
-add_library(${PROJECT_NAME} STATIC
-    isr/isrmanager.c
-    isr/persistentqueue.c
-    mcu/msp430/dma.c
-    mcu/msp430/msp430fr5969.c
-    scheduler/priority.c
-    scheduler/scheduler.c
-    scheduler/thread.c
-    timer/mcu_specifics/clk.c
-    timer/persistent_timer_commit/persistent_timer.c
-    timer/timer.c
-    main.c
+set(PUBLIC_HEADERS
+    api/include/ink.h
+    api/include/init.h
+    api/include/address_translation.h
+    api/include/thread.h
+    api/include/scheduler.h
+)
+
+add_library(${PROJECT_NAME} STATIC)
+
+target_sources(${PROJECT_NAME}
+    PUBLIC
+        api/address_translation.c
+        api/init.c
+        api/thread.c
+        api/scheduler.c
+    PRIVATE
+        isr/isrmanager.c
+        isr/persistentqueue.c
+        mcu/msp430/fram.c
+        scheduler/priority.c
+        scheduler/scheduler.c
+        scheduler/thread.c
+        timer/mcu_specifics/clk.c
+        timer/persistent_timer_commit/persistent_timer.c
+        timer/timer.c
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
@@ -27,16 +41,12 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     # ${ARCHITECTURE_SPECIFIC_INCLUDES}
 )
 
-set(CMAKE_INSTALL_PREFIX
-    "${INK_INSTALL_DIR}"
-    CACHE PATH "Where the library will be installed to" FORCE
-)
+set(CMAKE_INSTALL_PREFIX ${INK_INSTALL_DIR})
 
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER ink.h)
+install(FILES ${PUBLIC_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ink)
 
 install(TARGETS ${PROJECT_NAME}
-    EXPORT "${PROJECT_NAME}Targets"
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
