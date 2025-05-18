@@ -1,41 +1,42 @@
 // This file is part of InK.
-// 
-// author = "dpatoukas " 
+//
+// author = "dpatoukas "
 // maintainer = "dpatoukas "
-// email = "dpatoukas@gmail.com" 
-//  
-// copyright = "Copyright 2018 Delft University of Technology" 
-// license = "LGPL" 
-// version = "3.0" 
+// email = "dpatoukas@gmail.com"
+//
+// copyright = "Copyright 2018 Delft University of Technology"
+// license = "LGPL"
+// version = "3.0"
 // status = "Production"
 //
-// 
+//
 // InK is free software: you ca	n redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "ink.h"
+#include "ink/ink.h"
+#include <stdint.h>
 
-//bitcount specific definitions 
+//bitcount specific definitions
 
 #define SEED 4L
 #define ITER 100
 #define CHAR_BIT 8
 #ifdef RAISE_PIN
-__nv uint8_t full_run_started = 0;
+INK_PERSISTENT uint8_t full_run_started = 0;
 #endif
 
 
-__nv static char bits[256] =
+INK_PERSISTENT static const char bits[256] =
 {
     0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4,  /* 0   - 15  */
     1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,  /* 16  - 31  */
@@ -56,175 +57,143 @@ __nv static char bits[256] =
 };
 
 // define task-shared persistent variables.
-__shared(
+uint8_t pinCont;
+unsigned n_0;
+unsigned n_1;
+unsigned n_2;
+unsigned n_3;
+unsigned n_4;
+unsigned n_5;
+unsigned n_6;
+unsigned function;
+unsigned iteration;
+uint32_t seed;
 
-    uint8_t pinCont;
-    unsigned n_0;
-    unsigned n_1;
-    unsigned n_2;
-    unsigned n_3;
-    unsigned n_4;
-    unsigned n_5;
-    unsigned n_6;
-    unsigned function;
-    unsigned iteration;
-    uint32_t seed;
-)
+void *t_init();
+void *t_select_func();
+void *t_bit_count();
+void *t_bitcount();
+void *t_ntbl_bitcnt();
+void *t_ntbl_bitcount();
+void *t_BW_btbl_bitcount();
+void *t_AR_btbl_bitcount();
+void *t_bit_shifter();
+void *t_end();
 
-TASK(t_init);
-TASK(t_select_func);
-TASK(t_bit_count);
-TASK(t_bitcount);
-TASK(t_ntbl_bitcnt);
-TASK(t_ntbl_bitcount);
-TASK(t_BW_btbl_bitcount);
-TASK(t_AR_btbl_bitcount);
-TASK(t_bit_shifter);
-TASK(t_end);
-#define RAISE_PIN
+INK_CREATE_THREAD(15, true)
+{
+    // One-time initialization on first boot, not required.
 
-#ifdef RAISE_PIN
-__nv uint8_t full_run_started = 0;
-#endif
-
-// called at the very first boot
-void thread1_init(){
-    // create a thread with priority 15 and entry task t_init
-    __CREATE(15,t_init);
-    __SIGNAL(15);
+    return t_init;
 }
 
-__app_reboot(){
-    __no_operation();
-}
-
-uint32_t flag = 77;
-TASK(t_init){
-    
+void* t_init()
+{
 #ifdef RAISE_PIN
     full_run_started = 1;
 #endif
 
-    __SET(pinCont,1);
-    __SET(function,0);
-    __SET(n_0,0);
-    __SET(n_1,0);
-    __SET(n_2,0);
-    __SET(n_3,0);
-    __SET(n_4,0);
-    __SET(n_5,0);
-    __SET(n_6,0);
+    pinCont=1;
+    function=0;
+    n_0=0;
+    n_1=0;
+    n_2=0;
+    n_3=0;
+    n_4=0;
+    n_5=0;
+    n_6=0;
 
     // next task is t_select_func
     return t_select_func;
 }
 
-TASK(t_select_func){
-
-    /* ------ local variables for persistents ------*/
-    uint32_t seed;
-    unsigned function;
-    unsigned iteration;
-
-    #ifdef RANDOM   
-        seed = rand();   
-    #else 
+void*t_select_func()
+{
+    #ifdef RANDOM
+        seed = rand();
+    #else
         seed = SEED;
     #endif
 
-    __SET(iteration, 0);
-    __SET(seed,seed);
-
-    function = __GET(function);
+    iteration= 0;
 
     if (function == 0)
     {
-        __SET(function,++function);
+        ++function;
         return t_bit_count;
     }
     else if(function == 1)
     {
-        __SET(function,++function);
+        ++function;
         return t_bitcount;
     }
     else if(function == 2)
     {
-        __SET(function,++function);
-        return t_ntbl_bitcnt;          
+        ++function;
+        return t_ntbl_bitcnt;
     }
     else if(function == 3)
     {
-        __SET(function,++function);
+        ++function;
         return t_ntbl_bitcount;
     }
     else if(function == 4)
     {
-        __SET(function,++function);
-        return t_BW_btbl_bitcount;         
+        ++function;
+        return t_BW_btbl_bitcount;
     }
     else if(function == 5)
     {
-        __SET(function,++function);
+        ++function;
         return t_AR_btbl_bitcount;
     }
     else if(function == 6)
     {
-        __SET(function,++function);
-        return t_bit_shifter;          
+        ++function;
+        return t_bit_shifter;
     }
-    else 
+    else
     {
-        __SET(function,++function);
+        ++function;
         return t_end;
     }
 
 }
 
-TASK(t_bit_count){
-        
-        uint32_t seed = __GET(seed);
-        unsigned n_0 = __GET(n_0);
-        unsigned iteration = __GET(iteration);
+void*t_bit_count(){
 
         uint32_t tmp_seed = seed;
         seed = tmp_seed + 13;
-        __SET(seed,seed);
 
         unsigned temp = 0;
         if(tmp_seed) do
             temp++;
         while (0 != (tmp_seed = tmp_seed&(tmp_seed-1)));
-        
-        __SET(n_0, n_0 += temp);
-        __SET(iteration, ++iteration);
+
+        n_0 += temp;
+        ++iteration;
 
         if(iteration < ITER){
             return t_bit_count;
         }
         else{
             return t_select_func;
-        }    
-
+        }
 }
 
-TASK(t_bitcount){
-
-    uint32_t seed = __GET(seed);
-    unsigned n_1 = __GET(n_1);
-    unsigned iteration = __GET(iteration);
+void*t_bitcount(){
 
     uint32_t tmp_seed = seed;
     seed = tmp_seed + 13;
-    __SET(seed,seed);
 
     tmp_seed = ((tmp_seed & 0xAAAAAAAAL) >>  1) + (tmp_seed & 0x55555555L);
     tmp_seed = ((tmp_seed & 0xCCCCCCCCL) >>  2) + (tmp_seed & 0x33333333L);
     tmp_seed = ((tmp_seed & 0xF0F0F0F0L) >>  4) + (tmp_seed & 0x0F0F0F0FL);
     tmp_seed = ((tmp_seed & 0xFF00FF00L) >>  8) + (tmp_seed & 0x00FF00FFL);
     tmp_seed = ((tmp_seed & 0xFFFF0000L) >> 16) + (tmp_seed & 0x0000FFFFL);
-    
-    __SET(n_1,n_1 += (int)tmp_seed);
-    __SET(iteration,++iteration);
+
+    n_1 += (int)tmp_seed;
+    ++iteration;
 
     if(iteration < ITER){
         return t_bitcount;
@@ -255,20 +224,12 @@ int non_recursive_cnt(uint32_t x){
     return cnt;
 }
 
-TASK(t_ntbl_bitcnt){
-
-    uint32_t seed = __GET(seed);
-    unsigned n_2 = __GET(n_2);
-    unsigned iteration = __GET(iteration);
+void*t_ntbl_bitcnt(){
 
     uint32_t tmp_seed = seed;
     n_2 += non_recursive_cnt(tmp_seed);
     seed = tmp_seed + 13;
     iteration++;
-
-    __SET(n_2,n_2);
-    __SET(seed, seed);
-    __SET(iteration,iteration);
 
     if(iteration < ITER){
         return t_ntbl_bitcnt;
@@ -278,11 +239,7 @@ TASK(t_ntbl_bitcnt){
     }
 }
 
-TASK(t_ntbl_bitcount){
-    /* ------ local variables for persistents ------*/
-    uint32_t seed = __GET(seed);
-    unsigned n_3 = __GET(n_3);
-    unsigned iteration = __GET(iteration);
+void*t_ntbl_bitcount(){
 
     uint16_t __cry = seed;
     n_3 += bits[ (int) (__cry & 0x0000000FUL)       ] +
@@ -298,10 +255,6 @@ TASK(t_ntbl_bitcount){
     seed = tmp_seed + 13;
     iteration++;
 
-    __SET(n_3,n_3);
-    __SET(seed, seed);
-    __SET(iteration,iteration);
-
     if(iteration < ITER){
         return t_ntbl_bitcount;
     }
@@ -310,12 +263,7 @@ TASK(t_ntbl_bitcount){
     }
 }
 
-TASK(t_BW_btbl_bitcount){
-
-    /* ------ local variables for persistents ------*/
-    uint32_t seed = __GET(seed);
-    unsigned n_4 = __GET(n_4);
-    unsigned iteration = __GET(iteration);
+void*t_BW_btbl_bitcount(){
 
     union
     {
@@ -331,10 +279,6 @@ TASK(t_BW_btbl_bitcount){
     seed = tmp_seed + 13;
     iteration++;
 
-    __SET(n_4,n_4);
-    __SET(seed, seed);
-    __SET(iteration,iteration);
-
     if(iteration < ITER){
         return t_BW_btbl_bitcount;
     }
@@ -344,13 +288,7 @@ TASK(t_BW_btbl_bitcount){
 
 }
 
-TASK(t_AR_btbl_bitcount) {
-
-    /* ------ local variables for persistents ------*/
-    uint32_t seed = __GET(seed);
-    unsigned n_5 = __GET(n_5);
-    unsigned iteration = __GET(iteration);
-
+void*t_AR_btbl_bitcount() {
     unsigned char * Ptr = (unsigned char *) &seed ;
     int Accu ;
 
@@ -363,10 +301,6 @@ TASK(t_AR_btbl_bitcount) {
     seed = tmp_seed + 13;
     iteration++;
 
-    __SET(n_5,n_5);
-    __SET(seed, seed);
-    __SET(iteration,iteration);
-
     if(iteration < ITER){
         return t_AR_btbl_bitcount;
     }
@@ -375,12 +309,7 @@ TASK(t_AR_btbl_bitcount) {
     }
 }
 
-TASK(t_bit_shifter){
-        /* ------ local variables for persistents ------*/
-    uint32_t seed = __GET(seed);
-    unsigned n_6 = __GET(n_6);
-    unsigned iteration = __GET(iteration);
-
+void*t_bit_shifter(){
     unsigned i, nn;
     uint32_t tmp_seed = seed;
     for (i = nn = 0; tmp_seed && (i < (sizeof(long) * CHAR_BIT)); ++i, tmp_seed >>= 1)
@@ -392,10 +321,6 @@ TASK(t_bit_shifter){
 
     iteration++;
 
-    __SET(n_6,n_6);
-    __SET(seed, seed);
-    __SET(iteration,iteration);
-
     if(iteration < ITER){
         return t_bit_shifter;
     }
@@ -404,15 +329,11 @@ TASK(t_bit_shifter){
     }
 }
 
-TASK(t_end){
-        /* ------ local variables for persistents ------*/
-    uint8_t pinCont = __GET(pinCont);
-    /* ------------------------------------- */
-
+void*t_end(){
 #ifdef RAISE_PIN
     if (full_run_started) {
         __port_on(3, 4);
-        __port_off(3, 4);        
+        __port_off(3, 4);
         full_run_started = 0;
     }
 #endif
@@ -422,7 +343,7 @@ TASK(t_end){
     }
 
 
-    __SET(pinCont,0);
+    pinCont = 0;
 
     return t_init;
 }

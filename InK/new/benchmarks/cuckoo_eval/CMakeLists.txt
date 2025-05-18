@@ -6,7 +6,7 @@
 
 cmake_minimum_required(VERSION 3.22)
 
-set(BENCHMARK_NAME blink)
+set(BENCHMARK_NAME cuckoo_eval)
 
 include(ink_instrumentation)
 
@@ -29,4 +29,4 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 ink_instrument_file(main.c)
-ink_instrument_file(thread.c)
+ink_instrument_file(thread1.c)

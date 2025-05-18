@@ -1,32 +1,33 @@
 // This file is part of InK.
-// 
-// author = "dpatoukas " 
+//
+// author = "dpatoukas "
 // maintainer = "dpatoukas "
-// email = "dpatoukas@gmail.com" 
-//  
-// copyright = "Copyright 2018 Delft University of Technology" 
-// license = "LGPL" 
-// version = "3.0" 
+// email = "dpatoukas@gmail.com"
+//
+// copyright = "Copyright 2018 Delft University of Technology"
+// license = "LGPL"
+// version = "3.0"
 // status = "Production"
 //
-// 
+//
 // InK is free software: you ca	n redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "ink.h"
+#include "ink/ink.h"
 #include <stdbool.h>
+#include <stdlib.h>
 
-//cuckoo specific definitions 
+//cuckoo specific definitions
 #define NUM_BUCKETS 128 // must be a power of 2
 #define NUM_INSERTS (NUM_BUCKETS / 4) // shoot for 25% occupancy
 #define NUM_LOOKUPS NUM_INSERTS
@@ -34,7 +35,7 @@
 #define BUFFER_SIZE 32
 #define TASK_NUM 15
 
-#define RAISE_PIN
+// #define RAISE_PIN
 
 //#define TIME_ME
 #ifdef TIME_ME
@@ -43,7 +44,7 @@ uint32_t tmp[10];
 #endif
 
 #ifdef RAISE_PIN
-__nv uint8_t full_run_started = 0;
+INK_PERSISTENT uint8_t full_run_started = 0;
 #endif
 
 // Debug defines and flags.
@@ -87,7 +88,7 @@ enum task_index {
 };
 
 // define task-shared persistent variables.
-__shared(
+// __shared(
 
     uint8_t pinRaised;
     fingerprint_t _v_filter[NUM_BUCKETS];
@@ -103,39 +104,26 @@ __shared(
     value_t _v_lookup_count;
     value_t _v_member_count;
     bool _v_success;
-    bool _v_member;    
-)
+    bool _v_member;
+// )
 
-ENTRY_TASK(task_init);
-TASK(task_init_array);
-TASK(task_generate_key);
-TASK(task_calc_indexes);
-TASK(task_calc_indexes_index_1);
+void* task_init();
+void* task_init_array();
+void* task_generate_key();
+void* task_calc_indexes();
+void* task_calc_indexes_index_1();
 
-TASK(task_calc_indexes_index_2);
-TASK(task_insert);
-TASK(task_add);
-TASK(task_relocate);
-TASK(task_insert_done);
+void* task_calc_indexes_index_2();
+void* task_insert();
+void* task_add();
+void* task_relocate();
+void* task_insert_done();
 
-TASK(task_lookup);
-TASK(task_lookup_search);
-TASK(task_lookup_done);
-TASK(task_print_stats);
-TASK(task_done);
-
-// called at the very first boot
-void thread1_init(){
-    // create a thread with priority 15 and entry task t_init
-    __CREATE(15,task_init);
-    __SIGNAL(15);
-}
-
-__app_reboot(){
-
-    __no_operation();
-
-}
+void* task_lookup();
+void* task_lookup_search();
+void* task_lookup_done();
+void* task_print_stats();
+void* task_done();
 
 static value_t init_key = 0x0001; // seeds the pseudo-random sequence of keys
 
@@ -162,7 +150,12 @@ static fingerprint_t hash_to_fingerprint(value_t key)
     return djb_hash((uint8_t *)&key, sizeof(value_t));
 }
 
-ENTRY_TASK(task_init){
+INK_CREATE_THREAD(15, true)
+{
+    return task_init;
+}
+
+void* task_init(){
 
 #ifdef RAISE_PIN
     full_run_started = 1;
@@ -170,31 +163,31 @@ ENTRY_TASK(task_init){
 
     unsigned i;
     for (i = 0; i < NUM_BUCKETS ; ++i) {
-        __SET( _v_filter[i],0);
+         _v_filter[i] = 0;
     }
-    __SET( _v_insert_count , 0);
-    __SET( _v_lookup_count , 0);
-    __SET( _v_inserted_count , 0);
-    __SET( _v_member_count , 0);
-    __SET( _v_key , init_key);
-    __SET( _v_next_task , t_insert);
+     _v_insert_count  =  0;
+     _v_lookup_count  =  0;
+     _v_inserted_count  =  0;
+     _v_member_count  =  0;
+     _v_key = init_key;
+     _v_next_task = t_insert;
 
 
-    
+
     return task_generate_key;
 }
 
-TASK(task_init_array){
+void* task_init_array(){
 
         unsigned i;
-        
-        for (i = 0; i < BUFFER_SIZE - 1; ++i) {
-            __SET(_v_filter[i + __GET(_v_index)*(BUFFER_SIZE-1)] , 0);
-        }
-        
-        __SET(_v_index, ++__GET(_v_index));
 
-        if ( __GET(_v_index) == NUM_BUCKETS/(BUFFER_SIZE-1)) {
+        for (i = 0; i < BUFFER_SIZE - 1; ++i) {
+            _v_filter[i + _v_index*(BUFFER_SIZE-1)] = 0;
+        }
+
+        ++_v_index;
+
+        if ( _v_index == NUM_BUCKETS/(BUFFER_SIZE-1)) {
             return task_generate_key;
         }
         else {
@@ -202,7 +195,7 @@ TASK(task_init_array){
         }
 }
 
-TASK(task_generate_key){
+void* task_generate_key(){
 
     // insert pseufo-random integers, for testing
     // If we use consecutive ints, they hash to consecutive DJB hashes...
@@ -212,11 +205,11 @@ TASK(task_generate_key){
     uint16_t __cry;
     uint16_t next;
 
-    __cry = (__GET(_v_key) + 1) * 17; 
-    __SET(_v_key, __cry);
-   
-    enum task_index next_task = __GET(_v_next_task);
-    
+    __cry = (_v_key + 1) * 17;
+    _v_key= __cry;
+
+    enum task_index next_task = _v_next_task;
+
     if (next_task == t_insert) {
         return task_insert;
     } else if (next_task == t_lookup) {
@@ -226,35 +219,35 @@ TASK(task_generate_key){
     }
 }
 
-TASK(task_calc_indexes){
+void* task_calc_indexes(){
 
     uint16_t __cry;
-    __cry = hash_to_fingerprint(__GET(_v_key));
-    __SET(_v_fingerprint , __cry);
+    __cry = hash_to_fingerprint(_v_key);
+    _v_fingerprint = __cry;
 
-    return task_calc_indexes_index_1;        
+    return task_calc_indexes_index_1;
 }
 
-TASK(task_calc_indexes_index_1){
+void* task_calc_indexes_index_1(){
 
 	uint16_t __cry;
-	__cry = hash_to_index(__GET(_v_key));
-	__SET(_v_index1 , __cry);
+	__cry = hash_to_index(_v_key);
+	_v_index1 = __cry;
 
 	return task_calc_indexes_index_2;
 }
 
-TASK(task_calc_indexes_index_2){
+void* task_calc_indexes_index_2(){
 
-    index_t fp_hash = hash_to_index(__GET(_v_fingerprint));
+    index_t fp_hash = hash_to_index(_v_fingerprint);
     uint16_t __cry;
     uint16_t next;
 
-    __cry = __GET(_v_index1) ^ fp_hash;
+    __cry = _v_index1 ^ fp_hash;
 
-    __SET(_v_index2 , __cry);
+    _v_index2 = __cry;
 
-    enum task_index next_task = __GET(_v_next_task);
+    enum task_index next_task = _v_next_task;
 
 
     if (next_task == t_add) {
@@ -267,142 +260,142 @@ TASK(task_calc_indexes_index_2){
 
 }
 
-TASK(task_insert){
+void* task_insert(){
 
-        __SET(_v_next_task , t_add);
+        _v_next_task = t_add;
         return task_calc_indexes;
 }
 
-TASK(task_add){
+void* task_add(){
 
     uint16_t __cry;
-    uint16_t __cry_idx = __GET(_v_index1);
-    uint16_t __cry_idx2 = __GET(_v_index2);
-	fingerprint_t fingerprint = __GET(_v_fingerprint);
+    uint16_t __cry_idx = _v_index1;
+    uint16_t __cry_idx2 = _v_index2;
+	fingerprint_t fingerprint = _v_fingerprint;
 
-    if (!__GET(_v_filter[__cry_idx])) {
+    if (!_v_filter[__cry_idx]) {
 
-        __SET(_v_success , true);
+        _v_success = true;
         __cry = fingerprint;
-        __SET(_v_filter[__cry_idx], __cry);
+        _v_filter[__cry_idx]= __cry;
 
         return task_insert_done;
 
     } else {
 
-        if (!__GET(_v_filter[__cry_idx2])) {
+        if (!_v_filter[__cry_idx2]) {
 
-	        __SET(_v_success , true);
+	        _v_success = true;
             __cry = fingerprint;
-            __SET(_v_filter[__cry_idx2], __cry);
-        
+            _v_filter[__cry_idx2]= __cry;
+
             return task_insert_done;
 
-        } else { 
+        } else {
         	// evict one of the two entries
             fingerprint_t fp_victim;
             index_t index_victim;
 
             if (rand() % 2) {
                 index_victim = __cry_idx;
-                fp_victim = __GET(_v_filter[__cry_idx]);
+                fp_victim = _v_filter[__cry_idx];
             } else {
                 index_victim = __cry_idx2;
-                fp_victim = __GET(_v_filter[__cry_idx2]);
+                fp_victim = _v_filter[__cry_idx2];
             }
 
             // Evict the victim
             __cry = fingerprint;
-            __SET(_v_filter[index_victim], __cry);
-            __SET(_v_index1 , index_victim);
-            __SET(_v_fingerprint , fp_victim);
-            __SET(_v_relocation_count ,0);
+            _v_filter[index_victim]= __cry;
+            _v_index1 = index_victim;
+            _v_fingerprint = fp_victim;
+            _v_relocation_count =0;
 
             return task_relocate;
         }
     }
 }
 
-TASK(task_relocate){
+void* task_relocate(){
 
     uint16_t __cry;
-    fingerprint_t fp_victim = __GET(_v_fingerprint);
+    fingerprint_t fp_victim = _v_fingerprint;
     index_t fp_hash_victim = hash_to_index(fp_victim);
-    index_t index2_victim = __GET(_v_index1) ^ fp_hash_victim;
+    index_t index2_victim = _v_index1 ^ fp_hash_victim;
 
-    if (!__GET(_v_filter[index2_victim])) { // slot was free
-    
-        __SET(_v_success, true);
-        __SET(_v_filter[index2_victim], fp_victim);
-    
+    if (!_v_filter[index2_victim]) { // slot was free
+
+        _v_success= true;
+        _v_filter[index2_victim]= fp_victim;
+
         return task_insert_done;
-    
+
     } else {
 
     	 // slot was occupied, rellocate the next victim
-        if (__GET(_v_relocation_count) >= MAX_RELOCATIONS) { // insert failed
-            __SET(_v_success, false);
-        
+        if (_v_relocation_count >= MAX_RELOCATIONS) { // insert failed
+            _v_success= false;
+
             return task_insert_done;
-        
+
         }
 
-        __SET(_v_relocation_count, ++__GET(_v_relocation_count));
-        __SET(_v_index1, index2_victim);
-        __cry = __GET(_v_filter[index2_victim]);
-        __SET(_v_fingerprint, __cry);
-        __SET(_v_filter[index2_victim], fp_victim);
-    
+        ++_v_relocation_count;
+        _v_index1= index2_victim;
+        __cry = _v_filter[index2_victim];
+        _v_fingerprint= __cry;
+        _v_filter[index2_victim] = fp_victim;
+
         return task_relocate;
-    
+
     }
 }
 
-TASK(task_insert_done){
+void* task_insert_done(){
 
     uint16_t __cry;
-    __SET(_v_insert_count, ++__GET(_v_insert_count));
-    __cry = __GET(_v_inserted_count);
-    __cry+= __GET(_v_success);
+    ++_v_insert_count;
+    __cry = _v_inserted_count;
+    __cry+= _v_success;
 
-    __SET(_v_inserted_count, __cry);
+    _v_inserted_count = __cry;
 
 
-    if (__GET(_v_insert_count) < NUM_INSERTS) {
-        
-        __SET(_v_next_task, t_insert);
-        
+    if (_v_insert_count < NUM_INSERTS) {
+
+        _v_next_task = t_insert;
+
         return task_generate_key;
-    
+
     } else {
 
-        __SET(_v_next_task, t_lookup);
-        __SET(_v_key, init_key);
-        
+        _v_next_task = t_lookup;
+        _v_key = init_key;
+
         return task_generate_key;
-    
+
     }
 
 }
 
-TASK(task_lookup){
+void* task_lookup(){
 
-        __SET(_v_next_task, t_lookup_search);
+        _v_next_task = t_lookup_search;
         return task_calc_indexes;
 }
 
-TASK(task_lookup_search){
+void* task_lookup_search(){
 
-    if (__GET(_v_filter[__GET(_v_index1)]) == __GET(_v_fingerprint)) {
-        __SET(_v_member, true);
+    if (_v_filter[_v_index1] == _v_fingerprint) {
+        _v_member = true;
 
     } else {
 
-        if (__GET(_v_filter[__GET(_v_index2)]) == __GET(_v_fingerprint)) {
-            __SET(_v_member, true);
+        if (_v_filter[_v_index2] == _v_fingerprint) {
+            _v_member = true;
         }
         else {
-            __SET(_v_member, false);
+            _v_member = false;
         }
     }
 
@@ -410,16 +403,16 @@ TASK(task_lookup_search){
 
 }
 
-TASK(task_lookup_done){
+void* task_lookup_done(){
 
     uint16_t __cry;
-    __SET(_v_lookup_count, ++__GET(_v_lookup_count));
-    __cry = __GET(_v_member_count);
-    __cry+= __GET(_v_member);
-    __SET(_v_member_count, __cry);
+    ++_v_lookup_count;
+    __cry = _v_member_count;
+    __cry+= _v_member;
+    _v_member_count = __cry;
 
-    if (__GET(_v_lookup_count) < NUM_LOOKUPS) {
-        __SET(_v_next_task, t_lookup);
+    if (_v_lookup_count < NUM_LOOKUPS) {
+        _v_next_task = t_lookup;
 
         return task_generate_key;
 
@@ -433,15 +426,12 @@ TASK(task_lookup_done){
 
 }
 
-TASK(task_print_stats){
-    
-    __no_operation();
-
+void* task_print_stats()
+{
     return task_done;
-
 }
 
-TASK(task_done)
+void* task_done()
 {
 
 #ifdef RAISE_PIN
@@ -460,6 +450,6 @@ TASK(task_done)
 //     tmp[1] = __get_time();
 //     __get_time_stop();
 // #endif
-    
+
     return task_init;
 }

@@ -3,14 +3,15 @@
 #include "gpio.h"
 #include "ink/ink.h"
 
-
+INK_IGNORE_VAR uint16_t ignored_variable;
 uint8_t blink_counter;
 
 void *t_blink_on();
 void *t_blink_off();
 void *t_end();
 
-void* t_init(void *event)
+// void* t_init(void *event)
+INK_CREATE_THREAD(1, true)
 {
     blink_counter = 0;
 

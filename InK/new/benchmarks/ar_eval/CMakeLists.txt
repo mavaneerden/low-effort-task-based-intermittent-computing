@@ -6,7 +6,7 @@
 
 cmake_minimum_required(VERSION 3.22)
 
-set(BENCHMARK_NAME blink)
+set(BENCHMARK_NAME ar_eval)
 
 include(ink_instrumentation)
 
@@ -19,6 +19,7 @@ add_executable(${PROJECT_NAME})
 # )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
+    .
     ${INK_INCLUDE_DIR}
     ${ARCHITECTURE_SPECIFIC_INCLUDES}
 )
@@ -29,4 +30,7 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 ink_instrument_file(main.c)
-ink_instrument_file(thread.c)
+ink_instrument_file(thread1.c)
+ink_instrument_file(divmodhi3.c)
+ink_instrument_file(mult.c)
+ink_instrument_file(sqrt.c)

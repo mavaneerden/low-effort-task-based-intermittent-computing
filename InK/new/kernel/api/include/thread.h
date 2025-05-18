@@ -5,27 +5,28 @@
 
 void __ink_create_thread(uint8_t priority, void* entry_task, bool start_on_first_boot);
 
-#define INK_CREATE_THREAD(priority, entry_task, start_on_first_boot) \
+// #define INK_CREATE_THREAD(priority, entry_task, start_on_first_boot) \
+//     void __attribute__((constructor(100##priority))) __ink_create_thread_##priority(void) \
+//     { \
+//         if (ink_is_first_boot()) \
+//         { \
+//             __ink_create_thread(priority, entry_task, start_on_first_boot); \
+//         } \
+//     }
+
+#define __INK_STRINGIZE_INTERNAL(S) #S
+#define __INK_STRINGIZE(S) __INK_STRINGIZE_INTERNAL(S)
+
+#define __INK_STRCONCAT_INTERNAL(S1, S2) S1 ## S2
+#define __INK_STRCONCAT(S1, S2) __INK_STRCONCAT_INTERNAL(S1, S2)
+
+#define INK_CREATE_THREAD(priority, start_on_first_boot) \
+    __attribute__((annotate(__INK_STRINGIZE(__INK_STRCONCAT_INTERNAL(INK::TASK, priority))))) void* __ink_entry_task_##priority(void*); \
     void __attribute__((constructor(100##priority))) __ink_create_thread_##priority(void) \
     { \
         if (ink_is_first_boot()) \
         { \
-            __ink_create_thread(priority, entry_task, start_on_first_boot); \
+            __ink_create_thread(priority, __ink_entry_task_##priority, start_on_first_boot); \
         } \
-    }
-
-// creates a thread
-// #define __CREATE(priority,entry)  \
-//         __create_thread(priority,(void *)entry,(void *)&__persistent_vars[0],(void *)&__persistent_vars[1],sizeof(FRAM_data_t))
-
-// // puts the thread state into ACTIVE
-// #define __SIGNAL(priority) \
-//         __disable_interrupt();  \
-//         __start_thread(__get_thread(priority)); \
-//         __enable_interrupt()
-
-// // event related information
-// #define __EVENT __event
-// #define __EVENT_DATA __event->data
-// #define __EVENT_DATALEN __event->size
-// #define __EVENT_TIME __event->timestamp
+    } \
+    void* __ink_entry_task_##priority(void *ink_event)

@@ -1,29 +1,29 @@
 // This file is part of InK.
-// 
-// author = "dpatoukas " 
+//
+// author = "dpatoukas "
 // maintainer = "dpatoukas "
-// email = "dpatoukas@gmail.com" 
-//  
-// copyright = "Copyright 2018 Delft University of Technology" 
-// license = "LGPL" 
-// version = "3.0" 
+// email = "dpatoukas@gmail.com"
+//
+// copyright = "Copyright 2018 Delft University of Technology"
+// license = "LGPL"
+// version = "3.0"
 // status = "Production"
 //
-// 
+//
 // InK is free software: you ca	n redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "ink.h"
+#include "ink/ink.h"
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -43,7 +43,7 @@
 // Number of classifications to complete in one experiment
 #define SAMPLES_TO_COLLECT 128
 
-typedef struct 
+typedef struct
 {
     uint8_t x,y,z;
 
@@ -71,71 +71,59 @@ typedef enum {
     MODE_RECOGNIZE = 0, // default
 } run_mode_t;
 
-__shared(
-  uint8_t pinCont;
-  uint16_t _v_pinState;
-  // unsigned _v_seed;
-  unsigned _v_count;
-  unsigned _v_discardedSamplesCount;
-  unsigned _v_totalCount;
-  unsigned _v_movingCount;
-  unsigned _v_stationaryCount;
-  unsigned _v_trainingSetSize;
-  unsigned _v_samplesInWindow;
-  accelReading _v_window[ACCEL_WINDOW_SIZE];
-  features_t _v_features;
-  features_t _v_model_stationary[MODEL_SIZE];
-  features_t _v_model_moving[MODEL_SIZE];
-  class_t _v_class;
-  run_mode_t _v_mode;
-)
+uint8_t pinCont;
+uint16_t _v_pinState;
+// unsigned _v_seed;
+unsigned _v_count;
+unsigned _v_discardedSamplesCount;
+unsigned _v_totalCount;
+unsigned _v_movingCount;
+unsigned _v_stationaryCount;
+unsigned _v_trainingSetSize;
+unsigned _v_samplesInWindow;
+accelReading _v_window[ACCEL_WINDOW_SIZE];
+features_t _v_features;
+features_t _v_model_stationary[MODEL_SIZE];
+features_t _v_model_moving[MODEL_SIZE];
+class_t _v_class;
+run_mode_t _v_mode;
 
 
-ENTRY_TASK(task_init);
-TASK(task_selectMode);
-TASK(task_resetStats);
-TASK(task_sample);
-TASK(task_transform);
-TASK(task_featurize);
-TASK(task_classify);
-TASK(task_stats);
-TASK(task_warmup);
-TASK(task_train);
-TASK(task_idle);
+void* task_init();
+void* task_selectMode();
+void* task_resetStats();
+void* task_sample();
+void* task_transform();
+void* task_featurize();
+void* task_classify();
+void* task_stats();
+void* task_warmup();
+void* task_train();
+void* task_idle();
 
-#define THREAD1 15
-void thread1_init(){
+INK_PERSISTENT unsigned _v_seed;
+INK_PERSISTENT uint8_t full_run_started;
 
-    // create a thread with priority 15 and entry task task1
-    __CREATE(THREAD1,task_init);
-    __SIGNAL(THREAD1);
-
-}
-
-__nv unsigned _v_seed;
-__nv uint8_t full_run_started;
-
-__app_reboot(){
-    __no_operation();
-}
-
-ENTRY_TASK(task_init)
+INK_CREATE_THREAD(15, true)
 {
-  
+    return task_init;
+}
+
+void* task_init()
+{
+
 #ifdef RAISE_PIN
     full_run_started = 1;
 #endif
 
-  __SET(pinCont, 1);
-  __SET(_v_pinState , MODE_IDLE);
-  __SET( _v_count , 0);
-  // __SET( _v_seed , 1);
+  pinCont = 1;
+  _v_pinState  = MODE_IDLE;
+  _v_count  = 0;
   _v_seed = 1;
 
   return task_selectMode;
 }
 
-//Dummy data sampling
 //Dummy data sampling
 void ACCEL_singleSample_(threeAxis_t_8* result){
 
@@ -147,28 +135,28 @@ void ACCEL_singleSample_(threeAxis_t_8* result){
     _v_seed = ++seed;
 }
 
-TASK(task_selectMode)
+void* task_selectMode()
 {
 
-  // uint16_t pinState = __GET(_v_pinState);
-  unsigned discardedSamplesCount = __GET(_v_discardedSamplesCount);
-  unsigned samplesInWindow = __GET(_v_samplesInWindow);
-  unsigned count = __GET(_v_count);
-  class_t  lc_class = __GET(_v_class);
-  run_mode_t lc_mode = __GET(_v_mode);
-  
+  // uint16_t pinState = _v_pinState;
+  unsigned discardedSamplesCount = _v_discardedSamplesCount;
+  unsigned samplesInWindow = _v_samplesInWindow;
+  unsigned count = _v_count;
+  class_t  lc_class = _v_class;
+  run_mode_t lc_mode = _v_mode;
+
   uint16_t pin_state=1;
 
   ++count;
-  __SET(_v_count,count);
-  
+  _v_count =count;
+
   if(count >= 3)  pin_state=2;
   if(count >= 5)  pin_state=0;
-  if(count >= 7) 
+  if(count >= 7)
   {
-    
+
 #ifdef RAISE_PIN
-    if (full_run_started) 
+    if (full_run_started)
     {
       full_run_started = 0;
       __port_on(3, 4);
@@ -178,37 +166,37 @@ TASK(task_selectMode)
       return task_init;
   }
 
-  
-  
+
+
   // Don't re-launch training after finishing training
-  if ((pin_state == MODE_TRAIN_STATIONARY || pin_state == MODE_TRAIN_MOVING) 
-      && pin_state == __GET(_v_pinState))
+  if ((pin_state == MODE_TRAIN_STATIONARY || pin_state == MODE_TRAIN_MOVING)
+      && pin_state == _v_pinState)
   {
     pin_state = MODE_IDLE;
-  } 
-  else 
+  }
+  else
   {
-    __SET(_v_pinState , pin_state);
+    _v_pinState  = pin_state;
   }
 
-  
+
   switch(pin_state) {
     case MODE_TRAIN_STATIONARY:
-        __SET(_v_discardedSamplesCount , 0);
-        __SET(_v_mode , MODE_TRAIN_STATIONARY);
-        __SET(_v_class , CLASS_STATIONARY);
-        __SET(_v_samplesInWindow , 0);
+        _v_discardedSamplesCount  = 0;
+        _v_mode  = MODE_TRAIN_STATIONARY;
+        _v_class  = CLASS_STATIONARY;
+        _v_samplesInWindow  = 0;
         return task_warmup;
         break;
     case MODE_TRAIN_MOVING:
-        __SET(_v_discardedSamplesCount , 0);
-        __SET(_v_mode , MODE_TRAIN_MOVING);
-        __SET(_v_class , CLASS_MOVING);
-        __SET(_v_samplesInWindow , 0);          
+        _v_discardedSamplesCount  = 0;
+        _v_mode  = MODE_TRAIN_MOVING;
+        _v_class  = CLASS_MOVING;
+        _v_samplesInWindow  = 0;
         return task_warmup;
         break;
     case MODE_RECOGNIZE:
-        __SET(_v_mode , MODE_RECOGNIZE);
+        _v_mode  = MODE_RECOGNIZE;
         return task_resetStats;
         break;
     default:
@@ -217,71 +205,71 @@ TASK(task_selectMode)
       }
 }
 
-TASK(task_warmup)
+void* task_warmup()
 {
-  
-  // unsigned discardedSamplesCount = __GET(_v_discardedSamplesCount);
-  // unsigned trainingSetSize= __GET(_v_trainingSetSize);
-      
-    threeAxis_t_8 sample;
-    
 
-    if (__GET(_v_discardedSamplesCount) < NUM_WARMUP_SAMPLES) {
+  // unsigned discardedSamplesCount = _v_discardedSamplesCount;
+  // unsigned trainingSetSize= _v_trainingSetSize;
+
+    threeAxis_t_8 sample;
+
+
+    if (_v_discardedSamplesCount < NUM_WARMUP_SAMPLES) {
 
         ACCEL_singleSample_(&sample);
-        __SET(_v_discardedSamplesCount , ++__GET(_v_discardedSamplesCount));
+        ++_v_discardedSamplesCount;
         return task_warmup;
     } else {
 
-        __SET(_v_trainingSetSize , 0);
+        _v_trainingSetSize  = 0;
         return task_sample;
     }
 
 }
 
-TASK(task_sample)
+void* task_sample()
 {
 
 //    int8_t ios_i;
-    
-  unsigned samplesInWindow = __GET(_v_samplesInWindow);
-    
+
+  unsigned samplesInWindow = _v_samplesInWindow;
+
 
       accelReading sample;
       ACCEL_singleSample_(&sample);
-      __SET(_v_window[samplesInWindow].x , sample.x);
-      __SET(_v_window[samplesInWindow].y , sample.y);
-      __SET(_v_window[samplesInWindow].z , sample.z);
+      _v_window[samplesInWindow].x  = sample.x;
+      _v_window[samplesInWindow].y  = sample.y;
+      _v_window[samplesInWindow].z  = sample.z;
       ++samplesInWindow;
-      __SET(_v_samplesInWindow,samplesInWindow);
+      _v_samplesInWindow =samplesInWindow;
 
-      if (samplesInWindow < ACCEL_WINDOW_SIZE) 
+      if (samplesInWindow < ACCEL_WINDOW_SIZE)
       {
           return task_sample;
-      } 
-      else 
+      }
+      else
       {
-          __SET(_v_samplesInWindow , 0);
+          _v_samplesInWindow  = 0;
           return task_transform;
       }
 
 }
 
-TASK(task_transform)
+void* task_transform()
 {
 
   int8_t ios_i;
-    
-  // unsigned samplesInWindow = __GET(_v_samplesInWindow);
+
+  // unsigned samplesInWindow = _v_samplesInWindow;
 
 
   accelReading window[ACCEL_WINDOW_SIZE];
 
   for (ios_i = 0; ios_i < ACCEL_WINDOW_SIZE; ++ios_i)
   {
-    window[ios_i] = __GET(_v_window[ios_i]);
+    window[ios_i] = _v_window[ios_i];
   }
-      
+
 
     unsigned i;
 
@@ -294,51 +282,51 @@ TASK(task_transform)
 
           if (window[i].x > SAMPLE_NOISE_FLOOR)
           {
-            __SET(_v_window[i].x,window[i].x);
-          } 
-          else
-          {
-             __SET(_v_window[i].x,0);
-          }
-  
-          if(window[i].y > SAMPLE_NOISE_FLOOR) 
-          {
-              __SET(_v_window[i].y,window[i].y);
+            _v_window[i].x =window[i].x;
           }
           else
           {
-             __SET(_v_window[i].y,0);
+             _v_window[i].x =0;
           }
-  
+
+          if(window[i].y > SAMPLE_NOISE_FLOOR)
+          {
+              _v_window[i].y =window[i].y;
+          }
+          else
+          {
+             _v_window[i].y =0;
+          }
+
           if(window[i].z > SAMPLE_NOISE_FLOOR)
           {
-           __SET(_v_window[i].z,window[i].z);
+           _v_window[i].z =window[i].z;
           }
           else
           {
-            __SET(_v_window[i].z,0);
-          } 
+            _v_window[i].z =0;
+          }
       }
   }
 
-    return task_featurize;      
+    return task_featurize;
 
 }
 
-TASK(task_featurize)
+void* task_featurize()
 {
-  
+
 //    int8_t ios_i;
-    
-    run_mode_t mode = __GET(_v_mode);
-    features_t features = __GET(_v_features);
+
+    run_mode_t mode = _v_mode;
+    features_t features = _v_features;
 
 //
 //    accelReading window[ACCEL_WINDOW_SIZE];
 //
 //   for (ios_i = 0; ios_i < ACCEL_WINDOW_SIZE; ++ios_i)
 //    {
-//      window[ios_i] = __GET(_v_window[ios_i]);
+//      window[ios_i] = _v_window[ios_i];
 //  }
 //
 
@@ -350,42 +338,42 @@ TASK(task_featurize)
     uint8_t i = 0;
     for (i = 0; i < ACCEL_WINDOW_SIZE; i++)
     {
-        mean.x += __GET(_v_window[i].x);
-        mean.y += __GET(_v_window[i].y);
-        mean.z += __GET(_v_window[i].z);
+        mean.x += _v_window[i].x;
+        mean.y += _v_window[i].y;
+        mean.z += _v_window[i].z;
     }
-    
+
     mean.x >>= 2;
     mean.y >>= 2;
     mean.z >>= 2;
 
     for (i = 0; i < ACCEL_WINDOW_SIZE; i++)
     {
-        if (__GET(_v_window[i].x) > mean.x)
+        if (_v_window[i].x > mean.x)
         {
-          stddev.x += __GET(_v_window[i].x) - mean.x;
+          stddev.x += _v_window[i].x - mean.x;
         }
         else
         {
-          stddev.x +=  mean.x - __GET(_v_window[i].x);
+          stddev.x +=  mean.x - _v_window[i].x;
         }
 
-        if (__GET(_v_window[i].y) > mean.y)
+        if (_v_window[i].y > mean.y)
         {
-          stddev.y += __GET(_v_window[i].y) - mean.y;
+          stddev.y += _v_window[i].y - mean.y;
         }
         else
         {
-          stddev.y += mean.y - __GET(_v_window[i].y);
+          stddev.y += mean.y - _v_window[i].y;
         }
-        
-        if (__GET(_v_window[i].z) > mean.z)
+
+        if (_v_window[i].z > mean.z)
         {
-          stddev.z += __GET(_v_window[i].z) - mean.z;
+          stddev.z += _v_window[i].z - mean.z;
         }
         else
         {
-          stddev.z +=  mean.z - __GET(_v_window[i].z);
+          stddev.z +=  mean.z - _v_window[i].z;
         }
 
         // stddev.x += window[i].x > mean.x ? window[i].x - mean.x
@@ -408,13 +396,13 @@ TASK(task_featurize)
      {
         case MODE_TRAIN_STATIONARY:
         case MODE_TRAIN_MOVING:
-            __SET(_v_features.meanmag , features.meanmag);
-            __SET(_v_features.stddevmag , features.stddevmag);
+            _v_features.meanmag  = features.meanmag;
+            _v_features.stddevmag  = features.stddevmag;
             return task_train;
             break;
         case MODE_RECOGNIZE:
-            __SET(_v_features.meanmag , features.meanmag);
-            __SET(_v_features.stddevmag , features.stddevmag);
+            _v_features.meanmag  = features.meanmag;
+            _v_features.stddevmag  = features.stddevmag;
             return task_classify;
             break;
         default:
@@ -424,96 +412,96 @@ TASK(task_featurize)
     }
 }
 
-TASK(task_classify)
+void* task_classify()
 {
 
     // int8_t ios_i;
-    
-    // class_t lc_class = __GET(_v_class);
-    // features_t features = __GET(_v_features);
+
+    // class_t lc_class = _v_class;
+    // features_t features = _v_features;
 
     // accelReading window[ACCEL_WINDOW_SIZE];
 
     // for (ios_i = 0; ios_i < ACCEL_WINDOW_SIZE; ios_i++)
     // {
     //     window[ios_i] =
-    //             __GET(_v_window[ios_i]);
+    //             _v_window[ios_i];
     // }
 
     // features_t model_stationary[MODEL_SIZE];
     // for (ios_i = 0; ios_i < MODEL_SIZE; ios_i++)
     // {
     //   model_stationary[ios_i] =
-    //             __GET(_v_model_stationary[ios_i]);
-    // }    
+    //             _v_model_stationary[ios_i];
+    // }
 
     // features_t model_moving[MODEL_SIZE];
     // for (ios_i = 0; ios_i < MODEL_SIZE; ios_i++)
     // {
     //     model_moving[ios_i] =
-    //             __GET(_v_model_moving[ios_i]);
-    // }    
-    
+    //             _v_model_moving[ios_i];
+    // }
+
     unsigned int move_less_error = 0;
     unsigned int stat_less_error = 0;
     int i;
 
     unsigned int meanmag;
     unsigned int stddevmag;
-    meanmag = __GET(_v_features.meanmag);
-    stddevmag = __GET(_v_features.stddevmag);
+    meanmag = _v_features.meanmag;
+    stddevmag = _v_features.stddevmag;
 
   unsigned int stat_mean_err = 0;
   unsigned int stat_sd_err = 0;
   unsigned int move_mean_err = 0;
   unsigned int move_sd_err = 0;
 
-    for (i = 0; i < MODEL_SIZE; ++i) 
+    for (i = 0; i < MODEL_SIZE; ++i)
     {
 
-      if (__GET(_v_model_stationary[i].meanmag) > meanmag)
+      if (_v_model_stationary[i].meanmag > meanmag)
       {
-         stat_mean_err = __GET(_v_model_stationary[i].meanmag) - meanmag; 
-        
+         stat_mean_err = _v_model_stationary[i].meanmag - meanmag;
+
       }
       else
       {
-          stat_mean_err = meanmag - __GET(_v_model_stationary[i].meanmag);
+          stat_mean_err = meanmag - _v_model_stationary[i].meanmag;
       }
- 
-      if (__GET(_v_model_stationary[i].stddevmag) > stddevmag)
+
+      if (_v_model_stationary[i].stddevmag > stddevmag)
       {
-         stat_sd_err = __GET(_v_model_stationary[i].stddevmag) - stddevmag; 
-        
+         stat_sd_err = _v_model_stationary[i].stddevmag - stddevmag;
+
       }
       else
       {
-          stat_sd_err = stddevmag - __GET(_v_model_stationary[i].stddevmag);
+          stat_sd_err = stddevmag - _v_model_stationary[i].stddevmag;
       }
-      
+
       unsigned int tmp;
-      tmp = __GET(_v_model_stationary[i].meanmag);
+      tmp = _v_model_stationary[i].meanmag;
 
       if (tmp > meanmag)
       {
          move_mean_err = (tmp - meanmag);
-        
+
       }
       else
       {
           move_mean_err = meanmag - tmp;
-      } 
-       
-      if (__GET(_v_model_stationary[i].stddevmag) > stddevmag)
+      }
+
+      if (_v_model_stationary[i].stddevmag > stddevmag)
       {
-         move_sd_err = __GET(_v_model_stationary[i].stddevmag) - stddevmag; 
-        
+         move_sd_err = _v_model_stationary[i].stddevmag - stddevmag;
+
       }
       else
       {
-          move_sd_err = stddevmag - __GET(_v_model_stationary[i].stddevmag);
-      }  
-        
+          move_sd_err = stddevmag - _v_model_stationary[i].stddevmag;
+      }
+
         if (move_mean_err < stat_mean_err) {
             move_less_error++;
         } else {
@@ -528,45 +516,45 @@ TASK(task_classify)
 
       }
 
-    if (move_less_error > stat_less_error) 
+    if (move_less_error > stat_less_error)
     {
-        __SET(_v_class, CLASS_MOVING);
+        _v_class = CLASS_MOVING;
     }
     else
     {
-        __SET(_v_class,CLASS_STATIONARY);
+        _v_class =CLASS_STATIONARY;
     }
 
     return task_stats;
 }
 
-TASK(task_stats)
+void* task_stats()
 {
   unsigned movingCount = 0, stationaryCount = 0;
 
 
-  // unsigned totalCount = __GET(_v_totalCount);    
-  __SET(_v_totalCount,++__GET(_v_totalCount));
-  // unsigned movingCount = __GET(_v_movingCount);
-  // unsigned stationaryCount = __GET(_v_stationaryCount);        
-  // class_t lc_class = __GET(_v_class);
+  // unsigned totalCount = _v_totalCount;
+  ++_v_totalCount;
+  // unsigned movingCount = _v_movingCount;
+  // unsigned stationaryCount = _v_stationaryCount;
+  // class_t lc_class = _v_class;
 
     // ++totalCount;
-    // __SET(_v_totalCount,totalCount);
+    // _v_totalCount =totalCount;
 
-    switch (__GET(_v_class))
+    switch (_v_class)
     {
         case CLASS_MOVING:
 
-            __SET(_v_movingCount,++__GET(_v_movingCount));
+            ++_v_movingCount;
             break;
         case CLASS_STATIONARY:
 
-            __SET(_v_stationaryCount, ++__GET(_v_stationaryCount));
+            ++_v_stationaryCount;
             break;
     }
 
-    if ( __GET(_v_totalCount) == SAMPLES_TO_COLLECT) {
+    if (_v_totalCount == SAMPLES_TO_COLLECT) {
 
 //        unsigned resultStationaryPct = stationaryCount * 100 / totalCount;
 //        unsigned resultMovingPct = movingCount * 100 / totalCount;
@@ -584,10 +572,10 @@ TASK(task_stats)
 }
 
 
-TASK(task_idle) 
+void* task_idle()
 {
 
-//   uint8_t lc_pinCont = __GET(pinCont);
+//   uint8_t lc_pinCont = pinCont;
 //   #ifdef EXPRIRATION_TIME
 //   stop_expire_timer(THREAD2);
 //   P2OUT |= BIT5;
@@ -597,7 +585,7 @@ TASK(task_idle)
 
 
 //     if (lc_pinCont){
-//       __SET(pinCont,0);
+//       pinCont =0;
 //       __SIGNAL(THREAD1);
 // #ifdef RAISE_PIN
 //         __port_on(3, 4);
@@ -609,62 +597,62 @@ TASK(task_idle)
   return task_selectMode;
 }
 
-TASK(task_resetStats)
-{ 
-      __SET(_v_movingCount , 0);
-      __SET(_v_stationaryCount , 0);
-      __SET(_v_totalCount , 0);
+void* task_resetStats()
+{
+      _v_movingCount  = 0;
+      _v_stationaryCount  = 0;
+      _v_totalCount  = 0;
 
-      __SET(_v_samplesInWindow , 0);
+      _v_samplesInWindow  = 0;
 
       return task_sample;
 }
 
 
-TASK(task_train)
+void* task_train()
 {
 
     // int8_t ios_i;
-    
-    unsigned trainingSetSize = __GET(_v_trainingSetSize);
-    // class_t lc_class= __GET(_v_class);
-    // features_t features = __GET(_v_features);
+
+    unsigned trainingSetSize = _v_trainingSetSize;
+    // class_t lc_class= _v_class;
+    // features_t features = _v_features;
     // features_t model_moving[MODEL_SIZE],model_stationary[MODEL_SIZE];
-    
+
     // for (ios_i = 0; ios_i < MODEL_SIZE; ios_i++)
     // {
     //   model_stationary[ios_i] =
-    //             __GET(_v_model_stationary[ios_i]);
-    // }    
+    //             _v_model_stationary[ios_i];
+    // }
 
 
     // for (ios_i = 0; ios_i < MODEL_SIZE; ios_i++)
     // {
     //     model_moving[ios_i] =
-    //             __GET(_v_model_moving[ios_i]);
-    // }    
-    
-      switch (__GET(_v_class)) 
+    //             _v_model_moving[ios_i];
+    // }
+
+      switch (_v_class)
       {
           case CLASS_STATIONARY:
-              __SET(_v_model_stationary[trainingSetSize].meanmag , __GET(_v_features.meanmag));
-              __SET(_v_model_stationary[trainingSetSize].stddevmag , __GET(_v_features.stddevmag));
+              _v_model_stationary[trainingSetSize].meanmag  = _v_features.meanmag;
+              _v_model_stationary[trainingSetSize].stddevmag  = _v_features.stddevmag;
               break;
           case CLASS_MOVING:
-              __SET(_v_model_moving[trainingSetSize].meanmag , __GET(_v_features.meanmag));
-              __SET(_v_model_moving[trainingSetSize].stddevmag , __GET(_v_features.stddevmag));
+              _v_model_moving[trainingSetSize].meanmag  = _v_features.meanmag;
+              _v_model_moving[trainingSetSize].stddevmag  = _v_features.stddevmag;
               break;
       }
 
       ++trainingSetSize;
-      __SET(_v_trainingSetSize,trainingSetSize);
+      _v_trainingSetSize =trainingSetSize;
 
-      if (__GET(_v_trainingSetSize) < MODEL_SIZE) 
+      if (_v_trainingSetSize < MODEL_SIZE)
       {
           return task_sample;
 
-      } 
-      else 
+      }
+      else
       {
 
           return task_idle;

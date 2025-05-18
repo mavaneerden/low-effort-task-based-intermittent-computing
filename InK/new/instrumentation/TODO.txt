@@ -1,0 +1,19 @@
+HOW TO PROCEED
+
+✔ Add labels to task functions
+    ✔ Add include arguments to run.
+    ✔ Run function instrumentation pass.
+
+✗ Instrument global variables
+    ✔ Add memory section to global variable definition
+    ✔ Add pointer to global to the top of the function where the global is used.
+    ✔ Replace all global references in that function with references to the pointer.
+    ✗ Add include path ink/address_translation.h (for later)
+
+✗ Instrument structs, arrays, etc.
+
+✔ Instrument variables shared between threads
+    ✔ Check if variables are used in multiple functions
+    ✔ Only add memory section to globals AFTER all other processing
+
+✗ Add instrumentation to the build script (cmake)
