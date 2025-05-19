@@ -49,19 +49,131 @@ static llvm::cl::OptionCategory MatcherSampleCategory("Matcher Sample");
 #define GLOBAL_GET_ADDRESS "__INK_GET_VARIABLE_ADDRESS"
 #define PTR_WRITE          "__INK_TRANSLATE_POINTER_DEREFERENCE"
 #define INK_POINTER_PREFIX "__ink_pointer_"
+#define INK_STRUCT_TYPE_BASE "__ink_shared_struct_type_"
+#define INK_STRUCT_NAME_BASE "__ink_shared_struct_"
 
-static uint32_t num_errors = 0;
+uint32_t num_errors = 0;
 
 std::map<const VarDecl*, const SourceLocation> StaticVars;
 std::set<const VarDecl*> VarsUsedOutsideTasks;
+std::set<const VarDecl*> VarsUsedInGlobalScope;
 // std::set<std::pair<const FunctionDecl*, const VarDecl*>> FunctionVarRelation;
 std::map<const VarDecl*, std::set<const FunctionDecl*>> FunctionVarRelation;
+
+using struct_map_t = std::map<const uint8_t, std::set<const VarDecl*>>;
+
+struct_map_t mapVariablesToStructs()
+{
+    static constexpr int THREAD_SHARED_PRIORITY = 0;
+    struct_map_t struct_map;
+
+    for (auto &[var, func_list] : FunctionVarRelation)
+    {
+        std::set<int> task_priorities;
+
+        /* Check if variable is used in a function that is not a task function.
+         * This is not allowed, as it could violate the correctness of the program
+         * since the variable is ALSO used inside a task function.
+         */
+        if (VarsUsedOutsideTasks.find(var) != VarsUsedOutsideTasks.end())
+        {
+            num_errors++;
+            reportError("Variable '" + std::string(var->getName()) + "' used outside task function.");
+            continue;
+        }
+
+        if (VarsUsedInGlobalScope.find(var) != VarsUsedInGlobalScope.end())
+        {
+            struct_map[THREAD_SHARED_PRIORITY].insert(var);
+            continue;
+        }
+
+        /* Add a section attribute to the variable declaration. */
+        for (auto &func : func_list)
+        {
+            task_priorities.insert(getTaskPriority(func));
+        }
+
+        if (task_priorities.size() == 1u)
+        {
+            /* Variable is only used in single thread. */
+            int task_priority = *task_priorities.begin();
+            struct_map[task_priority].insert(var);
+        }
+        else
+        {
+            /* Variable is used in tasks with different priorities ==> used in different threads. */
+            struct_map[THREAD_SHARED_PRIORITY].insert(var);
+        }
+    }
+
+    return struct_map;
+}
+
+string getVarDeclAsString(const VarDecl* var)
+{
+    string var_name_str = std::string(var->getName());
+    string type_str = var->getType().getAsString();
+    string array_type_str = "";
+    size_t open_bracket_pos;
+    if ((open_bracket_pos = type_str.find("[")) != type_str.npos)
+    {
+        for (size_t i = open_bracket_pos; i < type_str.size(); i++)
+        {
+            array_type_str += type_str.at(i);
+        }
+
+        type_str.erase(open_bracket_pos, type_str.size() - open_bracket_pos);
+    }
+
+    return type_str + " " + var_name_str + array_type_str;
+}
+
+void createStructFile(string file_path)
+{
+    struct_map_t struct_map = mapVariablesToStructs();
+    std::string output_string = "";
+
+    // TODO: how to handle initializing assignments?
+    // This MUST be done by initializing all of the NV struct variables in the exact order
+    // that the initializations appear in in the source file.
+    // This should only be done at first boot. So it must be done in a constructor function
+    // that checks whether we are in the first boot or not. If we are, it initializes
+    // all variables in the CORRECT order. This avoids any circular dependency issues.
+
+    // TODO: how to handle (anonymous and/or recursive) struct/union variables?
+    // 1. Keep track of all RecordDecls + their type name.
+    //    Make sure to process TypedefDecls correctly! Add them to the relevant RecordDecl.
+    // 2. Move all non-anonymous RecordDecls to a new header file, IN THE CORRECT ORDER.
+    //    This file will be included later. Also add the ANONYMOUS typedef'd structs!
+    // 3. If the VarDecl type is an anonymous struct, match it with the type name of a RecordDecl.
+    // 4. Declare it the RecordDecl + VarDecl the relevant struct together with the variable.
+    // BE MINDFUL OF STRUCT DECLARATION ORDER!!!
+
+    for (auto &[task_priority, var_list] : struct_map)
+    {
+        std::string struct_type_string = INK_STRUCT_TYPE_BASE + task_priority;
+        std::string struct_name_string = INK_STRUCT_NAME_BASE + task_priority;
+
+        output_string += "typedef struct {\n";
+
+        for (auto var : var_list)
+        {
+            string var_decl_str = getVarDeclAsString(var);
+            output_string += "    " + var_decl_str + ";\n";
+        }
+
+        output_string += "} " + struct_type_string + ";\n";
+
+        output_string += struct_type_string + " " + struct_name_string + "[2];\n";
+    }
+}
 
 void addSectionToVars(Rewriter &Rewrite)
 {
     for (auto &[var, func_list] : FunctionVarRelation)
     {
-        std::set<std::string> task_priorities;
+        std::set<int> task_priorities;
         std::string section_value;
 
         if (VarsUsedOutsideTasks.find(var) != VarsUsedOutsideTasks.end())
@@ -87,20 +199,26 @@ void addSectionToVars(Rewriter &Rewrite)
                 prefix_string = ";\n";
             }
 
-            string type_str = var->getType().getAsString();
-            string array_type_str = "";
-            size_t open_bracket_pos;
-            if ((open_bracket_pos = type_str.find("[")) != type_str.npos)
-            {
-                for (size_t i = open_bracket_pos; i < type_str.size(); i++)
-                {
-                    array_type_str += type_str.at(i);
-                }
+            // string type_str = var->getType().getAsString();
+            string type_str = "__typeof__(" + global_var_ref + ")";
+            // if (type_str.find("unnamed ") != type_str.npos)
+            // {
+            // }
 
-                type_str.erase(open_bracket_pos, type_str.size() - open_bracket_pos);
-            }
 
-            Rewrite.InsertTextBefore(location, prefix_string + type_str + "(* const " + global_var_ptr + ")" + array_type_str + " = " + GLOBAL_GET_ADDRESS + "(" + global_var_ref + ");\n");
+            // string array_type_str = "";
+            // size_t open_bracket_pos;
+            // if ((open_bracket_pos = type_str.find("[")) != type_str.npos)
+            // {
+            //     for (size_t i = open_bracket_pos; i < type_str.size(); i++)
+            //     {
+            //         array_type_str += type_str.at(i);
+            //     }
+
+            //     type_str.erase(open_bracket_pos, type_str.size() - open_bracket_pos);
+            // }
+
+            Rewrite.InsertTextBefore(location, prefix_string + type_str + "(* const " + global_var_ptr + ")" + " = " + GLOBAL_GET_ADDRESS + "(" + global_var_ref + ");\n");
             LogInstrumentation("Shared Variable Pointer", func->getNameAsString(), "", location.printToString(Rewrite.getSourceMgr()));
         }
 
@@ -137,6 +255,7 @@ class GlobalVarHandler : public MatchFinder::MatchCallback {
             if (!parent_function)
             {
                 /* No parent function, expression in global scope (this is allowed). */
+                VarsUsedInGlobalScope.insert(GlobalVar);
                 return;
             }
             if (!isTaskFunction(parent_function))
@@ -499,7 +618,7 @@ public:
   bool HandleTopLevelDecl(DeclGroupRef DR) override {
       for (DeclGroupRef::iterator b = DR.begin(), e = DR.end(); b != e; ++b) {
         // Traverse the declaration using our AST visitor.
-        //   (*b)->dump();
+          (*b)->dump();
       }
       return true;
   }

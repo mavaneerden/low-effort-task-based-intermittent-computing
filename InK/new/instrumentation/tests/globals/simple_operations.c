@@ -3,16 +3,26 @@
 
 #define ARRAY_SIZE 5
 
-int shared_scalar;
-int *shared_pointer;
-int shared_array[ARRAY_SIZE];
+int shared_scalar = 0;
+int *shared_pointer = NULL;
+int shared_array[ARRAY_SIZE] = {0, 1, 2, 3, 4};
+
+typedef struct
+{
+    int scalar;
+    int *pointer;
+    int array[ARRAY_SIZE];
+} typedef_struct_t;
+typedef_struct_t typedef_struct;
 
 struct s
 {
     int scalar;
     int *pointer;
     int array[ARRAY_SIZE];
-} shared_struct;
+} shared_struct = {.scalar = 0, .array = {0, 1, 2, 3, 4}};
+
+typedef struct s other_struct_t;
 
 struct
 {

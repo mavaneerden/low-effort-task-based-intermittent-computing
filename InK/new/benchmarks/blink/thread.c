@@ -3,7 +3,7 @@
 #include "gpio.h"
 #include "ink/ink.h"
 
-INK_IGNORE_VAR uint16_t ignored_variable;
+INK_IGNORE uint16_t ignored_variable;
 uint8_t blink_counter;
 
 void *t_blink_on();

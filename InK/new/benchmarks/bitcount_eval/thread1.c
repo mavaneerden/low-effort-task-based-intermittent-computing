@@ -24,6 +24,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "ink/ink.h"
+#include "benchmark_helpers.h"
 #include <stdint.h>
 
 //bitcount specific definitions
@@ -339,7 +340,7 @@ void*t_end(){
 #endif
 
     if (pinCont){
-        __no_operation();
+        __delay_cycles(1);
     }
 
 

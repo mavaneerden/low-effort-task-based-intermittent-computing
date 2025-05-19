@@ -24,6 +24,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "ink/ink.h"
+#include "benchmark_helpers.h"
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -407,7 +408,7 @@ void* task_featurize()
             break;
         default:
             // TODO: abort
-            __no_operation();
+            __delay_cycles(1);
             break;
     }
 }

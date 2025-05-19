@@ -1,37 +1,47 @@
 #include <stddef.h>
 #include "ink/ink.h"
 
-#define ARRAY_SIZE 5
+#define ARRAY_SIZE 3
 
 // TODO: add tests for 2D and 3D arrays!!!
 // TODO: add tests for complex array indexing (via pointers/shared variables, etc)
 
 int shared_array[ARRAY_SIZE];
+int shared_array_2d[ARRAY_SIZE][ARRAY_SIZE];
+void* shared_ptr;
 
-void fill_array(int local_array[ARRAY_SIZE])
+struct s
 {
-    for (size_t i = 0; i < ARRAY_SIZE; i++)
-    {
-        local_array[i] = i;
-    }
-}
+    int* p[ARRAY_SIZE];
+    int* i;
+} s;
+
 
 INK_CREATE_THREAD(1, false)
 {
-    // Function manipulates shared_array: instrumentation makes sure correct buffer is used.
-    // Direct manipulation of shared_array inside fill_array is therefore prohibited.
-    fill_array(shared_array);
+    int x;
 
-    // Array write
-    shared_array[0] = 1;
+    // Array access (not instrumented since arrays can't be reassigned)
+    shared_array[x];
 
-    // Array read
-    int i = shared_array[4];
+    // Pointer expr array subscript
+    (shared_ptr + x)[x];
 
-    // Special edge-case: a pointer can also use subscript notation!
-    // This must be instrumented as well, to maintain correctness.
-    int* ptr = (int *)&shared_array;
-    ptr[1] = 0;
+    // Pointer expr member access
+    ((struct s*)(shared_ptr + x))->p;
+    ((struct s*)(shared_ptr + x))->i;
 
-    return NULL;
+    // Struct member array access (not instrumented since arrays can't be reassigned)
+    s.p[x];
+    s.i[x];
+
+    // Pointer expr member array access (not instrumented since arrays can't be reassigned)
+    ((struct s*)(shared_ptr + x))->p[x];
+    ((struct s*)(shared_ptr + x))->i[x];
+
+    // Struct member pointer access
+    s.p[x][x];
+
+    // Pointer expr member pointer access
+    ((struct s*)(shared_ptr + x))->p[x][x];
 }

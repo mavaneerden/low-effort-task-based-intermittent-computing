@@ -1,10 +1,16 @@
 # TODO: do not use hardcoded workspaces folder (use pwd instead)
 extra_args="--extra-arg=-I/usr/local/lib/clang/20/include --extra-arg=-I/workspaces/Thesis_Repo/InK/new/kernel/install/include --extra-arg=-I/workspaces/Thesis_Repo/llvm/llvm-project/install/opt/llvm/include"
-
+ink_include="#include \"ink/address_translation.h\""
 results_dir=results
 
 mkdir -p $results_dir
 
-build/bin/function_labeling $1 $extra_args > $results_dir/out.c
-build/bin/pointer_instrumentation $results_dir/out.c $extra_args -- > $results_dir/out2.c
-build/bin/variable_instrumentation $results_dir/out2.c $extra_args -- > $2
+# Run plugin passes
+build/bin/function_labeling $1 $extra_args > $results_dir/function_labelling_out.c
+build/bin/pointer_instrumentation $results_dir/function_labelling_out.c $extra_args -- > $results_dir/pointer_instrumentation_out.c
+# build/bin/variable_instrumentation $results_dir/pointer_instrumentation_out.c $extra_args -- > $results_dir/variable_instrumentation_out.c
+
+# Add include to the start of the line.
+echo "$(echo $ink_include; cat $results_dir/variable_instrumentation_out.c)" > $results_dir/variable_instrumentation_out.c
+
+cp $results_dir/pointer_instrumentation_out.c $2

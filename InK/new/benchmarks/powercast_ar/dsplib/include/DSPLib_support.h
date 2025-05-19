@@ -40,7 +40,7 @@
 //! Definitions and abstraction for MSP devices.
 //!
 //! \defgroup dsplib_support_device Common
-//! This file provides common definitions, useful conversion macros and 
+//! This file provides common definitions, useful conversion macros and
 //! abstracted functions to support the core DSPLib functions. While not all
 //! macros and functions in this file are useful outside of DSPLib the main
 //! application can use any of them as needed.
@@ -295,34 +295,34 @@ static inline void msp_checkStatus(msp_status status)
         break;
     case MSP_SIZE_ERROR:
         /* Invalid size error, loop forever. */
-         while(true) __no_operation();
+         while(true) __delay_cycles(1);
     case MSP_SHIFT_SIZE_ERROR:
         /* Invalid shift size error, loop forever. */
-         while(true) __no_operation();
+         while(true) __delay_cycles(1);
     case MSP_TABLE_SIZE_ERROR:
         /* Invalid table size error, loop forever. */
-         while(true) __no_operation();
+         while(true) __delay_cycles(1);
     case MSP_LEA_BUSY:
         /* LEA is busy and cannot be invoked, loop forever. */
-         while(true) __no_operation();
+         while(true) __delay_cycles(1);
     case MSP_LEA_INVALID_ADDRESS:
         /* Address is not within LEA RAM section, loop forever. */
-         while(true) __no_operation();
+         while(true) __delay_cycles(1);
     case MSP_LEA_OUT_OF_RANGE:
         /* Command resulted in out of range memory access, loop forever. */
-         while(true) __no_operation();
+         while(true) __delay_cycles(1);
     case MSP_LEA_SCALAR_INCONSISTENCY:
         /* LEA scalar data inconsistency error, loop forever. */
-         while(true) __no_operation();
+         while(true) __delay_cycles(1);
     case MSP_LEA_COMMAND_OVERFLOW:
         /* LEA command overflow error, loop forever. */
-         while(true) __no_operation();
+         while(true) __delay_cycles(1);
     case MSP_LEA_INCORRECT_REVISION:
         /* LEA incorrect revision, loop forever. */
-         while(true) __no_operation();
+         while(true) __delay_cycles(1);
     default:
         /* Unknown error, loop forever. */
-        while(true) __no_operation();
+        while(true) __delay_cycles(1);
     }
 #endif //MSP_DISABLE_DIAGNOSTICS
 }
@@ -405,7 +405,7 @@ static inline uint32_t msp_benchmarkStop(uint16_t baseAddress)
 //! \return Q15 result
 //
 //******************************************************************************
-static inline int16_t __q15mpy(int16_t a, int16_t b) 
+static inline int16_t __q15mpy(int16_t a, int16_t b)
 {
     MPYS = a;
     OP2  = b;
@@ -446,7 +446,7 @@ static inline int32_t __q15mpyl(int16_t a, int16_t b)
 //! \return Q31 result
 //
 //******************************************************************************
-static inline int32_t __q31mpy(int32_t a, int32_t b) 
+static inline int32_t __q31mpy(int32_t a, int32_t b)
 {
     uint32_t result;
     MPYS32L = a & 0xFFFF;

@@ -55,6 +55,13 @@ static llvm::cl::OptionCategory MatcherSampleCategory("Matcher Sample");
 
 static uint32_t num_errors = 0;
 
+std::string getCastString(const Expr* expr)
+{
+    std::string exprTypeStr = expr->getType().getAsString();
+
+    return "(" + exprTypeStr + ")";
+}
+
 class PointerDereferenceAssignHandler : public MatchFinder::MatchCallback {
     public:
         PointerDereferenceAssignHandler(Rewriter &Rewrite) : Rewrite(Rewrite) {}
@@ -67,13 +74,12 @@ class PointerDereferenceAssignHandler : public MatchFinder::MatchCallback {
                 return;
             }
 
-            // Write and opening bracket
-            Rewrite.InsertTextAfterToken(PtrRef->getBeginLoc(), PTR_WRITE "(");
+            const Expr* subExpr = PtrRef->getSubExpr();
 
-            // Closing bracket
-            Rewrite.InsertTextAfterToken(PtrRef->getEndLoc(), ")");
+            Rewrite.InsertTextBefore(subExpr->getBeginLoc(), "(" + getCastString(subExpr) + PTR_WRITE "(");
+            Rewrite.InsertTextAfterToken(subExpr->getEndLoc(), "))");
 
-            string location = PtrRef->getBeginLoc().printToString(Rewrite.getSourceMgr());
+            string location = subExpr->getBeginLoc().printToString(Rewrite.getSourceMgr());
             LogInstrumentation("Pointer Dereference", "", "", location);
         }
 
@@ -86,21 +92,56 @@ class ArraySubscriptHandler : public MatchFinder::MatchCallback {
         ArraySubscriptHandler(Rewriter &Rewrite) : Rewrite(Rewrite) {}
 
         virtual void run(const MatchFinder::MatchResult &Result) {
-            const DeclRefExpr *PtrRef = Result.Nodes.getNodeAs<DeclRefExpr>("pointer_ref");
+            const ArraySubscriptExpr *subscriptExpr = Result.Nodes.getNodeAs<ArraySubscriptExpr>("array_subscript_expr");
 
-            if (!isTaskFunction(getParentFunction(PtrRef, Result)))
+            if (!isTaskFunction(getParentFunction(subscriptExpr, Result)))
             {
                 return;
             }
 
-            string var_ref = PtrRef->getNameInfo().getName().getAsString();
-            string var_ref_new = PTR_WRITE "(" + var_ref + ")";
+            const MemberExpr *memberExpr = Result.Nodes.getNodeAs<MemberExpr>("member_expr");
 
-            // Write and opening bracket
-            Rewrite.ReplaceText(PtrRef->getLocation(), var_ref_new);
+            if (memberExpr)
+            {
+                const Expr* memberExprBase = memberExpr->getBase();
 
-            string location = PtrRef->getBeginLoc().printToString(Rewrite.getSourceMgr());
-            LogInstrumentation("Pointer Dereference", var_ref, var_ref_new, location);
+                Rewrite.InsertTextBefore(memberExprBase->getBeginLoc(), "(" + getCastString(memberExprBase) + PTR_WRITE "(");
+                Rewrite.InsertTextAfterToken(memberExprBase->getEndLoc(), "))");
+            }
+
+
+            const Expr* subscriptPointer = subscriptExpr->getLHS();
+
+            Rewrite.InsertTextBefore(subscriptPointer->getBeginLoc(), "(" + getCastString(subscriptPointer) + PTR_WRITE "(");
+            Rewrite.InsertTextAfterToken(subscriptPointer->getEndLoc(), "))");
+
+            string location = subscriptExpr->getBeginLoc().printToString(Rewrite.getSourceMgr());
+            LogInstrumentation("Pointer Dereference", "", "", location);
+        }
+
+    private:
+        Rewriter &Rewrite;
+};
+
+class MemberHandler : public MatchFinder::MatchCallback {
+    public:
+        MemberHandler(Rewriter &Rewrite) : Rewrite(Rewrite) {}
+
+        virtual void run(const MatchFinder::MatchResult &Result) {
+            const MemberExpr *memberExpr = Result.Nodes.getNodeAs<MemberExpr>("member_expr");
+
+            if (!isTaskFunction(getParentFunction(memberExpr, Result)))
+            {
+                return;
+            }
+
+            const Expr* memberExprBase = memberExpr->getBase();
+
+            Rewrite.InsertTextBefore(memberExprBase->getBeginLoc(), "(" + getCastString(memberExprBase) + PTR_WRITE "(");
+            Rewrite.InsertTextAfterToken(memberExprBase->getEndLoc(), "))");
+
+            string location = memberExpr->getBeginLoc().printToString(Rewrite.getSourceMgr());
+            LogInstrumentation("Pointer Dereference", "", "", location);
         }
 
     private:
@@ -115,10 +156,13 @@ class MyASTConsumer : public ASTConsumer {
 public:
   MyASTConsumer(Rewriter &R) :
       HandlerForPtrAssign(R),
-      HandlerForArraySubscript(R)
+      HandlerForArraySubscript(R),
+      HandlerForMember(R)
     {
 
-    // Pointer dereference
+    /* Pointer dereference
+     * *(expr)
+     */
     Matcher.addMatcher(
         unaryOperator(
             hasOperatorName("*")
@@ -126,49 +170,88 @@ public:
         &HandlerForPtrAssign
     );
 
+    /* Pointer subscript (not struct/union member)
+     * (expr)[x]
+     */
+    Matcher.addMatcher(
+        arraySubscriptExpr(
+            /* Filter out array accesses. */
+            unless(
+                has(
+                    implicitCastExpr(
+                        hasCastKind(CK_ArrayToPointerDecay)
+                    )
+                )
+            ),
+            /* Filter out struct/union members. */
+            unless(
+                hasDescendant(
+                    memberExpr()
+                )
+            )
+        ).bind("array_subscript_expr"),
+        &HandlerForArraySubscript
+    );
+
+    /* Struct/union pointer member access
+     * (expr)->member
+     */
+    Matcher.addMatcher(
+        memberExpr(
+            isArrow(),
+            unless(
+                hasAncestor(
+                    implicitCastExpr(
+                        hasParent(
+                            arraySubscriptExpr()
+                        ),
+                        hasCastKind(CK_LValueToRValue)
+                    )
+                )
+            )
+        ).bind("member_expr"),
+        &HandlerForMember
+    );
+
+    /* Struct/union member pointer subscript
+     * (expr.member)[x]
+     */
     Matcher.addMatcher(
         arraySubscriptExpr(
             has(
                 implicitCastExpr(
-                    unless(has(memberExpr())),
                     hasDescendant(
-                        declRefExpr(
-                            to(
-                                varDecl(
-                                    unless(
-                                        hasGlobalStorage()
-                                    )
-                                )
-                            )
-                        ).bind("pointer_ref")
-                    )
+                        memberExpr(
+                            unless(isArrow())
+                        )
+                    ),
+                    /* Filter out array accesses. */
+                    hasCastKind(CK_LValueToRValue)
                 )
             )
-        ),
+        ).bind("array_subscript_expr"),
         &HandlerForArraySubscript
     );
 
+    /* Struct/union pointer member pointer subscript
+     * ((expr)->member)[x]
+     */
     Matcher.addMatcher(
-        memberExpr(
+        arraySubscriptExpr(
             has(
                 implicitCastExpr(
                     hasDescendant(
-                        declRefExpr(
-                            to(
-                                varDecl(
-                                    unless(
-                                        hasGlobalStorage()
-                                    )
-                                )
-                            )
-                        ).bind("pointer_ref")
-                    )
+                        memberExpr(
+                            isArrow()
+                        ).bind("member_expr")
+                    ),
+                    /* Filter out array accesses. */
+                    hasCastKind(CK_LValueToRValue)
                 )
             )
-        ),
+        ).bind("array_subscript_expr"),
         &HandlerForArraySubscript
     );
-
   }
 
   void HandleTranslationUnit(ASTContext &Context) override {
@@ -180,7 +263,7 @@ public:
   bool HandleTopLevelDecl(DeclGroupRef DR) override {
       for (DeclGroupRef::iterator b = DR.begin(), e = DR.end(); b != e; ++b) {
           // Traverse the declaration using our AST visitor.
-        //   (*b)->dump();
+          (*b)->dump();
       }
       return true;
   }
@@ -188,6 +271,7 @@ public:
 private:
   PointerDereferenceAssignHandler HandlerForPtrAssign;
   ArraySubscriptHandler HandlerForArraySubscript;
+  MemberHandler HandlerForMember;
 
   MatchFinder Matcher;
 };

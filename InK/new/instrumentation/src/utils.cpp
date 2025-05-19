@@ -38,12 +38,12 @@ bool excludeFromInstrumentation(const clang::VarDecl *d)
     return false;
 }
 
-std::string getTaskPriority(const clang::FunctionDecl *task)
+int getTaskPriority(const clang::FunctionDecl *task)
 {
     clang::AnnotateAttr* attr = task->getAttr<clang::AnnotateAttr>();
     const std::string priority_string = std::string(attr->getAnnotation()).substr(9);
 
-    return priority_string;
+    return stoi(priority_string);
 }
 
 bool isTaskFunction(const clang::FunctionDecl *d)

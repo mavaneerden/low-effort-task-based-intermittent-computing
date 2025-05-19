@@ -19,6 +19,7 @@ add_executable(${PROJECT_NAME})
 # )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
+    ..
     ${INK_INCLUDE_DIR}
     ${ARCHITECTURE_SPECIFIC_INCLUDES}
 )
