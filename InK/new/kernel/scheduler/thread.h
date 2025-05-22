@@ -47,8 +47,8 @@ typedef enum {
 // shared by the tasks it is encapsulating.
 typedef struct {
     void *buf[2];           // holds original and temporary stack pointers
-    volatile uint8_t original_buffer_index;   // index of the original buffer
-    volatile uint8_t privatization_buffer_index;  // index of the new buffer
+    volatile uint8_t buffer_index;   // index of the original buffer
+    volatile uint8_t buffer_index_temp;  // index of the new buffer
     uint16_t size;          // sizes of the buffers
 }buffer_t;
 

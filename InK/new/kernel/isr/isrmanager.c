@@ -42,9 +42,7 @@ void __events_commit(){
     case EVENT_SIGNAL:
         // if the thread is sleeping, activate it!
         if(_thread->state == THREAD_STOPPED){
-            __disable_interrupt();
             __start_thread(_thread);
-            __enable_interrupt();
         }
         _status = EVENT_DONE;
     }

@@ -52,7 +52,7 @@ uint8_t __perqueue_push(per_queue_t *queue,void *item){
 }
 
 /* commit the operation on the queue */
-void __perqueue_push_commit(per_queue_t *queue)
+inline void __perqueue_push_commit(per_queue_t *queue)
 {
     // update the real tail of the queue in one step so that the item is inserted!
     queue->_tail = queue->__tail;
@@ -73,7 +73,7 @@ void *__perqueue_pop(per_queue_t *queue){
 }
 
 // commit the operation on the queue
-void __perqueue_pop_commit(per_queue_t *queue){
+inline void __perqueue_pop_commit(per_queue_t *queue){
     // remove the item from the queue with one step!
     queue->_head = queue->__head;
 }
