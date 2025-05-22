@@ -29,9 +29,11 @@
 //
 //If no REAL_MIC is provided a virtual sample will be used
 #include <msp430.h>
+#include <stddef.h>
 #include "app.h"
-#include "ink.h"
+#include "ink/ink.h"
 #include "dsplib/include/DSPLib.h"
+#include "benchmark_helpers.h"
 
 /*FFT characteristics definitions*/
 #define FFT_SAMPLES             256
@@ -48,15 +50,13 @@
 DSPLIB_DATA(tb_fftd, MSP_ALIGN_FFT_Q15(FFT_SAMPLES))
  _q15 tb_fftd[FFT_SAMPLES];
 
-__shared(
 
   _q15 pers_sdata[FFT_SAMPLES]
 
-)
 
 #else
 DSPLIB_DATA(tb_fftd, MSP_ALIGN_FFT_Q15(FFT_SAMPLES))
-__nv _q15 tb_fftd[FFT_SAMPLES] = {
+INK_PERSISTENT _q15 tb_fftd[FFT_SAMPLES] = {
      -9634,  32767,  19555,  10950,   4736,   9785,  -7267, -11995,
      -3027,  16331,  -6896, -14342,  -5820,  -7920, -18265, -13059,
       8401,  25561,   8439,   1384,  18253,   6700, -12424,  -5112,
@@ -95,23 +95,11 @@ __nv _q15 tb_fftd[FFT_SAMPLES] = {
 void ADC_config();
 
 
-ENTRY_TASK(task1);
-TASK(task2);
+void* task2();
 
-void thread1_init(){
-
-    // create a thread with priority " " and entry task task1
-    __CREATE(THREAD1,task1);
-    __SIGNAL(THREAD1);
-}
-
-__app_reboot(){
-
-}
-
-uint16_t counter;
-_q15 sampled_input[FFT_SAMPLES];
-ENTRY_TASK(task1){
+INK_IGNORE uint16_t counter;
+INK_IGNORE _q15 sampled_input[FFT_SAMPLES];
+INK_CREATE_THREAD(THREAD1, true){
 
     //TODO:needed?
     __delay_cycles(100000);
@@ -142,14 +130,14 @@ ENTRY_TASK(task1){
   return task2;
 }
 
-TASK(task2){
+void* task2(){
 
   msp_status status;
 #ifdef REAL_MIC
   uint16_t i;
   for (i = 0; i < FFT_SAMPLES; i++)
   {
-    tb_fftd[i] = __GET(pers_sdata[i]);
+    tb_fftd[i] = pers_sdata[i];
   }
 #endif
   //  /* Configure parameters for FFT */

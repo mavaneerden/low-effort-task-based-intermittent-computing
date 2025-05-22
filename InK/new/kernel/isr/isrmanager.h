@@ -1,10 +1,8 @@
 #pragma once
 
-typedef struct {
-    void *data;             // the data should be allocated in FRAM by the caller
-    uint32_t size;          // size of the data buffer
-    uint32_t timestamp;     // timestamp of the event
-} isr_event_t;
+#include "api/events.h"
+
+typedef ink_isr_event_t isr_event_t;
 
 // should be called from the first boot
 void __events_boot_init();

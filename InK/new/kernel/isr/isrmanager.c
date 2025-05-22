@@ -30,6 +30,7 @@ void __events_boot_init(){
 
 // This function will be executed withing the context of an ISR or
 // it should be also called at each reboot to finish event insertion
+// TODO: does this function work? It can never signal a thread!!! And it can only process one event!! If the event/thread changes then the previous event is lost.
 void __events_commit(){
     switch(_status){
     case EVENT_INSERT:
@@ -41,7 +42,9 @@ void __events_commit(){
     case EVENT_SIGNAL:
         // if the thread is sleeping, activate it!
         if(_thread->state == THREAD_STOPPED){
+            __disable_interrupt();
             __start_thread(_thread);
+            __enable_interrupt();
         }
         _status = EVENT_DONE;
     }

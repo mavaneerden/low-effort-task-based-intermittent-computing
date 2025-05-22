@@ -1,48 +1,51 @@
+#include "ink/address_translation.h"
 #include <stddef.h>
 #include "ink/ink.h"
 
-int shared_var = 0;
-int shared_var2 = 0;
-int shared_array[2] = {0, 1};
-int* var_pointers[2] = {&shared_var, &shared_var2};
-int* shared_array_ptr = (int*) shared_array;
+#define ARRAY_SIZE 3
 
-void* __attribute__((annotate("INK::TASK1"))) t_subscript();
+// TODO: add tests for 2D and 3D arrays!!!
+// TODO: add tests for complex array indexing (via pointers/shared variables, etc)
+
+int __attribute__((section("ink.task_shared.")))shared_array[ARRAY_SIZE];
+int shared_array_2d[ARRAY_SIZE][ARRAY_SIZE];
+void* __attribute__((section("ink.task_shared.")))shared_ptr;
+
+struct s
+{
+    int* p[ARRAY_SIZE];
+    int* i;
+} __attribute__((section("ink.task_shared.")))s;
+
 
 INK_CREATE_THREAD(1, false)
 {
-    int local_var;
+    __typeof__(s)(* const __ink_pointer_s) = __INK_GET_VARIABLE_ADDRESS(s);
+__typeof__(shared_ptr)(* const __ink_pointer_shared_ptr) = __INK_GET_VARIABLE_ADDRESS(shared_ptr);
+__typeof__(shared_array)(* const __ink_pointer_shared_array) = __INK_GET_VARIABLE_ADDRESS(shared_array);
+int x;
 
-    // At runtime, it may be unknown what this pointer points to.
-    // In this case, it points to shared data which is not yet instrumented.
-    // We have to instrument any dereferences to this pointer to make sure we use
-    // the correct buffer for the shared data.
-    // To correctly do this, we need to start with two things:
-    // 1. instrument var_pointers since it is shared
-    // 2. instrument the subscript since var_pointers can point to shared data
-    int* local_ptr_shared_var = var_pointers[0];
+    // Array access (not instrumented since arrays can't be reassigned)
+    (*__ink_pointer_shared_array)[x];
 
-    local_var = *((int *)__INK_TRANSLATE_POINTER_DEREFERENCE(local_ptr_shared_var));
-    *((int *)__INK_TRANSLATE_POINTER_DEREFERENCE(local_ptr_shared_var)) = local_var;
+    // Pointer expr array subscript
+    ((void *)__INK_TRANSLATE_POINTER_DEREFERENCE(((*__ink_pointer_shared_ptr) + x)))[x];
 
-    local_var = *((int *)__INK_TRANSLATE_POINTER_DEREFERENCE(local_ptr_shared_var++));
-    local_var = ++*((int *)__INK_TRANSLATE_POINTER_DEREFERENCE(local_ptr_shared_var));
+    // Pointer expr member access
+    ((struct s *)__INK_TRANSLATE_POINTER_DEREFERENCE(((struct s*)((*__ink_pointer_shared_ptr) + x))))->p;
+    ((struct s *)__INK_TRANSLATE_POINTER_DEREFERENCE(((struct s*)((*__ink_pointer_shared_ptr) + x))))->i;
 
-    return t_subscript;
-}
+    // Struct member array access (not instrumented since arrays can't be reassigned)
+    (*__ink_pointer_s).p[x];
+    ((int *)__INK_TRANSLATE_POINTER_DEREFERENCE((*__ink_pointer_s).i))[x];
 
-void *t_subscript()
-{
-    int local_var;
+    // Pointer expr member array access (not instrumented since arrays can't be reassigned)
+    ((struct s *)__INK_TRANSLATE_POINTER_DEREFERENCE(((struct s*)((*__ink_pointer_shared_ptr) + x))))->p[x];
+    ((int *)__INK_TRANSLATE_POINTER_DEREFERENCE(((struct s *)__INK_TRANSLATE_POINTER_DEREFERENCE(((struct s*)((*__ink_pointer_shared_ptr) + x))))->i))[x];
 
-    // Array subscripts are treated as dereference operators, as seen in this example.
-    // Here, a pointer points to other shared data.
-    // To access this shared data via the local pointer, an array subscript operator can be used.
-    // To make sure the correct buffer is accessed, we need to instrument the pointer.
-    int* local_ptr_shared_var = shared_array_ptr;
+    // Struct member pointer access
+    ((int *)__INK_TRANSLATE_POINTER_DEREFERENCE((*__ink_pointer_s).p[x]))[x];
 
-    local_var = ((int *)__INK_TRANSLATE_POINTER_DEREFERENCE(local_ptr_shared_var))[0];
-    ((int *)__INK_TRANSLATE_POINTER_DEREFERENCE(local_ptr_shared_var))[0] = local_var;
-
-    return NULL;
+    // Pointer expr member pointer access
+    ((int *)__INK_TRANSLATE_POINTER_DEREFERENCE(((struct s *)__INK_TRANSLATE_POINTER_DEREFERENCE(((struct s*)((*__ink_pointer_shared_ptr) + x))))->p[x]))[x];
 }

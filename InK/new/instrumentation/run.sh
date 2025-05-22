@@ -8,9 +8,6 @@ mkdir -p $results_dir
 # Run plugin passes
 build/bin/function_labeling $1 $extra_args > $results_dir/function_labelling_out.c
 build/bin/pointer_instrumentation $results_dir/function_labelling_out.c $extra_args -- > $results_dir/pointer_instrumentation_out.c
-# build/bin/variable_instrumentation $results_dir/pointer_instrumentation_out.c $extra_args -- > $results_dir/variable_instrumentation_out.c
+build/bin/variable_instrumentation $results_dir/pointer_instrumentation_out.c $extra_args -- > $results_dir/variable_instrumentation_out.c
 
-# Add include to the start of the line.
-echo "$(echo $ink_include; cat $results_dir/variable_instrumentation_out.c)" > $results_dir/variable_instrumentation_out.c
-
-cp $results_dir/pointer_instrumentation_out.c $2
+cp $results_dir/variable_instrumentation_out.c $2

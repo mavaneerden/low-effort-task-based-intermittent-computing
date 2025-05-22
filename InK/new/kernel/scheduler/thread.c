@@ -1,6 +1,16 @@
 #include "ink.h"
 
+extern int __ink_thread_shared_start;
+extern int __ink_thread_shared_size;
+extern int __ink_buffers_backup_start;
+
 __nv uint8_t current_task_buffer_index = 0u;
+__nv uint8_t current_thread_shared_buffer_index = 0u;
+
+__nv uint8_t thread_shared_buffer_index = 0u;
+__nv uint8_t thread_shared_buffer_index_temp = 0u;
+
+__nv void* thread_shared_buffers[2] = { (void*)&__ink_thread_shared_start, (void*)&__ink_buffers_backup_start };
 
 // prepares the stack of the thread for the task execution
 static inline void __prologue(thread_t *thread)
@@ -9,18 +19,21 @@ static inline void __prologue(thread_t *thread)
 #ifdef RAISE_PIN
     __port_on(3,6);
 #endif
+    // Copy thread-shared stack
+    __fram_word_copy(thread_shared_buffers[thread_shared_buffer_index], thread_shared_buffers[thread_shared_buffer_index ^ 1u], (uintptr_t)&__ink_thread_shared_size);
     // copy original stack to the temporary stack
-    __fram_word_copy(buffer->buf[buffer->idx],buffer->buf[buffer->idx ^ 1u], buffer->size >> 1u);
+    __fram_word_copy(buffer->buf[buffer->original_buffer_index],buffer->buf[buffer->original_buffer_index ^ 1u], buffer->size >> 1u);
 #ifdef RAISE_PIN
     __port_off(3,6);
 #endif
-
 }
 
 // runs one task inside the current thread
 void __tick(thread_t *thread)
 {
-    void *current_task_buffer = NULL;
+    // TODO: why is there a switch-case here? Why isn't everything combined?
+    // Could this not lead to corrupted data, since the TASK_FINISHED and TASK_COMMIT will not run if a higher-priority thread is activated?
+
     switch (thread->state)
     {
     case TASK_READY:
@@ -30,8 +43,9 @@ void __tick(thread_t *thread)
         // refresh thread stack
         __prologue(thread);
         // get thread buffer
-        current_task_buffer_index = thread->buffer._idx ^ 1u;
-        current_task_buffer = thread->buffer.buf[current_task_buffer_index];
+        current_thread_shared_buffer_index = thread_shared_buffer_index_temp ^ 1u;
+        current_task_buffer_index = thread->buffer.privatization_buffer_index ^ 1u;
+
         // Check if it is the entry task. The entry task always
         // consumes an event in the event queue.
         if(thread->next == thread->entry){
@@ -40,7 +54,7 @@ void __tick(thread_t *thread)
             isr_event_t *event = __lock_event(thread);
             // push event data to the entry task
             // thread->next = (void *)((entry_task_t)thread->entry)(buf,(void *)event);
-            thread->next = (void *)((entry_task_t)thread->entry)((void *)event);
+            thread->next = (void *)((entry_task_t)thread->entry)(event);
             // the event should be released (deleted)
             thread->state = TASK_RELEASE_EVENT;
         }
@@ -54,12 +68,16 @@ void __tick(thread_t *thread)
         __release_event(thread);
         thread->state = TASK_FINISHED;
     case TASK_FINISHED:
+        // TODO: why is this not combined with TASK_COMMIT?
         //switch stack index to commit changes
-        thread->buffer._idx = thread->buffer.idx ^ 1;
+        thread->buffer.privatization_buffer_index = thread->buffer.original_buffer_index ^ 1;
+        thread_shared_buffer_index_temp = thread_shared_buffer_index ^ 1;
         thread->state = TASK_COMMIT;
     case TASK_COMMIT:
+        // TODO: commit events here?
         // copy the real index from temporary index
-        thread->buffer.idx = thread->buffer._idx;
+        thread->buffer.original_buffer_index = thread->buffer.privatization_buffer_index;
+        thread_shared_buffer_index = thread_shared_buffer_index_temp;
         // Task execution finished. Check if the whole tasks are executed (thread finished)
         if (thread->next == NULL)
         {

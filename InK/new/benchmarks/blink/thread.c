@@ -18,7 +18,7 @@ INK_CREATE_THREAD(1, true)
     return t_blink_on;
 }
 
-void* t_blink_on()
+void *t_blink_on()
 {
     GPIO_setOutputHighOnPin(GPIO_PORT_P1, GPIO_PIN0);
     blink_counter += 1;
@@ -28,7 +28,7 @@ void* t_blink_on()
     return t_blink_off;
 }
 
-void* t_blink_off()
+void *t_blink_off()
 {
     GPIO_setOutputLowOnPin(GPIO_PORT_P1, GPIO_PIN0);
 
@@ -42,7 +42,7 @@ void* t_blink_off()
     return t_blink_on;
 }
 
-void* t_end()
+void *t_end()
 {
-    return (void*)0;
+    return (void *)0;
 }

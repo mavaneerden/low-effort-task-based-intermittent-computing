@@ -1,5 +1,6 @@
 #pragma once
 
+#include "events.h"
 #include "init.h"
 #include "thread.h"
 #include "scheduler.h"

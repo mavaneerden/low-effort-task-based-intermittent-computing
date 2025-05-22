@@ -47,8 +47,8 @@ typedef enum {
 // shared by the tasks it is encapsulating.
 typedef struct {
     void *buf[2];           // holds original and temporary stack pointers
-    volatile uint8_t idx;   // index of the original buffer
-    volatile uint8_t _idx;  // index of the new buffer
+    volatile uint8_t original_buffer_index;   // index of the original buffer
+    volatile uint8_t privatization_buffer_index;  // index of the new buffer
     uint16_t size;          // sizes of the buffers
 }buffer_t;
 
@@ -58,7 +58,7 @@ typedef struct {
 typedef void* (*task_t) ();
 
 // the entry task should take event data as an argument.
-typedef void* (*entry_task_t) (void *event);
+typedef void* (*entry_task_t) (isr_event_t *event);
 
 // the main thread structure that holds all necessary info
 // to execute the computation represented by the wired

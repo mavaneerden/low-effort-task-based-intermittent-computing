@@ -151,7 +151,8 @@ static inline void __task_commit(){
 // runs the next task within the thread
 void __scheduler_run()
 {
-    /* TODO: Check if interrupts are disabled, if not, disable here. */
+    __disable_interrupt();
+
     // For the sake of consistency, the event insertion by an ISR which
     // was interrupted by a power failure should be committed to the
     // event queue _events in isrmanager.c before enabling the interrupts.
