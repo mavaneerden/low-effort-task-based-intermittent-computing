@@ -18,6 +18,9 @@ set(PATH_MSP430_GCC "${CMAKE_CURRENT_LIST_DIR}/../msp430-gcc/msp430-gcc-${MSP430
 # Device specific driverlib
 set(PATH_MSP430_DRIVERS "${CMAKE_CURRENT_LIST_DIR}/../driverlib/MSP430FR5xx_6xx" CACHE STRING "")
 
+# Architecture-specific includes. Used in benchmarks.
+set(MSP430_INCLUDES ${PATH_MSP430_SUPPORT} ${PATH_MSP430_LIB} ${PATH_MSP430_DRIVERS})
+
 # default linker script
 set(LINKER_SCRIPT
     "${CMAKE_CURRENT_LIST_DIR}/../msp430-gcc/msp430-gcc-support-files/include/${DEVICE}.ld"

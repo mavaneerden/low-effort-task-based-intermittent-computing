@@ -1,27 +1,27 @@
 [
    {
-      "directory" : "/home/marco/Documents/University/Thesis/Thesis_REAL/InK/ar_eval/Debug",
-      "command"   : "clang++ -I\"/home/marco/ti/ccs2011/ccs/ccs_base/msp430/include\" -I\"/home/marco/Documents/University/Thesis/Thesis_REAL/InK/ar_eval\" -I\"/home/marco/Documents/University/Thesis/Thesis_REAL/InK/Kernel\" -I\"/home/marco/ti/ccs2011/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR5969__ -D_MPU_ENABLE -xc",
-      "file"      : "/home/marco/Documents/University/Thesis/Thesis_REAL/InK/ar_eval/appinit.c"
+      "directory" : "/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo/InK/legacy-ccs/ar_eval/Debug",
+      "command"   : "clang++ -I\"/home/marco/ti/ccs2011/ccs/ccs_base/msp430/include\" -I\"/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo/InK/legacy-ccs/ar_eval\" -I\"/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo/InK/legacy-ccs/Kernel\" -I\"/home/marco/ti/ccs2011/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR5969__ -D_MPU_ENABLE -xc",
+      "file"      : "/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo/InK/legacy-ccs/ar_eval/appinit.c"
    },
    {
-      "directory" : "/home/marco/Documents/University/Thesis/Thesis_REAL/InK/ar_eval/Debug",
-      "command"   : "clang++ -I\"/home/marco/ti/ccs2011/ccs/ccs_base/msp430/include\" -I\"/home/marco/Documents/University/Thesis/Thesis_REAL/InK/ar_eval\" -I\"/home/marco/Documents/University/Thesis/Thesis_REAL/InK/Kernel\" -I\"/home/marco/ti/ccs2011/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR5969__ -D_MPU_ENABLE -xc",
-      "file"      : "/home/marco/Documents/University/Thesis/Thesis_REAL/InK/ar_eval/divmodhi3.c"
+      "directory" : "/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo/InK/legacy-ccs/ar_eval/Debug",
+      "command"   : "clang++ -I\"/home/marco/ti/ccs2011/ccs/ccs_base/msp430/include\" -I\"/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo/InK/legacy-ccs/ar_eval\" -I\"/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo/InK/legacy-ccs/Kernel\" -I\"/home/marco/ti/ccs2011/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR5969__ -D_MPU_ENABLE -xc",
+      "file"      : "/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo/InK/legacy-ccs/ar_eval/divmodhi3.c"
    },
    {
-      "directory" : "/home/marco/Documents/University/Thesis/Thesis_REAL/InK/ar_eval/Debug",
-      "command"   : "clang++ -I\"/home/marco/ti/ccs2011/ccs/ccs_base/msp430/include\" -I\"/home/marco/Documents/University/Thesis/Thesis_REAL/InK/ar_eval\" -I\"/home/marco/Documents/University/Thesis/Thesis_REAL/InK/Kernel\" -I\"/home/marco/ti/ccs2011/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR5969__ -D_MPU_ENABLE -xc",
-      "file"      : "/home/marco/Documents/University/Thesis/Thesis_REAL/InK/ar_eval/mult.c"
+      "directory" : "/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo/InK/legacy-ccs/ar_eval/Debug",
+      "command"   : "clang++ -I\"/home/marco/ti/ccs2011/ccs/ccs_base/msp430/include\" -I\"/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo/InK/legacy-ccs/ar_eval\" -I\"/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo/InK/legacy-ccs/Kernel\" -I\"/home/marco/ti/ccs2011/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR5969__ -D_MPU_ENABLE -xc",
+      "file"      : "/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo/InK/legacy-ccs/ar_eval/mult.c"
    },
    {
-      "directory" : "/home/marco/Documents/University/Thesis/Thesis_REAL/InK/ar_eval/Debug",
-      "command"   : "clang++ -I\"/home/marco/ti/ccs2011/ccs/ccs_base/msp430/include\" -I\"/home/marco/Documents/University/Thesis/Thesis_REAL/InK/ar_eval\" -I\"/home/marco/Documents/University/Thesis/Thesis_REAL/InK/Kernel\" -I\"/home/marco/ti/ccs2011/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR5969__ -D_MPU_ENABLE -xc",
-      "file"      : "/home/marco/Documents/University/Thesis/Thesis_REAL/InK/ar_eval/sqrt.c"
+      "directory" : "/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo/InK/legacy-ccs/ar_eval/Debug",
+      "command"   : "clang++ -I\"/home/marco/ti/ccs2011/ccs/ccs_base/msp430/include\" -I\"/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo/InK/legacy-ccs/ar_eval\" -I\"/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo/InK/legacy-ccs/Kernel\" -I\"/home/marco/ti/ccs2011/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR5969__ -D_MPU_ENABLE -xc",
+      "file"      : "/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo/InK/legacy-ccs/ar_eval/sqrt.c"
    },
    {
-      "directory" : "/home/marco/Documents/University/Thesis/Thesis_REAL/InK/ar_eval/Debug",
-      "command"   : "clang++ -I\"/home/marco/ti/ccs2011/ccs/ccs_base/msp430/include\" -I\"/home/marco/Documents/University/Thesis/Thesis_REAL/InK/ar_eval\" -I\"/home/marco/Documents/University/Thesis/Thesis_REAL/InK/Kernel\" -I\"/home/marco/ti/ccs2011/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR5969__ -D_MPU_ENABLE -xc",
-      "file"      : "/home/marco/Documents/University/Thesis/Thesis_REAL/InK/ar_eval/thread1.c"
+      "directory" : "/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo/InK/legacy-ccs/ar_eval/Debug",
+      "command"   : "clang++ -I\"/home/marco/ti/ccs2011/ccs/ccs_base/msp430/include\" -I\"/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo/InK/legacy-ccs/ar_eval\" -I\"/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo/InK/legacy-ccs/Kernel\" -I\"/home/marco/ti/ccs2011/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR5969__ -D_MPU_ENABLE -xc",
+      "file"      : "/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo/InK/legacy-ccs/ar_eval/thread1.c"
    }
 ]

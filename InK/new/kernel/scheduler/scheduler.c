@@ -73,7 +73,7 @@ void __create_thread(uint8_t priority, void *entry, void *data_org,
     // init shared buffer
     _threads[priority].buffer.buf[0] = data_org;
     _threads[priority].buffer.buf[1] = data_temp;
-    _threads[priority].buffer.idx = 0;
+    _threads[priority].buffer.original_buffer_index = 0;
     _threads[priority].buffer.size = size;
 }
 
@@ -173,6 +173,9 @@ void __scheduler_run()
     while (1){
         switch (_sched_state){
         case SCHED_SELECT:
+#ifdef RAISE_PIN
+            __port_on(1, 3);
+#endif
             // the scheduler selects the highest priority task right
             // after it has finished the execution of a single task
             _thread = __next_thread();
@@ -181,6 +184,9 @@ void __scheduler_run()
             // always execute the selected task to completion
             // execute one task inside the highest priority thread
             if (_thread){
+#ifdef RAISE_PIN
+                __port_off(1, 3);
+#endif
                 __tick(_thread);
                 // after execution of one task, check the events
                 _sched_state = SCHED_SELECT;
@@ -190,6 +196,9 @@ void __scheduler_run()
             __disable_interrupt();
             // check the ready queue for the last time
             if(!__next_thread()){
+#ifdef RAISE_PIN
+                __port_off(1, 3);
+#endif
                 __mcu_sleep();
                 __enable_interrupt();
             }

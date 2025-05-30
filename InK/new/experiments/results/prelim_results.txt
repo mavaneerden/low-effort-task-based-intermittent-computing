@@ -1,0 +1,6 @@
+NEW
+Type:Release
+ar_eval       =  3.394 s
+bitcount_eval =  0.653 s
+cem_eval      = 10.56  s
+cuckoo_eval   =  0.539 s

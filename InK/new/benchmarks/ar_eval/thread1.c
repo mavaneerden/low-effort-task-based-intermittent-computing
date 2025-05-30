@@ -32,7 +32,6 @@
 #include <stdio.h>
 #include <math.h>
 #include "msp-math.h"
-#define RAISE_PIN
 
 // Number of samples to discard before recording training set
 #define NUM_WARMUP_SAMPLES 3

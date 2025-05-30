@@ -14,6 +14,7 @@ set(PUBLIC_HEADERS
     api/include/address_translation.h
     api/include/thread.h
     api/include/scheduler.h
+    api/include/events.h
 )
 
 add_library(${PROJECT_NAME} STATIC)
@@ -24,6 +25,7 @@ target_sources(${PROJECT_NAME}
         api/init.c
         api/thread.c
         api/scheduler.c
+        api/events.c
     PRIVATE
         isr/isrmanager.c
         isr/persistentqueue.c
@@ -40,6 +42,11 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     .
     # ${ARCHITECTURE_SPECIFIC_INCLUDES}
 )
+
+if(RAISE_PIN)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE RAISE_PIN)
+endif()
+
 
 set(CMAKE_INSTALL_PREFIX ${INK_INSTALL_DIR})
 

@@ -12,11 +12,18 @@ include(ink_instrumentation)
 
 project("${BENCHMARK_NAME}" LANGUAGES C)
 
-add_executable(${PROJECT_NAME})
+add_executable(${PROJECT_NAME}
+    main.c
+    thread.c
+)
 
 # target_compile_options(
 #     ${INK_BENCHMARK_COMPILE_OPTIONS}
 # )
+
+if(RAISE_PIN)
+target_compile_definitions(${PROJECT_NAME} PUBLIC RAISE_PIN)
+endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     ..
@@ -29,5 +36,4 @@ target_link_libraries(${PROJECT_NAME}
     /usr/lib/libdriverlib.a
 )
 
-ink_instrument_file(main.c)
-ink_instrument_file(thread.c)
+ink_instrument_target(${PROJECT_NAME})

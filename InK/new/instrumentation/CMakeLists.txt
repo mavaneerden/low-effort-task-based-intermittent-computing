@@ -57,37 +57,6 @@ execute_process(COMMAND bash "-c" "llvm-config --cxxflags" OUTPUT_VARIABLE compi
 
 execute_process(COMMAND bash "-c" "llvm-config --ldflags --libs --system-libs" OUTPUT_VARIABLE ld_flags OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-# Now build our tools
-set(GLOBAL_INSTRUMENTATION_TARGET variable_instrumentation)
-add_executable("${GLOBAL_INSTRUMENTATION_TARGET}" src/variable_instrumentation.cpp src/utils.cpp)
-set_property(TARGET ${GLOBAL_INSTRUMENTATION_TARGET} APPEND PROPERTY COMPILE_FLAGS "-std=c++11 ${compile_flags}")
-target_link_libraries(${GLOBAL_INSTRUMENTATION_TARGET}
-    clangAST
-    clangASTMatchers
-    clangAnalysis
-    clangBasic
-    clangDriver
-    clangEdit
-    clangFrontend
-    clangFrontendTool
-    clangLex
-    clangParse
-    clangSema
-    clangEdit
-    clangRewrite
-    clangRewriteFrontend
-    clangStaticAnalyzerFrontend
-    clangStaticAnalyzerCheckers
-    clangStaticAnalyzerCore
-    clangCrossTU
-    clangIndex
-    clangSerialization
-    clangToolingCore
-    clangTooling
-    clangFormat
-    ${llvm_libs}
-)
-
 set(FUNCTION_LABELING_TARGET function_labeling)
 add_executable("${FUNCTION_LABELING_TARGET}" src/function_labeling.cpp src/utils.cpp)
 set_property(TARGET ${FUNCTION_LABELING_TARGET} APPEND PROPERTY COMPILE_FLAGS "-std=c++11 ${compile_flags}")
@@ -122,6 +91,36 @@ set(POINTER_INSTRUMENTATION_TARGET pointer_instrumentation)
 add_executable("${POINTER_INSTRUMENTATION_TARGET}" src/pointer_instrumentation.cpp src/utils.cpp)
 set_property(TARGET ${POINTER_INSTRUMENTATION_TARGET} APPEND PROPERTY COMPILE_FLAGS "-std=c++11 ${compile_flags}")
 target_link_libraries(${POINTER_INSTRUMENTATION_TARGET}
+    clangAST
+    clangASTMatchers
+    clangAnalysis
+    clangBasic
+    clangDriver
+    clangEdit
+    clangFrontend
+    clangFrontendTool
+    clangLex
+    clangParse
+    clangSema
+    clangEdit
+    clangRewrite
+    clangRewriteFrontend
+    clangStaticAnalyzerFrontend
+    clangStaticAnalyzerCheckers
+    clangStaticAnalyzerCore
+    clangCrossTU
+    clangIndex
+    clangSerialization
+    clangToolingCore
+    clangTooling
+    clangFormat
+    ${llvm_libs}
+)
+
+set(GLOBAL_INSTRUMENTATION_TARGET variable_instrumentation)
+add_executable("${GLOBAL_INSTRUMENTATION_TARGET}" src/variable_instrumentation.cpp src/utils.cpp)
+set_property(TARGET ${GLOBAL_INSTRUMENTATION_TARGET} APPEND PROPERTY COMPILE_FLAGS "-std=c++11 ${compile_flags}")
+target_link_libraries(${GLOBAL_INSTRUMENTATION_TARGET}
     clangAST
     clangASTMatchers
     clangAnalysis

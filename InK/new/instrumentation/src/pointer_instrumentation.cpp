@@ -75,9 +75,10 @@ class PointerDereferenceAssignHandler : public MatchFinder::MatchCallback {
             }
 
             const Expr* subExpr = PtrRef->getSubExpr();
+            auto locations = getBeginEndLoc(Rewrite, subExpr);
 
-            Rewrite.InsertTextBefore(subExpr->getBeginLoc(), "(" + getCastString(subExpr) + PTR_WRITE "(");
-            Rewrite.InsertTextAfterToken(subExpr->getEndLoc(), "))");
+            Rewrite.InsertTextBefore(locations.begin_loc, "(" + getCastString(subExpr) + PTR_WRITE "(");
+            Rewrite.InsertTextAfterToken(locations.end_loc, "))");
 
             string location = subExpr->getBeginLoc().printToString(Rewrite.getSourceMgr());
             LogInstrumentation("Pointer Dereference", "", "", location);
@@ -104,16 +105,18 @@ class ArraySubscriptHandler : public MatchFinder::MatchCallback {
             if (memberExpr)
             {
                 const Expr* memberExprBase = memberExpr->getBase();
+                auto locations = getBeginEndLoc(Rewrite, memberExprBase);
 
-                Rewrite.InsertTextBefore(memberExprBase->getBeginLoc(), "(" + getCastString(memberExprBase) + PTR_WRITE "(");
-                Rewrite.InsertTextAfterToken(memberExprBase->getEndLoc(), "))");
+                Rewrite.InsertTextBefore(locations.begin_loc, "(" + getCastString(memberExprBase) + PTR_WRITE "(");
+                Rewrite.InsertTextAfterToken(locations.end_loc, "))");
             }
 
 
             const Expr* subscriptPointer = subscriptExpr->getLHS();
+            auto locations = getBeginEndLoc(Rewrite, subscriptPointer);
 
-            Rewrite.InsertTextBefore(subscriptPointer->getBeginLoc(), "(" + getCastString(subscriptPointer) + PTR_WRITE "(");
-            Rewrite.InsertTextAfterToken(subscriptPointer->getEndLoc(), "))");
+            Rewrite.InsertTextBefore(locations.begin_loc, "(" + getCastString(subscriptPointer) + PTR_WRITE "(");
+            Rewrite.InsertTextAfterToken(locations.end_loc, "))");
 
             string location = subscriptExpr->getBeginLoc().printToString(Rewrite.getSourceMgr());
             LogInstrumentation("Pointer Dereference", "", "", location);

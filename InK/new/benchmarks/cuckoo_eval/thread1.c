@@ -36,8 +36,6 @@
 #define BUFFER_SIZE 32
 #define TASK_NUM 15
 
-// #define RAISE_PIN
-
 #ifdef RAISE_PIN
 INK_PERSISTENT uint8_t full_run_started = 0;
 #endif
@@ -168,27 +166,6 @@ void *task_init()
     _v_next_task = t_insert;
 
     return task_generate_key;
-}
-
-void *task_init_array()
-{
-    unsigned i;
-
-    for (i = 0; i < BUFFER_SIZE - 1; ++i)
-    {
-        _v_filter[i + _v_index * (BUFFER_SIZE - 1)] = 0;
-    }
-
-    ++_v_index;
-
-    if (_v_index == NUM_BUCKETS / (BUFFER_SIZE - 1))
-    {
-        return task_generate_key;
-    }
-    else
-    {
-        return task_init_array;
-    }
 }
 
 void *task_generate_key()

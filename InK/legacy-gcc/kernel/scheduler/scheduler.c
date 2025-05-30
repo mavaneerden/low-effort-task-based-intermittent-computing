@@ -1,25 +1,25 @@
 // This file is part of InK.
-// 
-// author = "Kasım Sinan Yıldırım " 
+//
+// author = "Kasım Sinan Yıldırım "
 // maintainer = "Kasım Sinan Yıldırım "
-// email = "sinanyil81 [at] gmail.com" 
-//  
-// copyright = "Copyright 2018 Delft University of Technology" 
-// license = "LGPL" 
-// version = "3.0" 
+// email = "sinanyil81 [at] gmail.com"
+//
+// copyright = "Copyright 2018 Delft University of Technology"
+// license = "LGPL"
+// version = "3.0"
 // status = "Production"
 //
-// 
+//
 // InK is free software: you ca	n redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -171,6 +171,9 @@ void __scheduler_run()
     while (1){
         switch (_sched_state){
         case SCHED_SELECT:
+#ifdef RAISE_PIN
+            __port_on(1, 3);
+#endif
             // the scheduler selects the highest priority task right
             // after it has finished the execution of a single task
             _thread = __next_thread();
@@ -179,6 +182,9 @@ void __scheduler_run()
             // always execute the selected task to completion
             // execute one task inside the highest priority thread
             if (_thread){
+#ifdef RAISE_PIN
+                __port_off(1, 3);
+#endif
                 __tick(_thread);
                 // after execution of one task, check the events
                 _sched_state = SCHED_SELECT;
@@ -188,6 +194,9 @@ void __scheduler_run()
             __disable_interrupt();
             // check the ready queue for the last time
             if(!__next_thread()){
+#ifdef RAISE_PIN
+                __port_off(1, 3);
+#endif
                 __mcu_sleep();
                 __enable_interrupt();
             }

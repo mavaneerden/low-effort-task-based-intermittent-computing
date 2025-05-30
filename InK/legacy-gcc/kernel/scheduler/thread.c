@@ -1,25 +1,25 @@
 // This file is part of InK.
-// 
-// author = "Kasım Sinan Yıldırım " 
+//
+// author = "Kasım Sinan Yıldırım "
 // maintainer = "Kasım Sinan Yıldırım "
-// email = "sinanyil81 [at] gmail.com" 
-//  
-// copyright = "Copyright 2018 Delft University of Technology" 
-// license = "LGPL" 
-// version = "3.0" 
+// email = "sinanyil81 [at] gmail.com"
+//
+// copyright = "Copyright 2018 Delft University of Technology"
+// license = "LGPL"
+// version = "3.0"
 // status = "Production"
 //
-// 
+//
 // InK is free software: you ca	n redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -54,11 +54,11 @@ void __tick(thread_t *thread)
     switch (thread->state)
     {
     case TASK_READY:
-#ifdef RAISE_PIN
-        __port_off(3,5);
-#endif
         // refresh thread stack
         __prologue(thread);
+#ifdef RAISE_PIN
+        __port_on(1, 4);
+#endif
         // get thread buffer
         buf = thread->buffer.buf[thread->buffer._idx^1];
         // Check if it is the entry task. The entry task always
@@ -75,13 +75,25 @@ void __tick(thread_t *thread)
         else{
             thread->next = (void *)(((task_t)thread->next)(buf));
             thread->state = TASK_FINISHED;
+#ifdef RAISE_PIN
+            __port_off(1, 4);
+#endif
             break;
         }
+#ifdef RAISE_PIN
+        __port_off(1, 4);
+#endif
     case TASK_RELEASE_EVENT:
+#ifdef RAISE_PIN
+        __port_on(3,5);
+#endif
         // release any event which is popped by the task
         __release_event(thread);
         thread->state = TASK_FINISHED;
     case TASK_FINISHED:
+#ifdef RAISE_PIN
+        __port_on(3,5);
+#endif
         //switch stack index to commit changes
         thread->buffer._idx = thread->buffer.idx ^ 1;
         thread->state = TASK_COMMIT;
@@ -109,6 +121,9 @@ void __tick(thread_t *thread)
             // ready to execute successive tasks
             thread->state = TASK_READY;
         }
+#ifdef RAISE_PIN
+        __port_off(3,5);
+#endif
     }
 }
 

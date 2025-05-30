@@ -1,0 +1,6 @@
+LEGACY-GCC
+Type:Release
+ar_eval       = 2.929 s
+bitcount_eval = 0.438 s
+cem_eval      = 9.98  s
+cuckoo_eval   = 0.416 s

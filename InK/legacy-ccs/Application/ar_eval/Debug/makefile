@@ -16,6 +16,7 @@ ORDERED_OBJS += \
 "../lnk_msp430fr5969.cmd" \
 $(GEN_CMDS__FLAG) \
 -llibmpu_init.a \
+-l"/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo/InK/legacy-ccs/Kernel/Debug/InK.lib" \
 -llibmath.a \
 -llibc.a \
 

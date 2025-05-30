@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "init.h"
 
 void __ink_create_thread(uint8_t priority, void* entry_task, bool start_on_first_boot);
 
@@ -14,7 +15,7 @@ void __ink_create_thread(uint8_t priority, void* entry_task, bool start_on_first
 #define __INK_STRCONCAT(S1, S2) __INK_STRCONCAT_INTERNAL(S1, S2)
 
 #define INK_CREATE_THREAD(priority, start_on_first_boot) \
-    __attribute__((annotate(__INK_STRINGIZE(__INK_STRCONCAT_INTERNAL(INK::TASK, priority))))) void* __ink_entry_task_##priority(void*); \
+    __attribute__((annotate(__INK_STRINGIZE(__INK_STRCONCAT_INTERNAL(INK::TASK, priority))))) void* __ink_entry_task_##priority(ink_isr_event_t*); \
     void __attribute__((constructor(__INK_CONSTRUCTOR_VALUE(priority)))) __ink_create_thread_##priority(void) \
     { \
         if (ink_is_first_boot()) \
@@ -22,4 +23,4 @@ void __ink_create_thread(uint8_t priority, void* entry_task, bool start_on_first
             __ink_create_thread(priority, __ink_entry_task_##priority, start_on_first_boot); \
         } \
     } \
-    void* __ink_entry_task_##priority(isr_event_t *ink_event)
+    void* __ink_entry_task_##priority(ink_isr_event_t *ink_event)

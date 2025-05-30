@@ -1,9 +1,6 @@
-rm -rf build/
-
-mkdir build
+mkdir -p build
 cd build
 
-cmake -DCMAKE_BUILD_TYPE=$1 .. -DCMAKE_TOOLCHAIN_FILE=../../../devices/msp430/toolchains/msp430fr5969.cmake
+cmake -DCMAKE_BUILD_TYPE=$1 .. -DCMAKE_TOOLCHAIN_FILE=../../../devices/msp430/toolchains/msp430fr5969.cmake -DRAISE_PIN=$2
 
 make install
-# make TOOLCHAIN_FILE=../../../devices/msp430/toolchains/msp430fr5969.mak DEVICE_DIR=../../../devices/msp430

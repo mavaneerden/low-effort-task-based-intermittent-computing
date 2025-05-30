@@ -7,7 +7,6 @@
  */
 bool ink_is_first_boot();
 
-
 /**
  * Return TRUE if the runtime is initialized after booting, FALSE otherwise.
  */

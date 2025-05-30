@@ -1,0 +1,1 @@
+../../../devices/msp430/debugger/flash_elf.sh $1

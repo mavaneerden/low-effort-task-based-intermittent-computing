@@ -1,0 +1,10 @@
+"./appinit.obj"
+"./divmodhi3.obj"
+"./mult.obj"
+"./sqrt.obj"
+"./thread1.obj"
+"../lnk_msp430fr5994.cmd"
+-llibmpu_init.a
+-llibmath.a
+-llibc.a
+-lInK.lib

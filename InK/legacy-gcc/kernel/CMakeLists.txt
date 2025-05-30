@@ -27,6 +27,10 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     # ${ARCHITECTURE_SPECIFIC_INCLUDES}
 )
 
+if(RAISE_PIN)
+target_compile_definitions(${PROJECT_NAME} PUBLIC RAISE_PIN)
+endif()
+
 set(CMAKE_INSTALL_PREFIX
     "${INK_INSTALL_DIR}"
     CACHE PATH "Where the library will be installed to" FORCE

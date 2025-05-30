@@ -1,6 +1,7 @@
 #pragma once
 
-#include "api/events.h"
+#include "api/include/events.h"
+#include "scheduler/thread.h"
 
 typedef ink_isr_event_t isr_event_t;
 

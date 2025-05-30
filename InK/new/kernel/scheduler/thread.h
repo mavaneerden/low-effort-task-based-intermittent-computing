@@ -37,10 +37,9 @@
 // the state of the threads
 typedef enum {
     TASK_READY = 1,
-    TASK_RELEASE_EVENT =2,
-    TASK_FINISHED = 4,
-    TASK_COMMIT = 8,
-    THREAD_STOPPED = 16
+    TASK_PRECOMMIT =2,
+    TASK_COMMIT = 4,
+    THREAD_STOPPED = 8
 } state_t;
 
 // each thread will hold the double buffer for the variables
@@ -48,7 +47,7 @@ typedef enum {
 typedef struct {
     void *buf[2];           // holds original and temporary stack pointers
     volatile uint8_t original_buffer_index;   // index of the original buffer
-    volatile uint8_t privatization_buffer_index;  // index of the new buffer
+    volatile uint8_t buffer_index_temp;  // index of the new buffer
     uint16_t size;          // sizes of the buffers
 }buffer_t;
 
@@ -58,7 +57,7 @@ typedef struct {
 typedef void* (*task_t) ();
 
 // the entry task should take event data as an argument.
-typedef void* (*entry_task_t) (isr_event_t *event);
+typedef void* (*entry_task_t) (void *event);
 
 // the main thread structure that holds all necessary info
 // to execute the computation represented by the wired
@@ -67,6 +66,7 @@ typedef struct {
     uint8_t priority;       // thread priority (unique)
     volatile state_t state; // thread state
     void *entry;            // the first task to be executed
+    void *next_temp;        // Temporary variable to store the next thread to ensure consistency.
     void *next;             // the current task to be executed
     buffer_t buffer;        // holds task shared persistent variables
     uint16_t sing_timer;// holds the time when the thread will be executed

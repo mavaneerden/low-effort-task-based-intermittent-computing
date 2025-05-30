@@ -28,57 +28,106 @@ static inline void __prologue(thread_t *thread)
 #endif
 }
 
-// runs one task inside the current thread
+/**
+ * Run a task inside a thread and commit it to memory.
+ *
+ * The thread state machine consists of the following states:
+ * - TASK_READY: copies task-shared and thread-shared memory from the original to the privatization buffer,
+ *               and executes the task.
+ * - TASK_RELEASE_EVENT: commits event pop from event queue.
+ * - TASK_FINISHED: Stores new buffer indices to temporary variables in preparation for swapping.
+ * - TASK_COMMIT: Commits the new buffer indices and checks for new tasks in the thread.
+ *
+ * The state machine is implemented as a switch-case without breaks, and the state variable is non-volatile.
+ * In this way, when a power failure and reboot occurs, the state machine can efficiently continue at the state
+ * where it left off.
+ * The lack of break statements makes sure the function does not return early and cannot cause any inconsistencies.
+ */
 void __tick(thread_t *thread)
 {
-    // TODO: why is there a switch-case here? Why isn't everything combined?
-    // Could this not lead to corrupted data, since the TASK_FINISHED and TASK_COMMIT will not run if a higher-priority thread is activated?
-
     switch (thread->state)
     {
     case TASK_READY:
-#ifdef RAISE_PIN
-        __port_off(3,5);
-#endif
-        // refresh thread stack
+        /* Refresh the thread stack by copying contents of the original buffer to the privatization buffer.
+         * If a power failure occurs, this makes sure that the task execution always starts with the correct data
+         * in the privatization buffer.
+         */
         __prologue(thread);
-        // get thread buffer
-        current_thread_shared_buffer_index = thread_shared_buffer_index_temp ^ 1u;
-        current_task_buffer_index = thread->buffer.privatization_buffer_index ^ 1u;
 
-        // Check if it is the entry task. The entry task always
-        // consumes an event in the event queue.
+#ifdef RAISE_PIN
+        __port_on(1, 4);
+#endif
+
+        /* Store the current thread privatization buffer index.
+         * This is the index that is NOT the index for the original buffer.
+         * These variables are used to select the correct address when a variable is written or read.
+         */
+        current_thread_shared_buffer_index = thread_shared_buffer_index ^ 1u;
+        current_task_buffer_index = thread->buffer.original_buffer_index ^ 1u;
+
+        /* If this is the first task in the thread (entry task), then we need to check if there is an event in the queue for that thread.
+         * We can simply take the first event from the queue, because if it does not exist it is NULL.
+         */
         if(thread->next == thread->entry){
-            // pop an event since the thread most probably woke up due to
-            // an event
+            /* Pops an event from the queue, but does not commit this pop.
+             * This way, if a power failure occurs, the event will still be in the queue
+             * and can be processed again.
+             * Due to the way that event queues are implemented, an ISR cannot overwrite this event so the
+             * event pointer should always point to the correct event.
+             */
             isr_event_t *event = __lock_event(thread);
-            // push event data to the entry task
-            // thread->next = (void *)((entry_task_t)thread->entry)(buf,(void *)event);
-            thread->next = (void *)((entry_task_t)thread->entry)(event);
-            // the event should be released (deleted)
-            thread->state = TASK_RELEASE_EVENT;
+
+            /* Execute the current task.
+             * We store the next task into a temporary pointer. If we did not do this and
+             * a power failure occurs before we go to TASK_PRECOMMIT, the scheduler
+             * would execute the wrong task on reboot.
+             */
+            thread->next_temp = (void *)((entry_task_t)thread->entry)(event);
         }
         else{
-            thread->next = (void *)(((task_t)thread->next)());
-            thread->state = TASK_FINISHED;
-            break;
+            thread->next_temp = (void *)(((task_t)thread->next)());
         }
-    case TASK_RELEASE_EVENT:
-        // release any event which is popped by the task
+
+        /* Even though we might not have used an event, we always need to go to the same state to avoid break statements. */
+        thread->state = TASK_PRECOMMIT;
+#ifdef RAISE_PIN
+            __port_off(1, 4);
+#endif
+    case TASK_PRECOMMIT:
+#ifdef RAISE_PIN
+        __port_on(3,5);
+#endif
+        /* Commit the event pop from the queue, since the task is now done executing.
+         * If there was no event, this does nothing.
+         * We can repeatedly execute this function without causing any side effects.
+         */
         __release_event(thread);
-        thread->state = TASK_FINISHED;
-    case TASK_FINISHED:
-        // TODO: why is this not combined with TASK_COMMIT?
-        //switch stack index to commit changes
-        thread->buffer.privatization_buffer_index = thread->buffer.original_buffer_index ^ 1;
+
+        /* Commit the next task since the previous task is done executing. */
+        thread->next = thread->next_temp;
+
+        /* Set the new index for the original task-shared variable and thread-shared variable buffers.
+         * We use a temporary variable here. Setting the original buffer immediately is not a repeatable
+         * action so we must use a temporary variable. This way we are still consistent in case of a power failure.
+         *
+         * Example (idx starts at 0):
+         * >>> idx = idx ^ 1; // idx = 1
+         * POWER FAILURE
+         * >>> idx = idx ^ 1; // idx = 0
+         * >>> state = COMMIT // Inconsistent value on state switch!!!
+         */
+        thread->buffer.buffer_index_temp = thread->buffer.original_buffer_index ^ 1;
         thread_shared_buffer_index_temp = thread_shared_buffer_index ^ 1;
+
         thread->state = TASK_COMMIT;
     case TASK_COMMIT:
-        // TODO: commit events here?
-        // copy the real index from temporary index
-        thread->buffer.original_buffer_index = thread->buffer.privatization_buffer_index;
+        /* The temporary variables are now copied into the original buffer index.
+         * This is an atomic action so can be executed repeatedly when power failures happen.
+         */
+        thread->buffer.original_buffer_index = thread->buffer.buffer_index_temp;
         thread_shared_buffer_index = thread_shared_buffer_index_temp;
-        // Task execution finished. Check if the whole tasks are executed (thread finished)
+
+
         if (thread->next == NULL)
         {
             __disable_interrupt();
@@ -99,6 +148,9 @@ void __tick(thread_t *thread)
             // ready to execute successive tasks
             thread->state = TASK_READY;
         }
+#ifdef RAISE_PIN
+        __port_off(3,5);
+#endif
     }
 }
 

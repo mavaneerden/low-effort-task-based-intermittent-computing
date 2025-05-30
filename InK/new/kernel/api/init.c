@@ -39,8 +39,6 @@ void __attribute__((constructor(1000))) __ink_init()
         //init the timers
         __timers_init();
 #endif
-        // the first and initial boot is finished
-        // __is_first_boot = false;
     }
 #ifdef TIMERS_ON
     else{
@@ -48,7 +46,12 @@ void __attribute__((constructor(1000))) __ink_init()
     }
 #endif
 
-    // __ink_initialized = true;
+#ifdef RAISE_PIN
+    __port_init(1, 3); // Scheduling & selecting next thread
+    __port_init(1, 4); // Task Execution
+    __port_init(3, 5); // Task commit
+    __port_init(3, 6); // Task buffer copy
+#endif
 }
 
 /**

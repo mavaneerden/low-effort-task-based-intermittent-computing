@@ -7,7 +7,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/../cmake)
 include(ink_variables)
 
 set(ARCHITECTURE_SPECIFIC_INCLUDES
-    ${PATH_MSP430_DRIVERS}
+    ${MSP430_INCLUDES}
 )
 
 set(CMAKE_EXE_LINKER_FLAGS "${INK_LINKER_FLAGS} ${CMAKE_EXE_LINKER_FLAGS}")
@@ -19,3 +19,6 @@ add_subdirectory(bitcount_eval)
 add_subdirectory(blink)
 add_subdirectory(cem_eval)
 add_subdirectory(cuckoo_eval)
+add_subdirectory(dijkstra_eval)
+add_subdirectory(fft_eval)
+add_subdirectory(rsa_eval)

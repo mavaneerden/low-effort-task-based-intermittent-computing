@@ -26,8 +26,6 @@
 #include "ink/ink.h"
 #include "benchmark_helpers.h"
 
-#define RAISE_PIN
-
 // cem specific defines
 #define NIL 0 // like NULL, but for indexes, not real pointers
 

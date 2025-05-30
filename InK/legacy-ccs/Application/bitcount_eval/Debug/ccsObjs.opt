@@ -1,1 +1,7 @@
-"./appinit.obj" "./thread1.obj" "../lnk_msp430fr5969.cmd" -llibmpu_init.a -l"/home/dpatoukas/Documents/TUDelft/Thesis/InkMerge/InK/Debug/InK.lib" -llibmath.a -llibc.a 
+"./appinit.obj"
+"./thread1.obj"
+"../lnk_msp430fr5969.cmd"
+-llibmpu_init.a
+-l"/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo/InK/legacy-ccs/Kernel/Debug/InK.lib"
+-llibmath.a
+-llibc.a

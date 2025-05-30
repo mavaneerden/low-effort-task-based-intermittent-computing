@@ -26,7 +26,7 @@ void reportError(std::string message)
 
 bool excludeFromInstrumentation(const clang::VarDecl *d)
 {
-    if (d->getInitializingDeclaration()->hasAttr<clang::AnnotateAttr>())
+    if (d->hasAttr<clang::AnnotateAttr>())
     {
         clang::AnnotateAttr* attr = d->getAttr<clang::AnnotateAttr>();
         if(attr->getAnnotation() == IGNORE_STR) {
@@ -78,4 +78,11 @@ const clang::FunctionDecl* getParentFunction(const clang::Stmt *d, const clang::
     }
 
     return nullptr;
+}
+
+locations_t getBeginEndLoc(clang::Rewriter &Rewrite, const clang::Stmt* stmt)
+{
+    clang::SourceManager &sm = Rewrite.getSourceMgr();
+
+    return {sm.getExpansionLoc(stmt->getBeginLoc()), sm.getExpansionLoc(stmt->getEndLoc())};
 }

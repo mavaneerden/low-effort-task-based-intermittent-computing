@@ -99,7 +99,7 @@ void addSectionToVars(Rewriter &Rewrite)
             /* Also add the pointer for the variable to every function wherein it is used. */
             string global_var_ref = std::string(var->getName());
             string global_var_ptr = INK_POINTER_PREFIX + global_var_ref;
-            auto location = (*func->getBody()->child_begin())->getBeginLoc();
+            auto location = getBeginEndLoc(Rewrite, *func->getBody()->child_begin()).begin_loc;
             string prefix_string = "";
 
             if (StaticVars.find(var) != StaticVars.end())
@@ -125,7 +125,7 @@ void addSectionToVars(Rewriter &Rewrite)
             section_value = ".ink.thread_shared";
         }
 
-        Rewrite.InsertTextBefore(var->getLocation(), "__attribute__((section(\"" + section_value + "\")))");
+        Rewrite.InsertTextBefore(Rewrite.getSourceMgr().getExpansionLoc(var->getLocation()), "__attribute__((section(\"" + section_value + "\")))");
     }
 }
 
@@ -139,6 +139,11 @@ class GlobalVarHandler : public MatchFinder::MatchCallback {
 
             /* If marked to exclude, ignore. */
             if (excludeFromInstrumentation(GlobalVar)) {
+                return;
+            }
+
+            if (GlobalVar->getType().isConstant(GlobalVar->getASTContext()))
+            {
                 return;
             }
 
@@ -170,8 +175,10 @@ class GlobalVarHandler : public MatchFinder::MatchCallback {
             }
 
             string global_var_ref_instr =  "(*" + global_var_ptr + ")";
-            Rewrite.InsertTextBefore(GlobalVarRef->getBeginLoc(), "(*" INK_POINTER_PREFIX);
-            Rewrite.InsertTextAfterToken(GlobalVarRef->getEndLoc(), ")");
+            auto locations = getBeginEndLoc(Rewrite, GlobalVarRef);
+
+            Rewrite.InsertTextBefore(locations.begin_loc, "(*" INK_POINTER_PREFIX);
+            Rewrite.InsertTextAfterToken(locations.end_loc, ")");
 
             /* Log the instrumentation. */
             string location = GlobalVarRef->getLocation().printToString(Rewrite.getSourceMgr());
@@ -197,12 +204,12 @@ class StaticVarHandler : public MatchFinder::MatchCallback {
 
             const FunctionDecl* parent_function = getParentFunction(GlobalVarRef, Result);
 
-            if (!isTaskFunction(parent_function))
+            if (parent_function && !isTaskFunction(parent_function))
             {
                 return;
             }
 
-            StaticVars.insert({GlobalVar, GlobalVarRef->getEndLoc()});
+            StaticVars.insert({GlobalVar, Rewrite.getSourceMgr().getExpansionLoc(GlobalVarRef->getEndLoc())});
 
             if (FunctionVarRelation.find(GlobalVar) == FunctionVarRelation.end())
             {
@@ -229,7 +236,6 @@ public:
       HandlerForStatic(R)
     {
 
-    // Global variable write
     Matcher.addMatcher(
         declRefExpr(
             to(

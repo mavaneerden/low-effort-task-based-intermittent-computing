@@ -1,0 +1,7 @@
+"./appinit.obj"
+"./thread1.obj"
+"../lnk_msp430fr5994.cmd"
+-llibmpu_init.a
+-llibmath.a
+-lInK.lib
+-llibc.a

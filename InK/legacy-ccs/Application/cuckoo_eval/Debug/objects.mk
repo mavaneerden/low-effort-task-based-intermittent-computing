@@ -4,5 +4,5 @@
 
 USER_OBJS :=
 
-LIBS := -llibmpu_init.a -l"/home/dpatoukas/Documents/TUDelft/Thesis/InkMerge/InK/Debug/InK.lib" -llibmath.a -llibc.a
+LIBS := -llibmpu_init.a -l"/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo/InK/legacy-ccs/Kernel/Debug/InK.lib" -llibmath.a -llibc.a
 

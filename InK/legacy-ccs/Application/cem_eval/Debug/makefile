@@ -2,7 +2,7 @@
 # Automatically-generated file. Do not edit!
 ################################################################################
 
-CG_TOOL_ROOT := /opt/ti/ccsv8/tools/compiler/ti-cgt-msp430_18.1.1.LTS
+CG_TOOL_ROOT := /home/marco/ti/ccs2011/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS
 
 GEN_OPTS__FLAG := 
 GEN_CMDS__FLAG := 
@@ -13,7 +13,7 @@ ORDERED_OBJS += \
 "../lnk_msp430fr5969.cmd" \
 $(GEN_CMDS__FLAG) \
 -llibmpu_init.a \
--l"/home/dpatoukas/Documents/TUDelft/Thesis/InkMerge/InK/Debug/InK.lib" \
+-l"/home/marco/Documents/University/Thesis/Thesis_REAL/Thesis_Repo/InK/legacy-ccs/Kernel/Debug/InK.lib" \
 -llibmath.a \
 -llibc.a \
 
@@ -122,16 +122,10 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXE_OUTPUTS += \
-cem_eval.out \
+cem_eval.out 
 
 EXE_OUTPUTS__QUOTED += \
-"cem_eval.out" \
-
-BIN_OUTPUTS += \
-cem_eval.hex \
-
-BIN_OUTPUTS__QUOTED += \
-"cem_eval.hex" \
+"cem_eval.out" 
 
 
 # All Target
@@ -142,20 +136,13 @@ all: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 cem_eval.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: MSP430 Linker'
-	"/opt/ti/ccsv8/tools/compiler/ti-cgt-msp430_18.1.1.LTS/bin/cl430" -vmspx --data_model=restricted --use_hw_mpy=F5 --advice:power=all --advice:hw_config=all --define=__MSP430FR5969__ --define=_MPU_ENABLE -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -z -m"cem_eval.map" --heap_size=160 --stack_size=160 --cinit_hold_wdt=on -i"/opt/ti/ccsv8/ccs_base/msp430/include" -i"/opt/ti/ccsv8/ccs_base/msp430/lib/5xx_6xx_FRxx" -i"/opt/ti/ccsv8/ccs_base/msp430/lib/FR59xx" -i"/opt/ti/ccsv8/tools/compiler/ti-cgt-msp430_18.1.1.LTS/lib" -i"/opt/ti/ccsv8/tools/compiler/ti-cgt-msp430_18.1.1.LTS/include" --priority --reread_libs --define=_MPU_ENABLE --diag_wrap=off --display_error_number --warn_sections --xml_link_info="cem_eval_linkInfo.xml" --use_hw_mpy=F5 --rom_model -o "cem_eval.out" $(ORDERED_OBJS)
+	"/home/marco/ti/ccs2011/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/bin/cl430" -vmspx --data_model=restricted --use_hw_mpy=F5 --advice:power=all --advice:hw_config=all --define=__MSP430FR5969__ --define=_MPU_ENABLE -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -z -m"cem_eval.map" --heap_size=160 --stack_size=160 --cinit_hold_wdt=on -i"/home/marco/ti/ccs2011/ccs/ccs_base/msp430/include" -i"/home/marco/ti/ccs2011/ccs/ccs_base/msp430/lib/5xx_6xx_FRxx" -i"/home/marco/ti/ccs2011/ccs/ccs_base/msp430/lib/FR59xx" -i"/home/marco/ti/ccs2011/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/lib" -i"/home/marco/ti/ccs2011/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include" --priority --reread_libs --define=_MPU_ENABLE --diag_wrap=off --display_error_number --warn_sections --xml_link_info="cem_eval_linkInfo.xml" --use_hw_mpy=F5 --rom_model -o "cem_eval.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
-	@echo ' '
-
-cem_eval.hex: $(EXE_OUTPUTS)
-	@echo 'Building files: $(strip $(EXE_OUTPUTS__QUOTED))'
-	@echo 'Invoking: MSP430 Hex Utility'
-	"/opt/ti/ccsv8/tools/compiler/ti-cgt-msp430_18.1.1.LTS/bin/hex430" --memwidth=8 --romwidth=8 -o "cem_eval.hex" $(EXE_OUTPUTS__QUOTED)
-	@echo 'Finished building: $(strip $(EXE_OUTPUTS__QUOTED))'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
+	-$(RM) $(EXE_OUTPUTS__QUOTED)
 	-$(RM) "appinit.obj" "thread1.obj" 
 	-$(RM) "appinit.d" "thread1.d" 
 	-@echo 'Finished clean'

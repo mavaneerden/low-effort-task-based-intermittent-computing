@@ -12,12 +12,6 @@ include(ink_instrumentation)
 
 project("${BENCHMARK_NAME}" LANGUAGES C)
 
-add_executable(${PROJECT_NAME})
-
-# target_compile_options(
-#     ${INK_BENCHMARK_COMPILE_OPTIONS}
-# )
-
 file(GLOB DSPLIB_SOURCE_FILES CONFIGURE_DEPENDS
     "dsplib/source/filter/*.c"
     "dsplib/source/lea/*.c"
@@ -27,11 +21,19 @@ file(GLOB DSPLIB_SOURCE_FILES CONFIGURE_DEPENDS
     "dsplib/source/vector/*.c"
 )
 
-message(WARNING ${DSPLIB_SOURCE_FILES})
-
-target_sources(${PROJECT_NAME} PUBLIC
+add_executable(${PROJECT_NAME}
+    main.c
+    thread1.c
     ${DSPLIB_SOURCE_FILES}
 )
+
+# target_compile_options(
+#     ${INK_BENCHMARK_COMPILE_OPTIONS}
+# )
+
+if(RAISE_PIN)
+target_compile_definitions(${PROJECT_NAME} PUBLIC RAISE_PIN)
+endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     ..
@@ -46,5 +48,4 @@ target_link_libraries(${PROJECT_NAME}
     /usr/lib/libdriverlib.a
 )
 
-ink_instrument_file(main.c)
-ink_instrument_file(thread1.c)
+ink_instrument_target(${PROJECT_NAME})
