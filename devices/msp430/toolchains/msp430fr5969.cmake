@@ -39,6 +39,7 @@ set(CMAKE_RANLIB        "${PATH_MSP430_GCC}/msp430-elf-ranlib")
 set(CMAKE_SIZE          "${PATH_MSP430_GCC}/msp430-elf-size")
 
 # Compiler flags
+# TODO: move debug flags out of here!
 set(COMMON_FLAGS "-I${PATH_MSP430_SUPPORT} -I${PATH_MSP430_LIB} -I${PATH_MSP430_DRIVERS} -g3 -gdwarf-2 -gstrict-dwarf -ggdb" CACHE STRING "") #-g -gdwarf-3 -gstrict-dwarf
 set(MCU_SPECIFIC_CFLAGS "-MD -mmcu=${DEVICE} -mhwmult=f5series -msmall" CACHE STRING "")
 set(LLVM_SPECIFIC_CFLAGS "--target=msp430 -D${DEVICE_DEFINE} -nobuiltininc -nostdinc++ -MD" CACHE STRING "")
@@ -48,6 +49,7 @@ set(CMAKE_C_FLAGS "${MCU_SPECIFIC_CFLAGS} ${COMMON_FLAGS}" CACHE STRING "")
 set(LLVM_C_FLAGS "${LLVM_SPECIFIC_CFLAGS} ${COMMON_FLAGS}" CACHE STRING "")
 
 # Linker flags
+# TODO: move debug flags otut of here!
 set(CMAKE_EXE_LINKER_FLAGS "${MCU_SPECIFIC_LINKER_FLAGS} -L${PATH_MSP430_SUPPORT} -Wl,--gc-sections -Wl,-Map,\"${PROJECT_NAME}.map\" -Wl,-lgcc -Wl,-lc -g" CACHE STRING "") #-g
 
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)

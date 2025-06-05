@@ -33,6 +33,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <stdbool.h>
 
 // the state of the threads
 typedef enum {
@@ -83,6 +84,10 @@ typedef struct {
         static __nv FRAM_data_t __persistent_vars[2];
 
 extern uint8_t current_task_buffer_index;
+extern uint8_t current_thread_shared_buffer_index;
+
+extern bool backup_thread_shared_buffer;
+extern bool backup_task_shared_buffer;
 
 // runs one task inside the current thread.
 void __tick(thread_t *thread);

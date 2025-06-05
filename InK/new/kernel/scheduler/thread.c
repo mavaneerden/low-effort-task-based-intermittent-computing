@@ -7,6 +7,9 @@ extern int __ink_buffers_backup_start;
 __nv uint8_t current_task_buffer_index = 0u;
 __nv uint8_t current_thread_shared_buffer_index = 0u;
 
+__nv bool backup_thread_shared_buffer = false;
+__nv bool backup_task_shared_buffer = false;
+
 __nv uint8_t thread_shared_buffer_index = 0u;
 __nv uint8_t thread_shared_buffer_index_temp = 0u;
 
@@ -19,10 +22,19 @@ static inline void __prologue(thread_t *thread)
 #ifdef RAISE_PIN
     __port_on(3,6);
 #endif
-    // Copy thread-shared stack
-    __fram_word_copy(thread_shared_buffers[thread_shared_buffer_index], thread_shared_buffers[thread_shared_buffer_index ^ 1u], (uintptr_t)&__ink_thread_shared_size);
-    // copy original stack to the temporary stack
-    __fram_word_copy(buffer->buf[buffer->original_buffer_index],buffer->buf[buffer->original_buffer_index ^ 1u], buffer->size >> 1u);
+
+    if (backup_thread_shared_buffer)
+    {
+        __fram_word_copy(thread_shared_buffers[thread_shared_buffer_index], thread_shared_buffers[thread_shared_buffer_index ^ 1u], (uintptr_t)&__ink_thread_shared_size);
+        backup_thread_shared_buffer = false;
+    }
+
+    if (backup_task_shared_buffer)
+    {
+        __fram_word_copy(buffer->buf[buffer->original_buffer_index],buffer->buf[buffer->original_buffer_index ^ 1u], buffer->size >> 1u);
+        backup_task_shared_buffer = false;
+    }
+
 #ifdef RAISE_PIN
     __port_off(3,6);
 #endif

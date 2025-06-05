@@ -329,10 +329,14 @@ public:
      */
     Matcher.addMatcher(
         traverse(TK_IgnoreUnlessSpelledInSource,
-            unaryOperator(
-                hasOperatorName("*"),
-                getNonAssignmentMatcher(pointerDerefMatch)
-            ).bind(pointerDerefBinding)
+            functionDecl(
+                hasDescendant(
+                    unaryOperator(
+                        hasOperatorName("*"),
+                        getNonAssignmentMatcher(pointerDerefMatch)
+                    ).bind(pointerDerefBinding)
+                )
+            )
         ),
         &HandlerForPointerDeref
     );
