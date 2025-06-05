@@ -1,5 +1,13 @@
 #pragma once
 
+#include <stdbool.h>
+
+void* __ink_translate_variable_address(void* variable_address);
+void* __ink_translate_pointer_address(void* pointer_address, const bool is_write);
+
+void __ink_set_backup_thread_shared_buffer();
+void __ink_set_backup_task_shared_buffer();
+
 /**
  * Translates the shared variable address to the correct one, depending on the buffer used.
  * Then dereferences that address.
@@ -21,7 +29,8 @@
  *
  * This macro is meant for InK-internal use ONLY!
  */
-#define __INK_TRANSLATE_POINTER_DEREFERENCE(pointer) (__ink_translate_pointer_address((void*) (pointer)))
+#define __INK_TRANSLATE_POINTER_DEREFERENCE_READ(pointer) (__ink_translate_pointer_address((void*) (pointer), false))
+#define __INK_TRANSLATE_POINTER_DEREFERENCE_WRITE(pointer) (__ink_translate_pointer_address((void*) (pointer), true))
 
-void* __ink_translate_variable_address(void* variable_address);
-void* __ink_translate_pointer_address(void* pointer_address);
+#define __INK_ENABLE_THREAD_SHARED_BACKUP() __ink_set_backup_thread_shared_buffer()
+#define __INK_ENABLE_TASK_SHARED_BACKUP() __ink_set_backup_task_shared_buffer()

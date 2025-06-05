@@ -419,10 +419,7 @@ int main(int argc, const char **argv) {
     auto op = CommonOptionsParser::create(argc, argv, MatcherSampleCategory);
     ClangTool Tool(op.get().getCompilations(), op.get().getSourcePathList());
 
-    if (int succ = Tool.run(newFrontendActionFactory<MyFrontendAction>().get()))
-    {
-        return succ;
-    }
+    Tool.run(newFrontendActionFactory<MyFrontendAction>().get());
 
     if (num_errors > 0)
     {

@@ -443,42 +443,12 @@ class MemberHandler : public MatchFinder::MatchCallback {
 class MyASTConsumer : public ASTConsumer {
 public:
   MyASTConsumer(Rewriter &R) :
-    //   HandlerForPointerDeref(R),
-    //   HandlerForArraySubscript(R),
       HandlerForMember(R)
     {
 
     /***************************************************************
      *                   POINTER MEMBER ACCESS                     *
      ***************************************************************/
-//     const std::string pointerMemberAccessBinding = "member_expr";
-//     const auto pointerMemberAccessMatch =
-//     anyOf(
-//         memberExpr(
-//             isArrow()
-//         ).bind(pointerMemberAccessBinding),
-//         arraySubscriptExpr(
-//             has(
-//                 memberExpr(
-//                     isArrow()
-//                 ).bind(pointerMemberAccessBinding)
-//             )
-//         )
-//     );
-//     /* Struct/union pointer member access READ
-//      * (expr)->member
-//      */
-//     Matcher.addMatcher(
-//         traverse(TK_IgnoreUnlessSpelledInSource,
-//             memberExpr(
-//                 isArrow(),
-//                 getNonAssignmentMatcher(pointerMemberAccessMatch)
-//             ).bind(pointerMemberAccessBinding)
-//         ),
-//         &HandlerForMember
-//     );
-//     matchAll(Matcher, HandlerForMember, pointerMemberAccessMatch);
-
     Matcher.addMatcher(
         traverse(TK_IgnoreUnlessSpelledInSource,
             memberExpr(
@@ -521,8 +491,6 @@ public:
   }
 
 private:
-//   PointerDereferenceHandler HandlerForPointerDeref;
-//   ArraySubscriptHandler HandlerForArraySubscript;
   MemberHandler HandlerForMember;
 
   MatchFinder Matcher;
@@ -551,10 +519,7 @@ int main(int argc, const char **argv) {
     auto op = CommonOptionsParser::create(argc, argv, MatcherSampleCategory);
     ClangTool Tool(op.get().getCompilations(), op.get().getSourcePathList());
 
-    if (int succ = Tool.run(newFrontendActionFactory<MyFrontendAction>().get()))
-    {
-        return succ;
-    }
+    Tool.run(newFrontendActionFactory<MyFrontendAction>().get());
 
     if (num_errors > 0)
     {
