@@ -80,7 +80,7 @@ const auto getAssignmentOperatorMatcher()
     );
 }
 
-const auto getAssignmentUnaryMatcher(const clang::ast_matchers::internal::BindableMatcher<clang::Stmt> &BaseMatcher, std::string binding)
+const auto getAssignmentUnaryMatcher(const clang::ast_matchers::internal::Matcher<clang::Stmt> &BaseMatcher)
 {
     return
     unaryOperator(
@@ -88,47 +88,50 @@ const auto getAssignmentUnaryMatcher(const clang::ast_matchers::internal::Bindab
             hasOperatorName("++"),
             hasOperatorName("--")
         ),
-        has(
-            traverse(TK_AsIs,
-                ignoringParens(
-                    BaseMatcher.bind(binding)
-                )
+        anyOf(
+            hasDescendant(
+                BaseMatcher
+            ),
+            has(
+                BaseMatcher
             )
         )
     ).bind("assignment_matcher");
 }
 
-const auto getAssignmentLHSMatcher(const clang::ast_matchers::internal::BindableMatcher<clang::Stmt> &BaseMatcher, std::string binding)
+const auto getAssignmentLHSMatcher(const clang::ast_matchers::internal::Matcher<clang::Stmt> &BaseMatcher)
 {
     return
     binaryOperator(
         getAssignmentOperatorMatcher(),
         hasLHS(
-            traverse(TK_AsIs,
-                ignoringParens(
-                    BaseMatcher.bind(binding)
-                )
+            anyOf(
+                hasDescendant(
+                    BaseMatcher
+                ),
+                BaseMatcher
             )
         )
     ).bind("assignment_matcher");
 }
 
-const auto getAssignmentRHSMatcher(const clang::ast_matchers::internal::BindableMatcher<clang::Stmt> &BaseMatcher, std::string binding)
+const auto getAssignmentRHSMatcher(const clang::ast_matchers::internal::Matcher<clang::Stmt> &BaseMatcher)
 {
+    // TODO: make this work
     return
     binaryOperator(
         getAssignmentOperatorMatcher(),
         hasLHS(
-            traverse(TK_AsIs,
+            traverse(TK_IgnoreUnlessSpelledInSource,
                 ignoringParens(
-                    BaseMatcher.bind(binding)
+                    BaseMatcher // TODO: do not bind this!
                 )
             )
         ),
         hasRHS(
-            traverse(TK_AsIs,
+            traverse(TK_IgnoreUnlessSpelledInSource,
                 ignoringParens(
-                    BaseMatcher.bind(binding)
+                    BaseMatcher
                 )
             )
         )
@@ -145,7 +148,7 @@ const auto getNonAssignmentMatcher(const clang::ast_matchers::internal::Matcher<
                 hasOperatorName("--")
             ),
             hasUnaryOperand(
-                traverse(TK_AsIs,
+                traverse(TK_IgnoreUnlessSpelledInSource,
                     ignoringParens(
                         BaseMatcher
                     )
@@ -158,7 +161,7 @@ const auto getNonAssignmentMatcher(const clang::ast_matchers::internal::Matcher<
             getAssignmentOperatorMatcher(),
             unless(
                 hasRHS(
-                    traverse(TK_AsIs,
+                    traverse(TK_IgnoreUnlessSpelledInSource,
                         ignoringParens(
                             BaseMatcher
                         )
@@ -173,14 +176,14 @@ const auto getNonAssignmentMatcher(const clang::ast_matchers::internal::Matcher<
         binaryOperator(
             getAssignmentOperatorMatcher(),
             hasLHS(
-                traverse(TK_AsIs,
+                traverse(TK_IgnoreUnlessSpelledInSource,
                     ignoringParens(
                         BaseMatcher
                     )
                 )
             ),
             hasRHS(
-                traverse(TK_AsIs,
+                traverse(TK_IgnoreUnlessSpelledInSource,
                     ignoringParens(
                         BaseMatcher
                     )
@@ -227,14 +230,14 @@ const auto getNonAssignmentMatcher(const clang::ast_matchers::internal::Matcher<
     );
 }
 
-void matchAll(clang::ast_matchers::MatchFinder &Matcher, MatchFinder::MatchCallback &Handler, const clang::ast_matchers::internal::BindableMatcher<clang::Stmt> &BaseMatcher, std::string binding)
+void matchAll(clang::ast_matchers::MatchFinder &Matcher, MatchFinder::MatchCallback &Handler, const clang::ast_matchers::internal::Matcher<clang::Stmt> &BaseMatcher)
 {
     /* Pointer subscript READ
      * x[i] = (expr)[i]
      */
     Matcher.addMatcher(
         traverse(TK_IgnoreUnlessSpelledInSource,
-            getAssignmentRHSMatcher(BaseMatcher, binding)
+            getAssignmentRHSMatcher(BaseMatcher)
         ),
         &Handler
     );
@@ -243,7 +246,7 @@ void matchAll(clang::ast_matchers::MatchFinder &Matcher, MatchFinder::MatchCallb
      */
     Matcher.addMatcher(
         traverse(TK_IgnoreUnlessSpelledInSource,
-            getAssignmentLHSMatcher(BaseMatcher, binding)
+            getAssignmentLHSMatcher(BaseMatcher)
         ),
         &Handler
     );
@@ -255,7 +258,7 @@ void matchAll(clang::ast_matchers::MatchFinder &Matcher, MatchFinder::MatchCallb
      */
     Matcher.addMatcher(
         traverse(TK_IgnoreUnlessSpelledInSource,
-            getAssignmentUnaryMatcher(BaseMatcher, binding)
+            getAssignmentUnaryMatcher(BaseMatcher)
         ),
         &Handler
     );
@@ -385,237 +388,35 @@ public:
     {
 
     /***************************************************************
-     *                    POINTER DEREFERENCE                      *
-     ***************************************************************/
-    const auto pointerDerefMatch = unaryOperator(hasOperatorName("*"));
-    const std::string pointerDerefBinding = "pointer_ref";
-    /* Pointer dereference READ
-     * *(expr)
-     *
-     * This matcher does not match dereferences on the LHS of a binary assignment,
-     * since these are writes.
-     *
-     * Does NOT match:
-     * *x = *(expr) ------> Matched in other matcher
-     * *(expr) = *x
-     * ++*(expr)
-     * --*(expr)
-     * (*(expr))++
-     * (*(expr))--
-     */
-    Matcher.addMatcher(
-        traverse(TK_IgnoreUnlessSpelledInSource,
-            unaryOperator(
-                hasOperatorName("*"),
-                getNonAssignmentMatcher(pointerDerefMatch)
-            ).bind(pointerDerefBinding)
-        ),
-        &HandlerForPointerDeref
-    );
-    matchAll(Matcher, HandlerForPointerDeref, pointerDerefMatch, pointerDerefBinding);
-
-    /***************************************************************
-     *                     POINTER SUBSCRIPT                       *
-     ***************************************************************/
-    const auto arraySubscriptMatch = arraySubscriptExpr(allOf(
-        /* Filter out array accesses. */
-        unless(
-            hasBase(
-                implicitCastExpr(
-                    hasCastKind(CK_ArrayToPointerDecay)
-                )
-            )
-        ),
-        /* Filter out struct/union members. */
-        unless(
-            traverse(TK_IgnoreUnlessSpelledInSource,
-                hasBase(
-                    memberExpr()
-                )
-            )
-        )
-    ));
-    const std::string arraySubscriptBinding = "array_subscript_expr";
-    /* Pointer subscript (not struct/union member) READ
-     * (expr)[i]
-     */
-    Matcher.addMatcher(
-        arraySubscriptExpr(
-            allOf(
-                /* Filter out array accesses. */
-                unless(
-                    hasBase(
-                        implicitCastExpr(
-                            hasCastKind(CK_ArrayToPointerDecay)
-                        )
-                    )
-                ),
-                /* Filter out struct/union members. */
-                unless(
-                    traverse(TK_IgnoreUnlessSpelledInSource,
-                        hasBase(
-                            memberExpr()
-                        )
-                    )
-                ),
-                getNonAssignmentMatcher(arraySubscriptMatch)
-            )
-        ).bind(arraySubscriptBinding),
-        &HandlerForArraySubscript
-    );
-    matchAll(Matcher, HandlerForArraySubscript, arraySubscriptMatch, arraySubscriptBinding);
-
-
-    /***************************************************************
      *                   POINTER MEMBER ACCESS                     *
      ***************************************************************/
+    const std::string pointerMemberAccessBinding = "member_expr";
     const auto pointerMemberAccessMatch =
+    anyOf(
         memberExpr(
-            isArrow(),
-            unless(
-                hasAncestor(
-                    implicitCastExpr(
-                        hasParent(
-                            arraySubscriptExpr()
-                        ),
-                        hasCastKind(CK_LValueToRValue)
-                    )
-                )
-            )
-        );
-    const auto pointerMemberAccessMatchNonAssignment = anyOf(
-        pointerMemberAccessMatch,
+            isArrow()
+        ).bind(pointerMemberAccessBinding),
         arraySubscriptExpr(
-            hasBase(
-                implicitCastExpr(
-                    has(
-                        memberExpr(
-                            isArrow()
-                        )
-                    ),
-                    hasCastKind(CK_ArrayToPointerDecay)
-                )
+            has(
+                memberExpr(
+                    isArrow()
+                ).bind(pointerMemberAccessBinding)
             )
         )
     );
-    const std::string pointerMemberAccessBinding = "member_expr";
     /* Struct/union pointer member access READ
      * (expr)->member
      */
     Matcher.addMatcher(
-        memberExpr(
-            isArrow(),
-            unless(
-                hasAncestor(
-                    implicitCastExpr(
-                        hasParent(
-                            arraySubscriptExpr()
-                        ),
-                        hasCastKind(CK_LValueToRValue)
-                    )
-                )
-            ),
-            getNonAssignmentMatcher(pointerMemberAccessMatchNonAssignment)
-        ).bind(pointerMemberAccessBinding),
+        traverse(TK_IgnoreUnlessSpelledInSource,
+            memberExpr(
+                isArrow(),
+                getNonAssignmentMatcher(pointerMemberAccessMatch)
+            ).bind(pointerMemberAccessBinding)
+        ),
         &HandlerForMember
     );
-    matchAll(Matcher, HandlerForMember, pointerMemberAccessMatch, pointerMemberAccessBinding);
-
-    /***************************************************************
-     *                      MEMBER SUBSCRIPT                       *
-     ***************************************************************/
-    const auto memberSubscriptMatch =
-        arraySubscriptExpr(
-            hasBase(
-                implicitCastExpr(
-                    has(
-                        traverse(TK_IgnoreUnlessSpelledInSource,
-                            memberExpr(
-                                unless(isArrow())
-                            )
-                        )
-                    ),
-                    /* Filter out array accesses. */
-                    hasCastKind(CK_LValueToRValue)
-                )
-            )
-        );
-    const std::string memberSubscriptBinding = "array_subscript_expr";
-    /* Struct/union member pointer subscript READ
-     * (expr.member)[x]
-     */
-    Matcher.addMatcher(
-        arraySubscriptExpr(
-            hasBase(
-                implicitCastExpr(
-                    has(
-                        traverse(TK_IgnoreUnlessSpelledInSource,
-                            memberExpr(
-                                unless(isArrow())
-                            )
-                        )
-                    ),
-                    /* Filter out array accesses. */
-                    hasCastKind(CK_LValueToRValue)
-                )
-            ),
-            getNonAssignmentMatcher(memberSubscriptMatch)
-        ).bind(memberSubscriptBinding),
-        &HandlerForArraySubscript
-    );
-    matchAll(Matcher, HandlerForArraySubscript, memberSubscriptMatch, memberSubscriptBinding);
-
-    /***************************************************************
-     *                  POINTER MEMBER SUBSCRIPT                   *
-     ***************************************************************/
-    const auto pointerMemberSubscriptMatchNonAssign =
-        arraySubscriptExpr(
-            hasBase(
-                implicitCastExpr(
-                    hasDescendant(
-                        memberExpr(
-                            isArrow()
-                        )
-                    ),
-                    /* Filter out array accesses. */
-                    hasCastKind(CK_LValueToRValue)
-                )
-            )
-        );
-    const auto pointerMemberSubscriptMatch =
-        arraySubscriptExpr(
-            hasBase(
-                implicitCastExpr(
-                    hasDescendant(
-                        memberExpr(
-                            isArrow()
-                        ).bind("member_expr")
-                    )
-                ).bind("cast_expr")
-            )
-        );
-    const std::string pointerMemberSubscriptBinding = "array_subscript_expr";
-    /* Struct/union pointer member pointer subscript
-     * ((expr)->member)[x]
-     */
-    Matcher.addMatcher(
-        arraySubscriptExpr(
-            hasBase(
-                implicitCastExpr(
-                    hasDescendant(
-                        memberExpr(
-                            isArrow()
-                        ).bind("member_expr")
-                    ),
-                    /* Filter out array accesses. */
-                    hasCastKind(CK_LValueToRValue)
-                )
-            ),
-            getNonAssignmentMatcher(pointerMemberSubscriptMatchNonAssign)
-        ).bind(pointerMemberSubscriptBinding),
-        &HandlerForArraySubscript
-    );
-    matchAll(Matcher, HandlerForArraySubscript, pointerMemberSubscriptMatch, pointerMemberSubscriptBinding);
+    matchAll(Matcher, HandlerForMember, pointerMemberAccessMatch);
   }
 
   void HandleTranslationUnit(ASTContext &Context) override {

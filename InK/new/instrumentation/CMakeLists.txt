@@ -87,10 +87,40 @@ target_link_libraries(${FUNCTION_LABELING_TARGET}
     ${llvm_libs}
 )
 
-set(POINTER_INSTRUMENTATION_TARGET pointer_instrumentation)
-add_executable("${POINTER_INSTRUMENTATION_TARGET}" src/pointer_instrumentation.cpp src/utils.cpp)
-set_property(TARGET ${POINTER_INSTRUMENTATION_TARGET} APPEND PROPERTY COMPILE_FLAGS "-std=c++11 ${compile_flags}")
-target_link_libraries(${POINTER_INSTRUMENTATION_TARGET}
+set(POINTER_INSTRUMENTATION_MEMBERS_TARGET pointer_instrumentation_members)
+add_executable("${POINTER_INSTRUMENTATION_MEMBERS_TARGET}" src/pointer_instrumentation_members.cpp src/utils.cpp)
+set_property(TARGET ${POINTER_INSTRUMENTATION_MEMBERS_TARGET} APPEND PROPERTY COMPILE_FLAGS "-std=c++11 ${compile_flags}")
+target_link_libraries(${POINTER_INSTRUMENTATION_MEMBERS_TARGET}
+    clangAST
+    clangASTMatchers
+    clangAnalysis
+    clangBasic
+    clangDriver
+    clangEdit
+    clangFrontend
+    clangFrontendTool
+    clangLex
+    clangParse
+    clangSema
+    clangEdit
+    clangRewrite
+    clangRewriteFrontend
+    clangStaticAnalyzerFrontend
+    clangStaticAnalyzerCheckers
+    clangStaticAnalyzerCore
+    clangCrossTU
+    clangIndex
+    clangSerialization
+    clangToolingCore
+    clangTooling
+    clangFormat
+    ${llvm_libs}
+)
+
+set(POINTER_INSTRUMENTATION_DEREFERENCE_TARGET pointer_instrumentation_dereference)
+add_executable("${POINTER_INSTRUMENTATION_DEREFERENCE_TARGET}" src/pointer_instrumentation_dereference.cpp src/utils.cpp)
+set_property(TARGET ${POINTER_INSTRUMENTATION_DEREFERENCE_TARGET} APPEND PROPERTY COMPILE_FLAGS "-std=c++11 ${compile_flags}")
+target_link_libraries(${POINTER_INSTRUMENTATION_DEREFERENCE_TARGET}
     clangAST
     clangASTMatchers
     clangAnalysis

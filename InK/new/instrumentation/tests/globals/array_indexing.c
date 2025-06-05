@@ -12,36 +12,119 @@ void* shared_ptr;
 
 struct s
 {
+    int* p2[ARRAY_SIZE][ARRAY_SIZE];
     int* p[ARRAY_SIZE];
     int* i;
 } s;
 
+void* t_assign();
+void* t_nested();
+void* t_parentheses();
 
 INK_CREATE_THREAD(1, false)
 {
     int x;
+    int* y;
 
-    // Array access (not instrumented since arrays can't be reassigned)
-    shared_array[x];
+    // Array access
+    x = shared_array[x]; // NOT INSTRUMENTED
 
     // Pointer expr array subscript
-    (shared_ptr + x)[x];
+    x = ((int*)(shared_ptr + x))[x];
 
     // Pointer expr member access
-    ((struct s*)(shared_ptr + x))->p;
-    ((struct s*)(shared_ptr + x))->i;
+    y = ((struct s*)(shared_ptr + x))->i;
 
-    // Struct member array access (not instrumented since arrays can't be reassigned)
-    s.p[x];
-    s.i[x];
+    // Struct member array access
+    y = s.p[x]; // NOT INSTRUMENTED
+    x = s.i[x];
 
-    // Pointer expr member array access (not instrumented since arrays can't be reassigned)
-    ((struct s*)(shared_ptr + x))->p[x];
-    ((struct s*)(shared_ptr + x))->i[x];
+    // Pointer expr member array access
+    y = ((struct s*)(shared_ptr + x))->p[x];
+    x = ((struct s*)(shared_ptr + x))->i[x];
 
     // Struct member pointer access
-    s.p[x][x];
+    x = s.p[x][x];
 
     // Pointer expr member pointer access
-    ((struct s*)(shared_ptr + x))->p[x][x];
+    x = ((struct s*)(shared_ptr + x))->p[x][x];
+
+    return t_assign;
+}
+
+void* t_assign()
+{
+    int x;
+    int* y;
+
+    // Array access
+    shared_array[x] = x; // NOT INSTRUMENTED
+
+    // Pointer expr array subscript
+    ((int*)(shared_ptr + x))[x] = x;
+
+    // Pointer expr member access
+    ((struct s*)(shared_ptr + x))->i = s.i;
+
+    // Struct member array access
+    s.p[x] = y; // NOT INSTRUMENTED
+    s.i[x] = x;
+
+    // Pointer expr member array access
+    ((struct s*)(shared_ptr + x))->p[x] = y;
+    ((struct s*)(shared_ptr + x))->i[x] = x;
+
+    // Struct member pointer access
+    s.p[x][x] = x;
+
+    // Pointer expr member pointer access
+    ((struct s*)(shared_ptr + x))->p[x][x] = x;
+
+    return t_parentheses;
+}
+
+void* t_parentheses()
+{
+    int x;
+    int* y;
+
+    // Array access
+    (shared_array[(x)]) = x; // NOT INSTRUMENTED
+
+    // Pointer expr array subscript
+    ((((int*)((shared_ptr) + (x))))[x]) = x;
+
+    // Pointer expr member access
+    ((((struct s*)((shared_ptr) + (x))))->i) = s.i;
+
+    // Struct member array access
+    (((s).p)[x]) = y; // NOT INSTRUMENTED
+    (((s).i)[x]) = x;
+
+    // Pointer expr member array access
+    ((((struct s*)((shared_ptr) + (x)))->p)[x]) = y;
+    ((((struct s*)((shared_ptr) + (x)))->i)[x]) = x;
+
+    // Struct member pointer access
+    ((((s).p)[x])[x]) = x;
+
+    // Pointer expr member pointer access
+    ((((struct s*)((shared_ptr) + (x)))->p[x])[x]) = x;
+
+    return t_nested;
+}
+
+void* t_nested()
+{
+    int x;
+
+    // Array access
+    shared_array[shared_array[x]] = x;
+
+    // Pointer expr array subscript
+    ((int*)(shared_ptr + x))[((int*)(shared_ptr + x))[x]] = x;
+
+    ((struct s*)(shared_ptr + x + ((struct s*)(shared_ptr + x))->i[x]))->i[((struct s*)(shared_ptr + x))->i[x]] = x;
+
+    // return NULL;
 }
