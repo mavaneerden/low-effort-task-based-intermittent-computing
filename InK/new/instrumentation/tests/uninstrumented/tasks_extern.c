@@ -1,9 +1,10 @@
+#include <stddef.h>
 #include "ink/ink.h"
 
-#include "tasks_header.h"
+extern void* t_extern();
 
 /* Returning an extern task: this is illegal. */
 INK_CREATE_THREAD(1, false)
 {
-    return header_task;
+    return t_extern;
 }

@@ -1,6 +1,5 @@
 /**
- * This file tests the handling of structs.
- * Struct pointers are tested separately in the pointer test.
+ * This file tests the handling of arrays.
  */
 
 #include <stddef.h>
