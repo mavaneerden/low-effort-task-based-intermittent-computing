@@ -45,6 +45,7 @@ using namespace clang::driver;
 using namespace clang::tooling;
 
 static llvm::cl::OptionCategory MatcherSampleCategory("Matcher Sample");
+static int total_root_tasks;
 
 #define TASK_FUNCTION_STR "INK::TASK"
 
@@ -74,7 +75,7 @@ class FunctionLabeler : public MatchFinder::MatchCallback {
 
         using TaskFunctions = std::set<FunctionDecl*>;
 
-        void collectChildTasks(FunctionDecl* current_task, TaskFunctions &task_functions)
+        void collectChildTasks(FunctionDecl* current_task, TaskFunctions &task_functions, SourceManager &sm)
         {
             /* Collect all return statements inside the task definition. */
             std::vector<ReturnStmt*> return_statements = ReturnCollector::collect(const_cast<FunctionDecl *>(current_task));
@@ -97,14 +98,31 @@ class FunctionLabeler : public MatchFinder::MatchCallback {
                     {
                         FunctionDecl *child_task = dyn_cast<FunctionDecl>(decl_candidate);
 
+                        /* Disallow declarations in other files (source or header). */
+                        if (child_task->getStorageClass() == StorageClass::SC_Extern)
+                        {
+                            reportError("Task function '" + child_task->getNameAsString() + "' declared as 'extern', this is not allowed.");
+                            exit(1);
+                        }
+                        if (sm.getFileID(child_task->getLocation()) != sm.getMainFileID())
+                        {
+                            reportError("Task function '" + child_task->getNameAsString() + "' declared in header file, this is not allowed.");
+                            exit(1);
+                        }
+
                         /* If the decl was not already processed, add it to the set
                          * and traverse its own return values recursively.
                          */
-                        if (task_functions.find(child_task->getFirstDecl()) == task_functions.end())
+                        if (task_functions.find(child_task) == task_functions.end())
                         {
                             task_functions.insert(child_task);
-                            collectChildTasks(child_task->getDefinition(), task_functions);
+                            collectChildTasks(child_task->getDefinition(), task_functions, sm);
                         }
+                    }
+                    else
+                    {
+                        reportError("Task function '" + current_task->getNameAsString() + "' returns non-null non-function pointer, this is not allowed.");
+                        exit(1);
                     }
                 }
             }
@@ -120,9 +138,12 @@ class FunctionLabeler : public MatchFinder::MatchCallback {
                 return;
             }
 
+            total_root_tasks++;
+
             /* Collect all child task functions into the task_functions set. */
+            SourceManager &sm = Result.Context->getSourceManager();
             TaskFunctions task_functions;
-            collectChildTasks(const_cast<FunctionDecl *>(task_candidate), task_functions);
+            collectChildTasks(const_cast<FunctionDecl *>(task_candidate), task_functions, sm);
 
             /* Copy attribute of the root task to all child task functions. */
             for (auto task : task_functions)
@@ -145,7 +166,8 @@ public:
     {
         Matcher.addMatcher(
             functionDecl(
-                hasAttr(clang::attr::Kind::Annotate)
+                hasAttr(clang::attr::Kind::Annotate),
+                isDefinition()
             ).bind("task_candidate"),
             &functionLabeler
         );
@@ -189,5 +211,13 @@ int main(int argc, const char **argv) {
     auto op = CommonOptionsParser::create(argc, argv, MatcherSampleCategory);
     ClangTool Tool(op.get().getCompilations(), op.get().getSourcePathList());
 
-    return Tool.run(newFrontendActionFactory<MyFrontendAction>().get());
+    Tool.run(newFrontendActionFactory<MyFrontendAction>().get());
+
+    if (total_root_tasks > 1)
+    {
+        reportError("Too many root tasks in file (expected 1, was " + std::to_string(total_root_tasks) + ")");
+        return 1;
+    }
+
+    return 0;
 }

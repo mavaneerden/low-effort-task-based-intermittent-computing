@@ -54,9 +54,10 @@ static llvm::cl::OptionCategory MatcherSampleCategory("Matcher Sample");
 
 uint32_t num_errors = 0;
 
+std::map<const VarDecl*, std::string> VarsInstrumented;
 std::map<const VarDecl*, const SourceLocation> StaticVars;
 std::set<const VarDecl*> VarsUsedOutsideTasks;
-std::set<const VarDecl*> VarsUsedInGlobalScope;
+std::map<const VarDecl*, const DeclRefExpr *> VarsUsedInGlobalScope;
 std::map<const VarDecl*, std::set<const FunctionDecl*>> FunctionVarRelation;
 
 string getVarDeclAsString(const VarDecl* var)
@@ -78,6 +79,42 @@ string getVarDeclAsString(const VarDecl* var)
     return type_str + " " + var_name_str + array_type_str;
 }
 
+void instrumentGlobalScopeUses(Rewriter &Rewrite)
+{
+    std::vector<const VarDecl*> mark_for_deletion;
+
+    do
+    {
+        mark_for_deletion.clear();
+
+        for (auto &[var, var_ref] : VarsUsedInGlobalScope)
+        {
+            /* Ignore if already instrumented. */
+            if (VarsInstrumented.find(var) != VarsInstrumented.end())
+            {
+                mark_for_deletion.push_back(var);
+                continue;
+            }
+
+            const VarDecl* TopLevelDecl = getParentNode<VarDecl>(var_ref, &var->getASTContext());
+
+            if (VarsInstrumented.find(TopLevelDecl) != VarsInstrumented.end())
+            {
+                const std::string section_value = VarsInstrumented[TopLevelDecl];
+                VarsInstrumented[var] = section_value;
+                Rewrite.InsertTextBefore(Rewrite.getSourceMgr().getExpansionLoc(var->getLocation()), "__attribute__((section(\"" + section_value + "\")))");
+                LogInstrumentation("Shared Variable Declaration", var->getNameAsString(), "", var->getLocation().printToString(Rewrite.getSourceMgr()));
+                mark_for_deletion.push_back(var);
+            }
+        }
+
+        for (auto var : mark_for_deletion)
+        {
+            VarsUsedInGlobalScope.erase(var);
+        }
+    } while (mark_for_deletion.size() > 0);
+}
+
 void addSectionToVars(Rewriter &Rewrite)
 {
     for (auto &[var, func_list] : FunctionVarRelation)
@@ -87,8 +124,8 @@ void addSectionToVars(Rewriter &Rewrite)
 
         if (VarsUsedOutsideTasks.find(var) != VarsUsedOutsideTasks.end())
         {
-            num_errors++;
             reportError("Variable '" + std::string(var->getName()) + "' used outside task function.");
+            exit(1);
         }
 
         /* Add a section attribute to the variable declaration. */
@@ -97,7 +134,7 @@ void addSectionToVars(Rewriter &Rewrite)
             task_priorities.insert(getTaskPriority(func));
 
             /* Also add the pointer for the variable to every function wherein it is used. */
-            string global_var_ref = std::string(var->getName());
+            string global_var_ref = var->getNameAsString();
             string global_var_ptr = INK_POINTER_PREFIX + global_var_ref;
             auto location = getBeginEndLoc(Rewrite, *func->getBody()->child_begin()).begin_loc;
             string prefix_string = "";
@@ -125,7 +162,9 @@ void addSectionToVars(Rewriter &Rewrite)
             section_value = ".ink.thread_shared";
         }
 
+        VarsInstrumented[var] = section_value;
         Rewrite.InsertTextBefore(Rewrite.getSourceMgr().getExpansionLoc(var->getLocation()), "__attribute__((section(\"" + section_value + "\")))");
+        LogInstrumentation("Shared Variable Declaration", var->getNameAsString(), "", var->getLocation().printToString(Rewrite.getSourceMgr()));
     }
 }
 
@@ -142,6 +181,7 @@ class GlobalVarHandler : public MatchFinder::MatchCallback {
                 return;
             }
 
+            /* Ignore const variables (these cannot be written). */
             if (GlobalVar->getType().isConstant(GlobalVar->getASTContext()))
             {
                 return;
@@ -152,7 +192,7 @@ class GlobalVarHandler : public MatchFinder::MatchCallback {
             if (!parent_function)
             {
                 /* No parent function, expression in global scope (this is allowed). */
-                VarsUsedInGlobalScope.insert(GlobalVar);
+                VarsUsedInGlobalScope.insert(std::make_pair(GlobalVar, GlobalVarRef));
                 return;
             }
             if (!isTaskFunction(parent_function))
@@ -164,6 +204,18 @@ class GlobalVarHandler : public MatchFinder::MatchCallback {
             /* Replace global variable access with macro. */
             string global_var_ref = GlobalVarRef->getNameInfo().getName().getAsString();
             string global_var_ptr = INK_POINTER_PREFIX + global_var_ref;
+            SourceManager &sm = Result.Context->getSourceManager();
+
+            if (GlobalVar->hasExternalStorage())
+            {
+                reportError("Global variable '" + global_var_ref + "' has external storage, this is not allowed.");
+                exit(1);
+            }
+            if (sm.getFileID(GlobalVar->getLocation()) != sm.getMainFileID())
+            {
+                reportError("Global variable '" + global_var_ref + "' declared in header file, this is not allowed.");
+                exit(1);
+            }
 
             if (FunctionVarRelation.find(GlobalVar) == FunctionVarRelation.end())
             {
@@ -290,6 +342,7 @@ class MyFrontendAction : public ASTFrontendAction {
         MyFrontendAction() {}
         void EndSourceFileAction() override {
             addSectionToVars(TheRewriter);
+            instrumentGlobalScopeUses(TheRewriter);
             TheRewriter.getEditBuffer(TheRewriter.getSourceMgr().getMainFileID())
                 .write(llvm::outs());
         }
