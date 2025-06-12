@@ -415,18 +415,20 @@ class MemberHandler : public MatchFinder::MatchCallback {
                 macro_name = PTR_READ;
             }
 
+            const FunctionDecl* ParentFunction = getParentFunction(memberExpr, Result);
 
-            if (!isTaskFunction(getParentFunction(memberExpr, Result)))
+            if (ParentFunction && !isTaskFunction(ParentFunction))
             {
                 return;
             }
 
-            // std::string macro_name = getMacro(AssignmentMatcher);
+            int task_priority = getTaskPriority(ParentFunction);
 
             const Expr* memberExprBase = memberExpr->getBase();
+            auto locations = getBeginEndLoc(Rewrite, memberExprBase);
 
-            Rewrite.InsertTextBefore(memberExprBase->getBeginLoc(), "(" + getCastString(memberExprBase) + macro_name + "(");
-            Rewrite.InsertTextAfterToken(memberExprBase->getEndLoc(), "))");
+            Rewrite.InsertTextBefore(locations.begin_loc, "(" + getCastString(memberExprBase) + macro_name + "(");
+            Rewrite.InsertTextAfterToken(locations.end_loc, ", " + std::to_string(task_priority) + "))");
 
             string location = memberExpr->getBeginLoc().printToString(Rewrite.getSourceMgr());
             LogInstrumentation("Pointer Dereference", "", "", location);
@@ -485,7 +487,7 @@ public:
   bool HandleTopLevelDecl(DeclGroupRef DR) override {
       for (DeclGroupRef::iterator b = DR.begin(), e = DR.end(); b != e; ++b) {
           // Traverse the declaration using our AST visitor.
-          (*b)->dump();
+        //   (*b)->dump();
       }
       return true;
   }

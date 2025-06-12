@@ -11,6 +11,10 @@ temp_file_pointer_instrumentation_dereference=$input_dir/ink_instrumentation_poi
 temp_file_pointer_instrumentation_members=$input_dir/ink_instrumentation_pointer_instrumentation_members_tmp.c
 temp_file_variable_instrumentation=$input_dir/ink_instrumentation_variable_instrumentation_tmp.c
 
+pushd $input_dir
+rm $2
+popd
+
 # Run plugin passes
 # TODO: check if passes failed!
 build/bin/function_labeling $1 $extra_args -- > $temp_file_function_labeling

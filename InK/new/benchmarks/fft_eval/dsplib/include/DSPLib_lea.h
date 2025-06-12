@@ -58,7 +58,8 @@ extern "C"
 #if defined(__MSP430_HAS_LEA__) && !defined(MSP_DISABLE_LEA)
 
 #if __MSP430_HEADER_VERSION__ < 1192
-#error "DSPLib: Device header file is out of date, please upgrade to the latest support package to use this version of DSPLib with LEA."
+#error "DSPLib: Device header file is out of date, please upgrade to the \
+latest support package to use this version of DSPLib with LEA."
 #endif
 
 //******************************************************************************
@@ -741,7 +742,7 @@ typedef struct {
 //
 //! \ingroup dsplib_support_lea
 //!
-//! \brief Parameter structure for LEACMD__BITREVERSECOMPLEXEVEN or
+//! \brief Parameter structure for LEACMD__BITREVERSECOMPLEXEVEN or 
 //! LEACMD__BITREVERSECOMPLEXODD commands.
 //
 //******************************************************************************
@@ -756,7 +757,7 @@ typedef struct {
 //
 //! \ingroup dsplib_support_lea
 //!
-//! \brief Parameter structure for LEACMD__BITREVERSECOMPLEXLONGEVEN or
+//! \brief Parameter structure for LEACMD__BITREVERSECOMPLEXLONGEVEN or 
 //! LEACMD__BITREVERSECOMPLEXLONGODD commands.
 //
 //******************************************************************************
@@ -1132,7 +1133,7 @@ static inline void msp_lea_invokeCommand(uint16_t cmdId)
     /* Clear interrupt flag and invoke the command. */
     msp_lea_ifg = 0;
     LEAPMCB = cmdId | LEAITFLG1;
-
+    
 #if defined(MSP_DISABLE_LPM0)
 #warning "DSPLib: LPM0 is disabled, undefine MSP_DISABLE_LPM0 to enable LPM0."
     /* Do not enter LPM0, poll interrupt flags for command completion. */

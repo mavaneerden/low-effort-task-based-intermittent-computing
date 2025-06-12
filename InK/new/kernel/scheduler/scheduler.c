@@ -75,6 +75,7 @@ void __create_thread(uint8_t priority, void *entry, void *data_org,
     _threads[priority].buffer.buf[1] = data_temp;
     _threads[priority].buffer.original_buffer_index = 0;
     _threads[priority].buffer.size = size;
+    _threads[priority].copy_buffer_in_task_prologue = true;
 }
 
 // puts the thread in waiting state

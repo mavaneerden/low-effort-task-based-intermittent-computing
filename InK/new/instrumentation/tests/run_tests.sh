@@ -15,6 +15,7 @@
 #   - Global variables write
 #   - Static variables
 #   - Global variables not directly used in tasks
+#   - Global variables in macro
 #   - Shared variable use outside tasks (check if error)
 #   - Non-const extern shared variables (check if error)
 #   - Non-const header shared variables (check if error)

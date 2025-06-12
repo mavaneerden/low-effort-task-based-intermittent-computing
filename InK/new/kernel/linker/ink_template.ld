@@ -288,12 +288,6 @@ SECTIONS
         . = ALIGN(2);
         PROVIDE(__ink_buffers_start = .);
 
-        PROVIDE(__ink_thread_shared_start = .);
-        KEEP(*(.ink.thread_shared))
-        . = ALIGN(2);
-        PROVIDE(__ink_thread_shared_end = .);
-
-        INK_TASK_SHARED_BUFFER(0)
         INK_TASK_SHARED_BUFFER(1)
         INK_TASK_SHARED_BUFFER(2)
         INK_TASK_SHARED_BUFFER(3)
@@ -366,10 +360,6 @@ SECTIONS
         . = ALIGN(2);
         PROVIDE(__ink_buffers_backup_start = .);
 
-        . += (__ink_thread_shared_end - __ink_thread_shared_start);
-        . = ALIGN(2);
-
-        INK_TASK_SHARED_HOLE(0)
         INK_TASK_SHARED_HOLE(1)
         INK_TASK_SHARED_HOLE(2)
         INK_TASK_SHARED_HOLE(3)
@@ -437,8 +427,6 @@ SECTIONS
         PROVIDE(__ink_buffers_backup_end = .);
     } > FRAM
 
-    PROVIDE(__ink_thread_shared_size = __ink_thread_shared_end - __ink_thread_shared_start);
-    INK_TASK_SHARED_SIZE(0)
     INK_TASK_SHARED_SIZE(1)
     INK_TASK_SHARED_SIZE(2)
     INK_TASK_SHARED_SIZE(3)

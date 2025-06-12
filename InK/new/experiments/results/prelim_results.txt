@@ -1,6 +1,9 @@
 NEW
 Type:Release
-ar_eval       =  3.394 s
-bitcount_eval =  0.653 s
-cem_eval      = 10.56  s
-cuckoo_eval   =  0.539 s
+ar_eval       =  3.330 s
+bitcount_eval =  0.610 s
+cem_eval      = 10.52  s
+cuckoo_eval   =  0.525 s
+dijkstra      =  5.249 s
+fft           =  0.072 s
+rsa           =  0.733 s

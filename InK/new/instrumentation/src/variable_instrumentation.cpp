@@ -45,20 +45,24 @@ using namespace clang::tooling;
 
 static llvm::cl::OptionCategory MatcherSampleCategory("Matcher Sample");
 
-#define GLOBAL_WRITE         "__INK_TRANSLATE_VARIABLE_ACCESS"
 #define GLOBAL_GET_ADDRESS   "__INK_GET_VARIABLE_ADDRESS"
-#define PTR_WRITE            "__INK_TRANSLATE_POINTER_DEREFERENCE"
 #define INK_POINTER_PREFIX   "__ink_pointer_"
-#define INK_STRUCT_TYPE_BASE "__ink_shared_struct_type_"
-#define INK_STRUCT_NAME_BASE "__ink_shared_struct_"
+#define ENABLE_BACKUP       "__INK_ENABLE_TASK_SHARED_BACKUP"
 
 uint32_t num_errors = 0;
+
+struct var_info_t
+{
+    bool is_write;
+    std::string name_as_is;
+};
 
 std::map<const VarDecl*, std::string> VarsInstrumented;
 std::map<const VarDecl*, const SourceLocation> StaticVars;
 std::set<const VarDecl*> VarsUsedOutsideTasks;
 std::map<const VarDecl*, const DeclRefExpr *> VarsUsedInGlobalScope;
-std::map<const VarDecl*, std::set<const FunctionDecl*>> FunctionVarRelation;
+std::map<const VarDecl*, std::map<const FunctionDecl*, std::vector<var_info_t>>> FunctionVarRelation;
+std::set<const FunctionDecl*> ProcessFunctionsForWrite;
 
 string getVarDeclAsString(const VarDecl* var)
 {
@@ -119,8 +123,8 @@ void addSectionToVars(Rewriter &Rewrite)
 {
     for (auto &[var, func_list] : FunctionVarRelation)
     {
-        std::set<int> task_priorities;
         std::string section_value;
+        int task_priority;
 
         if (VarsUsedOutsideTasks.find(var) != VarsUsedOutsideTasks.end())
         {
@@ -129,13 +133,13 @@ void addSectionToVars(Rewriter &Rewrite)
         }
 
         /* Add a section attribute to the variable declaration. */
-        for (auto &func : func_list)
+        for (auto &[func, var_info_list] : func_list)
         {
-            task_priorities.insert(getTaskPriority(func));
+            task_priority = getTaskPriority(func);
 
             /* Also add the pointer for the variable to every function wherein it is used. */
-            string global_var_ref = var->getNameAsString();
-            string global_var_ptr = INK_POINTER_PREFIX + global_var_ref;
+            string global_var_name = var->getName().str();
+            string global_var_ptr = INK_POINTER_PREFIX + global_var_name;
             auto location = getBeginEndLoc(Rewrite, *func->getBody()->child_begin()).begin_loc;
             string prefix_string = "";
 
@@ -145,27 +149,101 @@ void addSectionToVars(Rewriter &Rewrite)
                 prefix_string = ";\n";
             }
 
-            string type_str = "__typeof__(" + global_var_ref + ")";
+            string type_str = "__typeof__(" + global_var_name + ")";
 
-            Rewrite.InsertTextBefore(location, prefix_string + type_str + "(* const " + global_var_ptr + ")" + " = " + GLOBAL_GET_ADDRESS + "(" + global_var_ref + ");\n");
+            Rewrite.InsertTextBefore(location, prefix_string + type_str + "(* const " + global_var_ptr + ")" + " = " + GLOBAL_GET_ADDRESS + "(" + global_var_name + ");\n");
             LogInstrumentation("Shared Variable Pointer", func->getNameAsString(), "", location.printToString(Rewrite.getSourceMgr()));
+
+            for (auto &[is_write, _] : var_info_list)
+            {
+                if (is_write)
+                {
+                    ProcessFunctionsForWrite.insert(func);
+                    break;
+                }
+            }
         }
 
-        if (task_priorities.size() == 1u)
-        {
-            /* Variable is only used in single thread. */
-            section_value = ".ink.task_shared." + std::to_string(*task_priorities.begin());
-        }
-        else
-        {
-            /* Variable is used in tasks with different priorities ==> used in different threads. */
-            section_value = ".ink.thread_shared";
-        }
+        /* Variable is only used in single thread. */
+        section_value = ".ink.task_shared." + std::to_string(task_priority);
 
         VarsInstrumented[var] = section_value;
         Rewrite.InsertTextBefore(Rewrite.getSourceMgr().getExpansionLoc(var->getLocation()), "__attribute__((section(\"" + section_value + "\")))");
         LogInstrumentation("Shared Variable Declaration", var->getNameAsString(), "", var->getLocation().printToString(Rewrite.getSourceMgr()));
     }
+
+    for (auto func : ProcessFunctionsForWrite)
+    {
+        int task_priority = getTaskPriority(func);
+        auto location = getBeginEndLoc(Rewrite, *func->getBody()->child_begin()).begin_loc;
+        Rewrite.InsertTextBefore(location, ENABLE_BACKUP "(" + std::to_string(task_priority) + ");\n");
+    }
+}
+
+bool isVariableRead(const clang::DeclRefExpr *d, const clang::ast_matchers::MatchFinder::MatchResult &Result)
+{
+    clang::DynTypedNodeList NodeList = Result.Context->getParents(*d);
+
+    const Expr *prev_node = d;
+
+    while (!NodeList.empty()) {
+        // Get the first parent.
+        clang::DynTypedNode ParentNode = NodeList[0];
+
+        if (const ArraySubscriptExpr* ase = ParentNode.get<ArraySubscriptExpr>())
+        {
+            if (ase->getIdx() == prev_node)
+            {
+                return true;
+            }
+        }
+
+        if (!ParentNode.get<ArraySubscriptExpr>() && !ParentNode.get<CStyleCastExpr>() && !ParentNode.get<ParenExpr>() && !ParentNode.get<ImplicitCastExpr>() && !ParentNode.get<MemberExpr>() && ParentNode.get<Expr>()) {
+            if (const BinaryOperator* binop = ParentNode.get<BinaryOperator>())
+            {
+                if (binop->getOpcode() == clang::BinaryOperator::Opcode::BO_Assign ||
+                    binop->getOpcode() == clang::BinaryOperator::Opcode::BO_OrAssign ||
+                    binop->getOpcode() == clang::BinaryOperator::Opcode::BO_AddAssign ||
+                    binop->getOpcode() == clang::BinaryOperator::Opcode::BO_AndAssign ||
+                    binop->getOpcode() == clang::BinaryOperator::Opcode::BO_DivAssign ||
+                    binop->getOpcode() == clang::BinaryOperator::Opcode::BO_MulAssign ||
+                    binop->getOpcode() == clang::BinaryOperator::Opcode::BO_RemAssign ||
+                    binop->getOpcode() == clang::BinaryOperator::Opcode::BO_ShlAssign ||
+                    binop->getOpcode() == clang::BinaryOperator::Opcode::BO_ShrAssign ||
+                    binop->getOpcode() == clang::BinaryOperator::Opcode::BO_SubAssign ||
+                    binop->getOpcode() == clang::BinaryOperator::Opcode::BO_XorAssign
+                ) {
+                    if (binop->getLHS() == prev_node)
+                    {
+                        return false;
+                    }
+
+                    return true;
+                }
+            }
+            else if (const UnaryOperator* unop = ParentNode.get<UnaryOperator>())
+            {
+                if (unop->getOpcode() == UnaryOperator::Opcode::UO_PostDec ||
+                    unop->getOpcode() == UnaryOperator::Opcode::UO_PostInc ||
+                    unop->getOpcode() == UnaryOperator::Opcode::UO_PreDec ||
+                    unop->getOpcode() == UnaryOperator::Opcode::UO_PreInc
+                ) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        if (const Expr* expr = ParentNode.get<Expr>())
+        {
+            prev_node = expr;
+        }
+
+        NodeList = Result.Context->getParents(ParentNode);
+    }
+
+    return false;
 }
 
 class GlobalVarHandler : public MatchFinder::MatchCallback {
@@ -187,6 +265,15 @@ class GlobalVarHandler : public MatchFinder::MatchCallback {
                 return;
             }
 
+            /* Volatile variables are assumed to be hardware-related.
+             * Intermittent hardware register operations are not supported by InK,
+             * but the programmer is allowed to use them.
+             */
+            if (GlobalVar->getType().isVolatileQualified())
+            {
+                return;
+            }
+
             /* Only instrument variables inside tasks. */
             const FunctionDecl* parent_function = getParentFunction(GlobalVarRef, Result);
             if (!parent_function)
@@ -201,19 +288,25 @@ class GlobalVarHandler : public MatchFinder::MatchCallback {
                 return;
             }
 
+            auto &sm = Result.Context->getSourceManager();
+            auto &lo = Result.Context->getLangOpts();
+            auto CharRange = Lexer::getAsCharRange(GlobalVarRef->getSourceRange(), sm, lo);
+            CharRange.setEnd(CharRange.getEnd().getLocWithOffset(1));
+            string global_var_ref_str_as_is = Lexer::getSourceText(CharRange, sm, lo).str();
+
             /* Replace global variable access with macro. */
-            string global_var_ref = GlobalVarRef->getNameInfo().getName().getAsString();
-            string global_var_ptr = INK_POINTER_PREFIX + global_var_ref;
-            SourceManager &sm = Result.Context->getSourceManager();
+            string global_var_name = GlobalVar->getName().str();
+            string global_var_ptr = INK_POINTER_PREFIX + global_var_name;
+
 
             if (GlobalVar->hasExternalStorage())
             {
-                reportError("Global variable '" + global_var_ref + "' has external storage, this is not allowed.");
+                reportError("Global variable '" + global_var_name + "' has external storage, this is not allowed.");
                 exit(1);
             }
             if (sm.getFileID(GlobalVar->getLocation()) != sm.getMainFileID())
             {
-                reportError("Global variable '" + global_var_ref + "' declared in header file, this is not allowed.");
+                reportError("Global variable '" + global_var_name + "' declared in header file, this is not allowed.");
                 exit(1);
             }
 
@@ -223,18 +316,21 @@ class GlobalVarHandler : public MatchFinder::MatchCallback {
             }
             if (FunctionVarRelation[GlobalVar].find(parent_function) == FunctionVarRelation[GlobalVar].end())
             {
-                FunctionVarRelation[GlobalVar].insert(parent_function);
+                FunctionVarRelation[GlobalVar].insert({parent_function, {{}, {}}});
             }
+
+            /* Add whether or not variable use is a write. */
+            FunctionVarRelation[GlobalVar][parent_function].push_back({.is_write = !isVariableRead(GlobalVarRef, Result), .name_as_is = global_var_ref_str_as_is});
 
             string global_var_ref_instr =  "(*" + global_var_ptr + ")";
             auto locations = getBeginEndLoc(Rewrite, GlobalVarRef);
 
-            Rewrite.InsertTextBefore(locations.begin_loc, "(*" INK_POINTER_PREFIX);
-            Rewrite.InsertTextAfterToken(locations.end_loc, ")");
+            /* ReplaceText is necessary to properly replace macro's. */
+            Rewrite.ReplaceText(locations.begin_loc, global_var_ref_instr);
 
             /* Log the instrumentation. */
             string location = GlobalVarRef->getLocation().printToString(Rewrite.getSourceMgr());
-            LogInstrumentation("Global variable", global_var_ref, global_var_ref_instr, location);
+            LogInstrumentation("Global variable", global_var_name, global_var_ref_instr, location);
         }
 
     private:
@@ -262,15 +358,6 @@ class StaticVarHandler : public MatchFinder::MatchCallback {
             }
 
             StaticVars.insert({GlobalVar, Rewrite.getSourceMgr().getExpansionLoc(GlobalVarRef->getEndLoc())});
-
-            if (FunctionVarRelation.find(GlobalVar) == FunctionVarRelation.end())
-            {
-                FunctionVarRelation.insert({GlobalVar, {}});
-            }
-            if (FunctionVarRelation[GlobalVar].find(parent_function) == FunctionVarRelation[GlobalVar].end())
-            {
-                FunctionVarRelation[GlobalVar].insert(parent_function);
-            }
         }
 
     private:

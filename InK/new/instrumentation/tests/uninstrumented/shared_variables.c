@@ -40,8 +40,8 @@ void* t_static()
 {
     int local_var = 0;
 
-    /* Static variable, stays the same between reboots so must be instrumented. */
-    static int static_var = 0;
+    /* Static variable, stays the same between task executions so must be instrumented. */
+    static int static_var;
 
     /* Simple read. */
     static_var = local_var;

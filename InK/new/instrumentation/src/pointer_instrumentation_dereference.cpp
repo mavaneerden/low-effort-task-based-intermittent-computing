@@ -198,18 +198,21 @@ class PointerDereferenceHandler : public MatchFinder::MatchCallback {
             const UnaryOperator *PtrRef = Result.Nodes.getNodeAs<UnaryOperator>("pointer_ref");
             const Stmt *AssignmentMatcher = Result.Nodes.getNodeAs<Stmt>("assignment_matcher");
 
-            if (!isTaskFunction(getParentFunction(PtrRef, Result)))
+            const FunctionDecl* ParentFunction = getParentFunction(PtrRef, Result);
+
+            if (ParentFunction && !isTaskFunction(ParentFunction))
             {
                 return;
             }
 
+            int task_priority = getTaskPriority(ParentFunction);
             std::string macro_name = getMacro(AssignmentMatcher);
 
             const Expr* subExpr = PtrRef->getSubExpr();
             auto locations = getBeginEndLoc(Rewrite, subExpr);
 
             Rewrite.InsertTextBefore(locations.begin_loc, "(" + getCastString(subExpr) + macro_name + "(");
-            Rewrite.InsertTextAfterToken(locations.end_loc, "))");
+            Rewrite.InsertTextAfterToken(locations.end_loc, ", " + std::to_string(task_priority) + "))");
 
             string location = subExpr->getBeginLoc().printToString(Rewrite.getSourceMgr());
             LogInstrumentation("Pointer Dereference", "", "", location);
@@ -227,68 +230,23 @@ class ArraySubscriptHandler : public MatchFinder::MatchCallback {
             const ArraySubscriptExpr *subscriptExpr = Result.Nodes.getNodeAs<ArraySubscriptExpr>("array_subscript_expr");
             const Stmt *AssignmentMatcher = Result.Nodes.getNodeAs<Stmt>("assignment_matcher");
 
-            if (!isTaskFunction(getParentFunction(subscriptExpr, Result)))
+            const FunctionDecl* ParentFunction = getParentFunction(subscriptExpr, Result);
+
+            if (ParentFunction && !isTaskFunction(ParentFunction))
             {
                 return;
             }
 
             std::string macro_name = getMacro(AssignmentMatcher);
-
-            const MemberExpr *memberExpr = Result.Nodes.getNodeAs<MemberExpr>("member_expr");
-
-            if (memberExpr)
-            {
-                const Expr* memberExprBase = memberExpr->getBase();
-                auto locations = getBeginEndLoc(Rewrite, memberExprBase);
-
-                Rewrite.InsertTextBefore(locations.begin_loc, "(" + getCastString(memberExprBase) + macro_name + "(");
-                Rewrite.InsertTextAfterToken(locations.end_loc, "))");
-            }
-
-            const ImplicitCastExpr *castExpr = Result.Nodes.getNodeAs<ImplicitCastExpr>("cast_expr");
-            if (castExpr)
-            {
-                if (castExpr->getCastKind() != CK_LValueToRValue)
-                {
-                    return;
-                }
-            }
+            int task_priority = getTaskPriority(ParentFunction);
 
             const Expr* subscriptPointer = subscriptExpr->getBase();
             auto locations = getBeginEndLoc(Rewrite, subscriptPointer);
 
             Rewrite.InsertTextBefore(locations.begin_loc, "(" + getCastString(subscriptPointer) + macro_name + "(");
-            Rewrite.InsertTextAfterToken(locations.end_loc, "))");
+            Rewrite.InsertTextAfterToken(locations.end_loc, ", " + std::to_string(task_priority) + "))");
 
             string location = subscriptExpr->getBeginLoc().printToString(Rewrite.getSourceMgr());
-            LogInstrumentation("Pointer Dereference", "", "", location);
-        }
-
-    private:
-        Rewriter &Rewrite;
-};
-
-class MemberHandler : public MatchFinder::MatchCallback {
-    public:
-        MemberHandler(Rewriter &Rewrite) : Rewrite(Rewrite) {}
-
-        virtual void run(const MatchFinder::MatchResult &Result) {
-            const MemberExpr *memberExpr = Result.Nodes.getNodeAs<MemberExpr>("member_expr");
-            const Stmt *AssignmentMatcher = Result.Nodes.getNodeAs<Stmt>("assignment_matcher");
-
-            if (!isTaskFunction(getParentFunction(memberExpr, Result)))
-            {
-                return;
-            }
-
-            std::string macro_name = getMacro(AssignmentMatcher);
-
-            const Expr* memberExprBase = memberExpr->getBase();
-
-            Rewrite.InsertTextBefore(memberExprBase->getBeginLoc(), "(" + getCastString(memberExprBase) + macro_name + "(");
-            Rewrite.InsertTextAfterToken(memberExprBase->getEndLoc(), "))");
-
-            string location = memberExpr->getBeginLoc().printToString(Rewrite.getSourceMgr());
             LogInstrumentation("Pointer Dereference", "", "", location);
         }
 
@@ -304,8 +262,7 @@ class MyASTConsumer : public ASTConsumer {
 public:
   MyASTConsumer(Rewriter &R) :
       HandlerForPointerDeref(R),
-      HandlerForArraySubscript(R),
-      HandlerForMember(R)
+      HandlerForArraySubscript(R)
     {
 
     /***************************************************************
@@ -387,7 +344,7 @@ public:
   bool HandleTopLevelDecl(DeclGroupRef DR) override {
       for (DeclGroupRef::iterator b = DR.begin(), e = DR.end(); b != e; ++b) {
           // Traverse the declaration using our AST visitor.
-          (*b)->dump();
+        //   (*b)->dump();
       }
       return true;
   }
@@ -395,7 +352,6 @@ public:
 private:
   PointerDereferenceHandler HandlerForPointerDeref;
   ArraySubscriptHandler HandlerForArraySubscript;
-  MemberHandler HandlerForMember;
 
   MatchFinder Matcher;
 };

@@ -6,8 +6,6 @@
 #include "scheduler/scheduler.h"
 
 extern int __ink_buffers_offset;
-extern int __ink_task_shared_0_start;
-extern int __ink_task_shared_0_size;
 extern int __ink_task_shared_1_start;
 extern int __ink_task_shared_1_size;
 extern int __ink_task_shared_2_start;
@@ -146,10 +144,6 @@ extern int __ink_task_shared_63_size;
 
 void __ink_create_thread(uint8_t priority, void* entry_task, bool start_on_first_boot)
 {
-    // TODO: we must retain correct execution here.
-    // Therefore, first boot must be set AFTER all threads are created.
-    // Otherwise, if first boot is set before, and the device reboots after that, we will think we
-    // are not in the initializing boot anymore. So we won't create any threads.
     if (!ink_is_first_boot())
     {
         return;
@@ -157,11 +151,10 @@ void __ink_create_thread(uint8_t priority, void* entry_task, bool start_on_first
 
     void* data_buffer = NULL;
     void* data_buffer_backup = NULL;
-    uint16_t data_buffer_size = 99;
+    uint16_t data_buffer_size = 0;
 
     switch (priority)
     {
-        __INK_CREATE_THREAD_CASE(0)
         __INK_CREATE_THREAD_CASE(1)
         __INK_CREATE_THREAD_CASE(2)
         __INK_CREATE_THREAD_CASE(3)
@@ -230,12 +223,10 @@ void __ink_create_thread(uint8_t priority, void* entry_task, bool start_on_first
         break;
     }
 
-    /* TODO: Check if interrupts are disabled, if not, disable here. */
     __create_thread(priority, entry_task, data_buffer, data_buffer_backup, data_buffer_size);
 
     if (start_on_first_boot)
     {
         __start_thread(__get_thread(priority));
     }
-    /* TODO: re-enable interrupts here if they were enabled before. */
 }

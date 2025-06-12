@@ -8,6 +8,9 @@ cd ../instrumentation
 ./build.sh
 cd ../benchmarks
 
+## Delete instrumented files
+find . -name "*_instrumented.c" -type f -delete
+
 ### Build benchmarks ###
 rm -rf build/
 rm -rf bin/

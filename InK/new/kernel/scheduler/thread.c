@@ -1,19 +1,6 @@
 #include "ink.h"
 
-extern int __ink_thread_shared_start;
-extern int __ink_thread_shared_size;
-extern int __ink_buffers_backup_start;
-
 __nv uint8_t current_task_buffer_index = 0u;
-__nv uint8_t current_thread_shared_buffer_index = 0u;
-
-__nv bool backup_thread_shared_buffer = false;
-__nv bool backup_task_shared_buffer = false;
-
-__nv uint8_t thread_shared_buffer_index = 0u;
-__nv uint8_t thread_shared_buffer_index_temp = 0u;
-
-__nv void* thread_shared_buffers[2] = { (void*)&__ink_thread_shared_start, (void*)&__ink_buffers_backup_start };
 
 // prepares the stack of the thread for the task execution
 static inline void __prologue(thread_t *thread)
@@ -23,16 +10,9 @@ static inline void __prologue(thread_t *thread)
     __port_on(3,6);
 #endif
 
-    if (backup_thread_shared_buffer)
-    {
-        __fram_word_copy(thread_shared_buffers[thread_shared_buffer_index], thread_shared_buffers[thread_shared_buffer_index ^ 1u], (uintptr_t)&__ink_thread_shared_size);
-        backup_thread_shared_buffer = false;
-    }
-
-    if (backup_task_shared_buffer)
+    if (thread->copy_buffer_in_task_prologue)
     {
         __fram_word_copy(buffer->buf[buffer->original_buffer_index],buffer->buf[buffer->original_buffer_index ^ 1u], buffer->size >> 1u);
-        backup_task_shared_buffer = false;
     }
 
 #ifdef RAISE_PIN
@@ -74,7 +54,6 @@ void __tick(thread_t *thread)
          * This is the index that is NOT the index for the original buffer.
          * These variables are used to select the correct address when a variable is written or read.
          */
-        current_thread_shared_buffer_index = thread_shared_buffer_index ^ 1u;
         current_task_buffer_index = thread->buffer.original_buffer_index ^ 1u;
 
         /* If this is the first task in the thread (entry task), then we need to check if there is an event in the queue for that thread.
@@ -129,7 +108,9 @@ void __tick(thread_t *thread)
          * >>> state = COMMIT // Inconsistent value on state switch!!!
          */
         thread->buffer.buffer_index_temp = thread->buffer.original_buffer_index ^ 1;
-        thread_shared_buffer_index_temp = thread_shared_buffer_index ^ 1;
+
+        /* Reset buffer copy control flag to default. */
+        thread->copy_buffer_in_task_prologue = true;
 
         thread->state = TASK_COMMIT;
     case TASK_COMMIT:
@@ -137,7 +118,6 @@ void __tick(thread_t *thread)
          * This is an atomic action so can be executed repeatedly when power failures happen.
          */
         thread->buffer.original_buffer_index = thread->buffer.buffer_index_temp;
-        thread_shared_buffer_index = thread_shared_buffer_index_temp;
 
 
         if (thread->next == NULL)
