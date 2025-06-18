@@ -1,7 +1,3 @@
-/**
- * This file tests that shared variables that are used in
- * non-task functions are illegal.
- */
 #include <stddef.h>
 #include "ink/ink.h"
 
@@ -16,9 +12,6 @@ INK_CREATE_THREAD(1, false)
 
     SHARED_VAR_MACRO++;
     local_var = SHARED_VAR_MACRO;
-
-    shared_var++;
-    local_var = shared_var;
 
     return NULL;
 }

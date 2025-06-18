@@ -1,0 +1,5 @@
+P1.3 = Scheduling & selecting next thread
+P1.4 = Task Execution
+P3.4 = Benchmark execution
+P3.5 = Task commit
+P3.6 = Task buffer copy

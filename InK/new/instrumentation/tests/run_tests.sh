@@ -1,6 +1,6 @@
 # TODO: before we can test fully
 #   - Add Variable read/write macro to the top of a task depending on the reads/writes (experiment with this optimization later)
-#   - Remove the thread-shared stuff, it is not sustainable
+#   - Remove the thread-shared stuff, it is not sustainable ✔
 #   - Enforce single thread per file isolation ✔
 #   - Disallow extern/header task functions/shared variables (when non-const) ✔
 #   - Instrument all shared variables that are used in the global scope by other shared variables but not in tasks ✔

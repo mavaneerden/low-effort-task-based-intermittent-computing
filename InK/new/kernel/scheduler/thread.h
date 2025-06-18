@@ -70,7 +70,6 @@ typedef struct {
     void *next_temp;        // Temporary variable to store the next thread to ensure consistency.
     void *next;             // the current task to be executed
     buffer_t buffer;        // holds task shared persistent variables
-    bool copy_buffer_in_task_prologue;
     uint16_t sing_timer;// holds the time when the thread will be executed
     uint16_t pdc_timer; // holds the time for "periodic" execution of the thread
     uint16_t expr_timer; // hold the expiration time of the thread from time of completion

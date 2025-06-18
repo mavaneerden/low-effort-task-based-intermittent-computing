@@ -50,19 +50,23 @@ static llvm::cl::OptionCategory MatcherSampleCategory("Matcher Sample");
 #define ENABLE_BACKUP       "__INK_ENABLE_TASK_SHARED_BACKUP"
 
 uint32_t num_errors = 0;
+uint32_t static_local_num = 0;
 
-struct var_info_t
-{
-    bool is_write;
-    std::string name_as_is;
+struct static_var_data_t {
+    uint32_t num;
+    locations_t decl_loc;
 };
 
+const FunctionDecl* first_task_function = nullptr;
+std::map<const VarDecl*, std::map<const FunctionDecl*, std::map<const DeclRefExpr*, bool>>> VariableMap;
+std::map<const VarDecl*, static_var_data_t> StaticLocalVariableMap;
+
 std::map<const VarDecl*, std::string> VarsInstrumented;
-std::map<const VarDecl*, const SourceLocation> StaticVars;
+// std::map<const VarDecl*, const SourceLocation> StaticVars;
 std::set<const VarDecl*> VarsUsedOutsideTasks;
 std::map<const VarDecl*, const DeclRefExpr *> VarsUsedInGlobalScope;
-std::map<const VarDecl*, std::map<const FunctionDecl*, std::vector<var_info_t>>> FunctionVarRelation;
-std::set<const FunctionDecl*> ProcessFunctionsForWrite;
+// std::map<const VarDecl*, std::map<const FunctionDecl*, std::vector<var_info_t>>> FunctionVarRelation;
+// std::set<const FunctionDecl*> ProcessFunctionsForWrite;
 
 string getVarDeclAsString(const VarDecl* var)
 {
@@ -119,64 +123,267 @@ void instrumentGlobalScopeUses(Rewriter &Rewrite)
     } while (mark_for_deletion.size() > 0);
 }
 
-void addSectionToVars(Rewriter &Rewrite)
+void removeReadOnlyVars()
 {
-    for (auto &[var, func_list] : FunctionVarRelation)
-    {
-        std::string section_value;
-        int task_priority;
+    std::set<const VarDecl*> ToRemove;
 
+    for (auto &[var, func_map] : VariableMap)
+    {
+        /* Using a task-shared variable outside of a task function is not allowed for correctness reasons. */
         if (VarsUsedOutsideTasks.find(var) != VarsUsedOutsideTasks.end())
         {
             reportError("Variable '" + std::string(var->getName()) + "' used outside task function.");
             exit(1);
         }
 
-        /* Add a section attribute to the variable declaration. */
-        for (auto &[func, var_info_list] : func_list)
+        bool remove_var = true;
+
+        for (auto &[func, decl_map] : func_map)
         {
-            task_priority = getTaskPriority(func);
-
-            /* Also add the pointer for the variable to every function wherein it is used. */
-            string global_var_name = var->getName().str();
-            string global_var_ptr = INK_POINTER_PREFIX + global_var_name;
-            auto location = getBeginEndLoc(Rewrite, *func->getBody()->child_begin()).begin_loc;
-            string prefix_string = "";
-
-            if (StaticVars.find(var) != StaticVars.end())
-            {
-                location = StaticVars[var];
-                prefix_string = ";\n";
-            }
-
-            string type_str = "__typeof__(" + global_var_name + ")";
-
-            Rewrite.InsertTextBefore(location, prefix_string + type_str + "(* const " + global_var_ptr + ")" + " = " + GLOBAL_GET_ADDRESS + "(" + global_var_name + ");\n");
-            LogInstrumentation("Shared Variable Pointer", func->getNameAsString(), "", location.printToString(Rewrite.getSourceMgr()));
-
-            for (auto &[is_write, _] : var_info_list)
+            for (auto &[decl, is_write] : decl_map)
             {
                 if (is_write)
                 {
-                    ProcessFunctionsForWrite.insert(func);
-                    break;
+                    remove_var = false;
                 }
             }
         }
 
-        /* Variable is only used in single thread. */
-        section_value = ".ink.task_shared." + std::to_string(task_priority);
-
-        VarsInstrumented[var] = section_value;
-        Rewrite.InsertTextBefore(Rewrite.getSourceMgr().getExpansionLoc(var->getLocation()), "__attribute__((section(\"" + section_value + "\")))");
-        LogInstrumentation("Shared Variable Declaration", var->getNameAsString(), "", var->getLocation().printToString(Rewrite.getSourceMgr()));
+        if (remove_var)
+        {
+            ToRemove.insert(var);
+        }
     }
 
-    for (auto func : ProcessFunctionsForWrite)
+    for (auto var : ToRemove)
     {
-        int task_priority = getTaskPriority(func);
-        auto location = getBeginEndLoc(Rewrite, *func->getBody()->child_begin()).begin_loc;
-        Rewrite.InsertTextBefore(location, ENABLE_BACKUP "(" + std::to_string(task_priority) + ");\n");
+        VariableMap.erase(var);
+    }
+}
+
+void instrumentDecls(Rewriter &Rewrite)
+{
+    for (auto &[var, func_map] : VariableMap)
+    {
+        /* Get the task priority of the variable. */
+        const int task_priority = getTaskPriority(func_map.begin()->first);
+
+        /* Variable is only used in single thread. */
+        const std::string section_value = ".ink.task_shared." + std::to_string(task_priority);
+
+        /* For instrumenting global scope uses. */
+        VarsInstrumented[var] = section_value;
+
+        /* Instrument the variable with the section. */
+        Rewrite.InsertTextBefore(Rewrite.getSourceMgr().getExpansionLoc(var->getLocation()), "__attribute__((section(\"" + section_value + "\")))");
+        LogInstrumentation("Shared Variable Declaration", var->getNameAsString(), "", var->getLocation().printToString(Rewrite.getSourceMgr()));
+
+        /* If it is a static local variable, add the call to the initializer function. */
+        if (var->isStaticLocal())
+        {
+            const std::string static_var_name = var->getName().str();
+            const std::string static_var_num = std::to_string(StaticLocalVariableMap[var].num);
+            const std::string array_str = var->getType()->isArrayType() ? "_ARRAY" : "";
+            Rewrite.InsertTextAfterToken(Rewrite.getSourceMgr().getExpansionLoc(StaticLocalVariableMap[var].decl_loc.end_loc), "\n__INK_SET_BUFFER_POINTERS_STATIC" + array_str + "(" + static_var_name + ", " + static_var_num + ");");
+        }
+    }
+}
+
+void instrumentVarUses(Rewriter &Rewrite)
+{
+    for (auto &[var, func_map] : VariableMap)
+    {
+        const std::string var_name = var->getName().str();
+
+        for (auto &[func, decl_map] : func_map)
+        {
+            for (auto &[decl, _] : decl_map)
+            {
+                auto locations = getBeginEndLoc(Rewrite, decl);
+                std::string array_str = "";
+
+                if (var->getType()->isArrayType())
+                {
+                    array_str = "_ARRAY";
+                }
+
+                if (var->isStaticLocal())
+                {
+                    const std::string static_var_num = std::to_string(StaticLocalVariableMap[var].num);
+
+                    /* ReplaceText is necessary to properly replace macro's. */
+                    Rewrite.ReplaceText(locations.begin_loc, "__INK_GET_VAR_FROM_BUF_STATIC" + array_str + "(" + var_name + ", " + static_var_num + ")");
+                }
+                else
+                {
+                    /* ReplaceText is necessary to properly replace macro's. */
+                    Rewrite.ReplaceText(locations.begin_loc, "__INK_GET_VAR_FROM_BUF" + array_str + "(" + var_name + ")");
+                }
+            }
+        }
+    }
+}
+
+void instrumentFunctions(Rewriter &Rewrite)
+{
+// __INK_SET_CURRENT_TASK_BUFFER_INDEX
+    std::set<const FunctionDecl*> processed_functions;
+
+    for (auto &[var, func_map] : VariableMap)
+    {
+        for (auto &[func, _] : func_map)
+        {
+            if (processed_functions.find(func) == processed_functions.end())
+            {
+                auto location = getBeginEndLoc(Rewrite, *func->getBody()->child_begin()).begin_loc;
+                Rewrite.InsertTextBefore(location, "__INK_SET_CURRENT_TASK_BUFFER_INDEX\n");
+
+                processed_functions.insert(func);
+            }
+        }
+    }
+}
+
+std::string getVarTypeForField(const VarDecl* var, Rewriter &Rewrite)
+{
+    /* Handle other types. Arrays are saved into the struct as pointers. */
+    string type_str = var->getType().getAsString();
+    size_t nd = std::count_if( type_str.begin(), type_str.end(), []( char c ){return c =='[';});
+    std::string pointer_str = std::string(nd == 0 ? 0 : nd - 1, '*');
+
+    /* Handle anonymous structs and unions.
+     * The anonymous declarations must be copied into the struct verbatim,
+     * since there is no associated type.
+     */
+    if (type_str.find("unnamed struct at") != type_str.npos)
+    {
+        auto* t = var->getTypeSourceInfo()->getTypeLoc().getTypePtr();
+        while (const ArrayType* at = t->getAsArrayTypeUnsafe())
+        {
+            t = at->getElementType().getTypePtr();
+        }
+
+        if (const RecordType* rt = t->getAs<RecordType>())
+        {
+            const RecordDecl* rd = rt->getDecl();
+            if (rd->isAnonymousStructOrUnion() || rd->getName().str() == "")
+            {
+                return Rewrite.getRewrittenText(rd->getSourceRange()) + pointer_str;
+            }
+        }
+    }
+
+    size_t open_bracket_pos;
+    if ((open_bracket_pos = type_str.find("[")) != type_str.npos)
+    {
+        type_str.erase(open_bracket_pos, type_str.size() - open_bracket_pos);
+    }
+
+    return type_str + pointer_str;
+}
+
+std::string getStructDefinition(Rewriter &Rewrite)
+{
+    std::string struct_defintion_begin = "typedef struct {\n";
+    std::string struct_definition_end = "} __INK_SHARED_VAR_STRUCT_TYPE;\nstatic __INK_SHARED_VAR_STRUCT_TYPE INK_PERSISTENT __INK_SHARED_VAR_STRUCT_NAME[2];";
+
+    std::string struct_definition_fields = "";
+
+    for (auto &[var, _] : VariableMap)
+    {
+        const auto var_type = getVarTypeForField(var, Rewrite);
+        const auto var_name = var->getName().str();
+
+        if (var->isStaticLocal())
+        {
+            const std::string static_var_num = std::to_string(StaticLocalVariableMap[var].num);
+
+            struct_definition_fields += "    __INK_SHARED_VAR_STRUCT_FIELD_STATIC(" + var_type + ", " + var_name + ", " + static_var_num + ");\n";
+        }
+        else
+        {
+            struct_definition_fields += "    __INK_SHARED_VAR_STRUCT_FIELD(" + var_type + ", " + var_name + ");\n";
+        }
+    }
+
+    return struct_defintion_begin + struct_definition_fields + struct_definition_end;
+}
+
+std::string getInitializerConstructorFunction()
+{
+    std::string task_priority = std::to_string(getTaskPriority(VariableMap.begin()->second.begin()->first));
+    std::string func_definition_begin = "__INK_INITIALIZE_SHARED_VARS_FUNC(" + task_priority + "){\n";
+    std::string func_definition_end = "}";
+
+    std::string function_definition_body = "";
+
+    for (auto &[var, _] : VariableMap)
+    {
+        const auto var_name = var->getName().str(); //+ (var->getType().getTypePtr()->isArrayType() ? "[0]" : "");
+
+        if (var->isStaticLocal())
+        {
+            continue;
+        }
+        else
+        {
+            const std::string array_str = var->getType()->isArrayType() ? "_ARRAY" : "";
+            function_definition_body += "    __INK_SET_BUFFER_POINTERS" + array_str + "(" + var_name + ");\n";
+        }
+    }
+
+    return func_definition_begin + function_definition_body + func_definition_end;
+}
+
+
+void instrumentSOF(Rewriter &Rewrite)
+{
+    auto &sm = Rewrite.getSourceMgr();
+    auto SOFloc = sm.getExpansionLoc(first_task_function->getReturnTypeSourceRange().getBegin());
+
+    std::string include_str = "#include \"ink/address_translation.h\"\n";
+    // std::string struct_forward_decl_str = VariableMap.size() == 0 ? "" : "typedef struct __INK_SHARED_VAR_STRUCT_TYPE __INK_SHARED_VAR_STRUCT_TYPE;\n";
+    std::string struct_forward_decl_str = VariableMap.size() == 0 ? "" : getStructDefinition(Rewrite);
+
+    Rewrite.InsertTextBefore(SOFloc, include_str + struct_forward_decl_str);
+}
+
+void instrumentEOF(Rewriter &Rewrite)
+{
+    auto &sm = Rewrite.getSourceMgr();
+    auto EOFloc = sm.getLocForEndOfFile(sm.getMainFileID());
+
+    std::string struct_definition_str = "";//getStructDefinition(Rewrite) + "\n";
+    std::string initializer_constructor = getInitializerConstructorFunction();
+
+    Rewrite.InsertTextAfterToken(EOFloc, struct_definition_str + initializer_constructor + "\n");
+}
+
+void instrumentVariables(Rewriter &Rewrite)
+{
+    removeReadOnlyVars();
+
+    if (VariableMap.size() > 0)
+    {
+        instrumentDecls(Rewrite);
+        instrumentVarUses(Rewrite);
+        instrumentFunctions(Rewrite);
+    }
+
+    /* Add include statement and struct definition.
+     * Putting the struct definition here has the constraint that all
+     * shared-variable declarations must come before the definition of the
+     * first task function.
+     */
+    if (first_task_function)
+    {
+        instrumentSOF(Rewrite);
+    }
+
+    if (VariableMap.size() > 0)
+    {
+        instrumentEOF(Rewrite);
+        instrumentGlobalScopeUses(Rewrite);
     }
 }
 
@@ -195,6 +402,17 @@ bool isVariableRead(const clang::DeclRefExpr *d, const clang::ast_matchers::Matc
             if (ase->getIdx() == prev_node)
             {
                 return true;
+            }
+        }
+
+        if (const CallExpr* ce = ParentNode.get<CallExpr>())
+        {
+            if (const FunctionDecl* fd = ce->getDirectCallee())
+            {
+                if (fd->getName().str() == "__INK_TRANSLATE_POINTER_DEREFERENCE_WRITE")
+                {
+                    return false;
+                }
             }
         }
 
@@ -289,15 +507,7 @@ class GlobalVarHandler : public MatchFinder::MatchCallback {
             }
 
             auto &sm = Result.Context->getSourceManager();
-            auto &lo = Result.Context->getLangOpts();
-            auto CharRange = Lexer::getAsCharRange(GlobalVarRef->getSourceRange(), sm, lo);
-            CharRange.setEnd(CharRange.getEnd().getLocWithOffset(1));
-            string global_var_ref_str_as_is = Lexer::getSourceText(CharRange, sm, lo).str();
-
-            /* Replace global variable access with macro. */
-            string global_var_name = GlobalVar->getName().str();
-            string global_var_ptr = INK_POINTER_PREFIX + global_var_name;
-
+            std::string global_var_name = GlobalVar->getName().str();
 
             if (GlobalVar->hasExternalStorage())
             {
@@ -310,27 +520,7 @@ class GlobalVarHandler : public MatchFinder::MatchCallback {
                 exit(1);
             }
 
-            if (FunctionVarRelation.find(GlobalVar) == FunctionVarRelation.end())
-            {
-                FunctionVarRelation.insert({GlobalVar, {}});
-            }
-            if (FunctionVarRelation[GlobalVar].find(parent_function) == FunctionVarRelation[GlobalVar].end())
-            {
-                FunctionVarRelation[GlobalVar].insert({parent_function, {{}, {}}});
-            }
-
-            /* Add whether or not variable use is a write. */
-            FunctionVarRelation[GlobalVar][parent_function].push_back({.is_write = !isVariableRead(GlobalVarRef, Result), .name_as_is = global_var_ref_str_as_is});
-
-            string global_var_ref_instr =  "(*" + global_var_ptr + ")";
-            auto locations = getBeginEndLoc(Rewrite, GlobalVarRef);
-
-            /* ReplaceText is necessary to properly replace macro's. */
-            Rewrite.ReplaceText(locations.begin_loc, global_var_ref_instr);
-
-            /* Log the instrumentation. */
-            string location = GlobalVarRef->getLocation().printToString(Rewrite.getSourceMgr());
-            LogInstrumentation("Global variable", global_var_name, global_var_ref_instr, location);
+            VariableMap[GlobalVar][parent_function][GlobalVarRef] = !isVariableRead(GlobalVarRef, Result);
         }
 
     private:
@@ -350,14 +540,63 @@ class StaticVarHandler : public MatchFinder::MatchCallback {
                 return;
             }
 
-            const FunctionDecl* parent_function = getParentFunction(GlobalVarRef, Result);
-
-            if (parent_function && !isTaskFunction(parent_function))
+            /* Ignore const variables (these cannot be written). */
+            if (GlobalVar->getType().isConstant(GlobalVar->getASTContext()))
             {
                 return;
             }
 
-            StaticVars.insert({GlobalVar, Rewrite.getSourceMgr().getExpansionLoc(GlobalVarRef->getEndLoc())});
+            /* Volatile variables are assumed to be hardware-related.
+             * Intermittent hardware register operations are not supported by InK,
+             * but the programmer is allowed to use them.
+             */
+            if (GlobalVar->getType().isVolatileQualified())
+            {
+                return;
+            }
+
+            /* Only instrument variables inside tasks. */
+            const FunctionDecl* parent_function = getParentFunction(GlobalVarRef, Result);
+            if (!parent_function || !isTaskFunction(parent_function))
+            {
+                return;
+            }
+
+            auto &sm = Result.Context->getSourceManager();
+            std::string global_var_name = GlobalVar->getName().str();
+
+            if (GlobalVar->hasExternalStorage())
+            {
+                reportError("Global variable '" + global_var_name + "' has external storage, this is not allowed.");
+                exit(1);
+            }
+            if (sm.getFileID(GlobalVar->getLocation()) != sm.getMainFileID())
+            {
+                reportError("Global variable '" + global_var_name + "' declared in header file, this is not allowed.");
+                exit(1);
+            }
+
+            StaticLocalVariableMap[GlobalVar] = {
+                static_local_num++,
+                getBeginEndLoc(Rewrite, GlobalVarRef)
+            };
+        }
+
+    private:
+        Rewriter &Rewrite;
+};
+
+class TaskFunctionHandler : public MatchFinder::MatchCallback {
+    public:
+        TaskFunctionHandler(Rewriter &Rewrite) : Rewrite(Rewrite) {}
+
+        virtual void run(const MatchFinder::MatchResult &Result) {
+            const FunctionDecl * task_candidate = Result.Nodes.getNodeAs<FunctionDecl>("task_candidate");
+
+            if (isTaskFunction(task_candidate) && !first_task_function)
+            {
+                first_task_function = task_candidate;
+            }
         }
 
     private:
@@ -372,7 +611,8 @@ class MyASTConsumer : public ASTConsumer {
 public:
   MyASTConsumer(Rewriter &R) :
       HandlerForGlobal(R),
-      HandlerForStatic(R)
+      HandlerForStatic(R),
+      HandlerForTaskFunction(R)
     {
 
     Matcher.addMatcher(
@@ -401,6 +641,15 @@ public:
         ),
         &HandlerForStatic
     );
+
+
+    Matcher.addMatcher(
+        functionDecl(
+            hasAttr(clang::attr::Kind::Annotate),
+            isDefinition()
+        ).bind("task_candidate"),
+        &HandlerForTaskFunction
+    );
   }
 
   void HandleTranslationUnit(ASTContext &Context) override {
@@ -420,6 +669,7 @@ public:
 private:
   GlobalVarHandler HandlerForGlobal;
   StaticVarHandler HandlerForStatic;
+  TaskFunctionHandler HandlerForTaskFunction;
   MatchFinder Matcher;
 };
 
@@ -428,8 +678,7 @@ class MyFrontendAction : public ASTFrontendAction {
     public:
         MyFrontendAction() {}
         void EndSourceFileAction() override {
-            addSectionToVars(TheRewriter);
-            instrumentGlobalScopeUses(TheRewriter);
+            instrumentVariables(TheRewriter);
             TheRewriter.getEditBuffer(TheRewriter.getSourceMgr().getMainFileID())
                 .write(llvm::outs());
         }

@@ -26,6 +26,19 @@ struct
     int c;
 } shared_anonymous_struct;
 
+struct
+{
+    int a;
+} anonymous_struct_array[5][5];
+
+
+typedef struct
+{
+    int a;
+} t_s;
+t_s typedef_anonymous_struct;
+
+
 void* t_read();
 void* t_write();
 
@@ -81,6 +94,30 @@ void* t_write()
     shared_anonymous_struct.s1.s2.b -= local_var;
     shared_anonymous_struct.s1.s2.b++;
     ++shared_anonymous_struct.s1.s2.b;
+
+    /* Nested member write. */
+    typedef_anonymous_struct.a = local_var;
+    typedef_anonymous_struct.a += local_var;
+    typedef_anonymous_struct.a -= local_var;
+    typedef_anonymous_struct.a++;
+    ++typedef_anonymous_struct.a;
+    typedef_anonymous_struct.a = local_var;
+    typedef_anonymous_struct.a += local_var;
+    typedef_anonymous_struct.a -= local_var;
+    typedef_anonymous_struct.a++;
+    ++typedef_anonymous_struct.a;
+
+    /* Nested member write. */
+    anonymous_struct_array[0][0].a = local_var;
+    anonymous_struct_array[0][0].a += local_var;
+    anonymous_struct_array[0][0].a -= local_var;
+    anonymous_struct_array[0][0].a++;
+    ++anonymous_struct_array[0][0].a;
+    anonymous_struct_array[0][0].a = local_var;
+    anonymous_struct_array[0][0].a += local_var;
+    anonymous_struct_array[0][0].a -= local_var;
+    anonymous_struct_array[0][0].a++;
+    ++anonymous_struct_array[0][0].a;
 
     /* Array member write. */
     shared_struct.b[0] = local_var;

@@ -1,0 +1,8 @@
+V1 of the instrumentation was too slow.
+It required too many function calls, both for getting/setting variables
+and for initializing the variables at the start of the function.
+
+V2 of the instrumentation was a big improvement.
+It was on par with the original, but slower than the corrected original.
+This is because it takes 2/3 instructions to get a variable from the buffer,
+compared to just 1 in case of the original.

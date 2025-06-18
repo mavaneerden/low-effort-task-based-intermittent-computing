@@ -59,8 +59,11 @@ void __attribute__((constructor(1000))) __ink_init()
 
  * This function is called before main() and
  * AFTER all threads are created.
+ *
+ * Constructor is 20001 because the thread creation and
+ * shared variable initializers should be called first.
  */
-void __attribute__((constructor(11000))) __ink_init_done()
+void __attribute__((constructor(21000))) __ink_init_done()
 {
     __is_first_boot = false;
     __ink_initialized = true;

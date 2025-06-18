@@ -1,4 +1,5 @@
 #include "ink.h"
+#include "api/include/address_translation.h"
 
 __nv uint8_t current_task_buffer_index = 0u;
 
@@ -10,10 +11,7 @@ static inline void __prologue(thread_t *thread)
     __port_on(3,6);
 #endif
 
-    if (thread->copy_buffer_in_task_prologue)
-    {
-        __fram_word_copy(buffer->buf[buffer->original_buffer_index],buffer->buf[buffer->original_buffer_index ^ 1u], buffer->size >> 1u);
-    }
+    __fram_word_copy(buffer->buf[buffer->original_buffer_index],buffer->buf[buffer->original_buffer_index ^ 1u], buffer->size >> 1u);
 
 #ifdef RAISE_PIN
     __port_off(3,6);
@@ -108,9 +106,6 @@ void __tick(thread_t *thread)
          * >>> state = COMMIT // Inconsistent value on state switch!!!
          */
         thread->buffer.buffer_index_temp = thread->buffer.original_buffer_index ^ 1;
-
-        /* Reset buffer copy control flag to default. */
-        thread->copy_buffer_in_task_prologue = true;
 
         thread->state = TASK_COMMIT;
     case TASK_COMMIT:
