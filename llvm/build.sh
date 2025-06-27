@@ -24,10 +24,9 @@ if [ ! -d llvm-project/build ]; then
     cd ..
 fi
 
-W
 echo "Install LLVM..."
 cd llvm-project
-mkdir install
+mkdir -p install
 cd build
 make DESTDIR=$BASE_DIR/install install
 cd ..

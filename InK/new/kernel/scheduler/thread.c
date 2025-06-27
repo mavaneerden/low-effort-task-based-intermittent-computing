@@ -113,7 +113,10 @@ void __tick(thread_t *thread)
          * This is an atomic action so can be executed repeatedly when power failures happen.
          */
         thread->buffer.original_buffer_index = thread->buffer.buffer_index_temp;
-
+#ifdef RAISE_PIN
+        __port_off(3,5);
+        __port_on(3,5);
+#endif
 
         if (thread->next == NULL)
         {

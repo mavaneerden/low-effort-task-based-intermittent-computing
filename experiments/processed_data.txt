@@ -1,0 +1,382 @@
+++++++++++ LEGACY ++++++++++
+
+======= ar =======
+--- STATISTICS ---
+Number of benchmark executions:                5
+Number of task executions (total):             10040
+Number of task executions (avg per benchmark): 2008
+
+--- TIME MEASUREMENTS PER TASK ---          
+Average benchmark time:       2956 ms
+Average scheduling time:      63 us
+Average task init time:       380 us
+Average task execution time:  823 us
+Average task commit time:     94 us
+Average task activation time: 11 us
+Average task full time:       1450 us
+Average task other time:      80 us
+
+--- OVERHEAD MEASUREMENTS PER TASK ---          
+Average scheduling overhead:      4.34 %
+Average task init overhead:       26.21 %
+Average task execution overhead:  56.74 %
+Average task commit overhead:     6.49 %
+Average task activation overhead: 0.73 %
+Average other overhead:           5.49 %
+
+Average total overhead:           43.26 %
+Average execution fraction:       56.74 %
+
+======= bitcount =======
+--- STATISTICS ---
+Number of benchmark executions:                5
+Number of task executions (total):             3550
+Number of task executions (avg per benchmark): 710
+
+--- TIME MEASUREMENTS PER TASK ---          
+Average benchmark time:       447 ms
+Average scheduling time:      63 us
+Average task init time:       152 us
+Average task execution time:  208 us
+Average task commit time:     94 us
+Average task activation time: 11 us
+Average task full time:       608 us
+Average task other time:      80 us
+
+--- OVERHEAD MEASUREMENTS PER TASK ---          
+Average scheduling overhead:      10.35 %
+Average task init overhead:       25.09 %
+Average task execution overhead:  34.23 %
+Average task commit overhead:     15.49 %
+Average task activation overhead: 1.74 %
+Average other overhead:           13.09 %
+
+Average total overhead:           65.77 %
+Average execution fraction:       34.23 %
+
+======= cem =======
+--- STATISTICS ---
+Number of benchmark executions:                5
+Number of task executions (total):             8060
+Number of task executions (avg per benchmark): 1612
+
+--- TIME MEASUREMENTS PER TASK ---          
+Average benchmark time:       10001 ms
+Average scheduling time:      63 us
+Average task init time:       5827 us
+Average task execution time:  108 us
+Average task commit time:     93 us
+Average task activation time: 11 us
+Average task full time:       6182 us
+Average task other time:      80 us
+
+--- OVERHEAD MEASUREMENTS PER TASK ---          
+Average scheduling overhead:      1.02 %
+Average task init overhead:       94.26 %
+Average task execution overhead:  1.75 %
+Average task commit overhead:     1.51 %
+Average task activation overhead: 0.17 %
+Average other overhead:           1.29 %
+
+Average total overhead:           98.25 %
+Average execution fraction:       1.75 %
+
+======= cuckoo =======
+--- STATISTICS ---
+Number of benchmark executions:                5
+Number of task executions (total):             2260
+Number of task executions (avg per benchmark): 452
+
+--- TIME MEASUREMENTS PER TASK ---          
+Average benchmark time:       421 ms
+Average scheduling time:      63 us
+Average task init time:       574 us
+Average task execution time:  88 us
+Average task commit time:     93 us
+Average task activation time: 10 us
+Average task full time:       908 us
+Average task other time:      81 us
+
+--- OVERHEAD MEASUREMENTS PER TASK ---          
+Average scheduling overhead:      6.93 %
+Average task init overhead:       63.21 %
+Average task execution overhead:  9.69 %
+Average task commit overhead:     10.25 %
+Average task activation overhead: 1.06 %
+Average other overhead:           8.87 %
+
+Average total overhead:           90.31 %
+Average execution fraction:       9.69 %
+
+======= dijkstra =======
+--- STATISTICS ---
+Number of benchmark executions:                4
+Number of task executions (total):             10078
+Number of task executions (avg per benchmark): 2519
+
+--- TIME MEASUREMENTS PER TASK ---          
+Average benchmark time:       4215 ms
+Average scheduling time:      63 us
+Average task init time:       1281 us
+Average task execution time:  123 us
+Average task commit time:     94 us
+Average task activation time: 11 us
+Average task full time:       1650 us
+Average task other time:      80 us
+
+--- OVERHEAD MEASUREMENTS PER TASK ---          
+Average scheduling overhead:      3.81 %
+Average task init overhead:       77.59 %
+Average task execution overhead:  7.43 %
+Average task commit overhead:     5.70 %
+Average task activation overhead: 0.64 %
+Average other overhead:           4.82 %
+
+Average total overhead:           92.57 %
+Average execution fraction:       7.43 %
+
+======= fft =======
+--- STATISTICS ---
+Number of benchmark executions:                11
+Number of task executions (total):             88
+Number of task executions (avg per benchmark): 8
+
+--- TIME MEASUREMENTS PER TASK ---          
+Average benchmark time:       60 ms
+Average scheduling time:      64 us
+Average task init time:       541 us
+Average task execution time:  6666 us
+Average task commit time:     92 us
+Average task activation time: 11 us
+Average task full time:       7528 us
+Average task other time:      154 us
+
+--- OVERHEAD MEASUREMENTS PER TASK ---          
+Average scheduling overhead:      0.85 %
+Average task init overhead:       7.19 %
+Average task execution overhead:  88.55 %
+Average task commit overhead:     1.22 %
+Average task activation overhead: 0.14 %
+Average other overhead:           2.04 %
+
+Average total overhead:           11.45 %
+Average execution fraction:       88.55 %
+
+======= rsa =======
+--- STATISTICS ---
+Number of benchmark executions:                5
+Number of task executions (total):             1155
+Number of task executions (avg per benchmark): 231
+
+--- TIME MEASUREMENTS PER TASK ---          
+Average benchmark time:       664 ms
+Average scheduling time:      63 us
+Average task init time:       569 us
+Average task execution time:  2038 us
+Average task commit time:     93 us
+Average task activation time: 11 us
+Average task full time:       2855 us
+Average task other time:      81 us
+
+--- OVERHEAD MEASUREMENTS PER TASK ---          
+Average scheduling overhead:      2.20 %
+Average task init overhead:       19.94 %
+Average task execution overhead:  71.38 %
+Average task commit overhead:     3.26 %
+Average task activation overhead: 0.37 %
+Average other overhead:           2.85 %
+
+Average total overhead:           28.62 %
+Average execution fraction:       71.38 %
+
+
+++++++++++ NEW ++++++++++
+
+======= ar =======
+--- STATISTICS ---
+Number of benchmark executions:                5
+Number of task executions (total):             10040
+Number of task executions (avg per benchmark): 2008
+
+--- TIME MEASUREMENTS PER TASK ---          
+Average benchmark time:       2988 ms
+Average scheduling time:      63 us
+Average task init time:       378 us
+Average task execution time:  844 us
+Average task commit time:     94 us
+Average task activation time: 11 us
+Average task full time:       1466 us
+Average task other time:      77 us
+
+--- OVERHEAD MEASUREMENTS PER TASK ---          
+Average scheduling overhead:      4.29 %
+Average task init overhead:       25.79 %
+Average task execution overhead:  57.55 %
+Average task commit overhead:     6.42 %
+Average task activation overhead: 0.72 %
+Average other overhead:           5.22 %
+
+Average total overhead:           42.45 %
+Average execution fraction:       57.55 %
+
+======= bitcount =======
+--- STATISTICS ---
+Number of benchmark executions:                5
+Number of task executions (total):             3550
+Number of task executions (avg per benchmark): 710
+
+--- TIME MEASUREMENTS PER TASK ---          
+Average benchmark time:       475 ms
+Average scheduling time:      64 us
+Average task init time:       154 us
+Average task execution time:  250 us
+Average task commit time:     92 us
+Average task activation time: 10 us
+Average task full time:       647 us
+Average task other time:      78 us
+
+--- OVERHEAD MEASUREMENTS PER TASK ---          
+Average scheduling overhead:      9.88 %
+Average task init overhead:       23.73 %
+Average task execution overhead:  38.69 %
+Average task commit overhead:     14.24 %
+Average task activation overhead: 1.48 %
+Average other overhead:           11.98 %
+
+Average total overhead:           61.31 %
+Average execution fraction:       38.69 %
+
+======= cem =======
+--- STATISTICS ---
+Number of benchmark executions:                5
+Number of task executions (total):             8060
+Number of task executions (avg per benchmark): 1612
+
+--- TIME MEASUREMENTS PER TASK ---          
+Average benchmark time:       10046 ms
+Average scheduling time:      63 us
+Average task init time:       5823 us
+Average task execution time:  144 us
+Average task commit time:     93 us
+Average task activation time: 11 us
+Average task full time:       6209 us
+Average task other time:      76 us
+
+--- OVERHEAD MEASUREMENTS PER TASK ---          
+Average scheduling overhead:      1.01 %
+Average task init overhead:       93.77 %
+Average task execution overhead:  2.31 %
+Average task commit overhead:     1.50 %
+Average task activation overhead: 0.17 %
+Average other overhead:           1.23 %
+
+Average total overhead:           97.69 %
+Average execution fraction:       2.31 %
+
+======= cuckoo =======
+--- STATISTICS ---
+Number of benchmark executions:                5
+Number of task executions (total):             2260
+Number of task executions (avg per benchmark): 452
+
+--- TIME MEASUREMENTS PER TASK ---          
+Average benchmark time:       430 ms
+Average scheduling time:      64 us
+Average task init time:       569 us
+Average task execution time:  117 us
+Average task commit time:     92 us
+Average task activation time: 10 us
+Average task full time:       929 us
+Average task other time:      78 us
+
+--- OVERHEAD MEASUREMENTS PER TASK ---          
+Average scheduling overhead:      6.88 %
+Average task init overhead:       61.25 %
+Average task execution overhead:  12.58 %
+Average task commit overhead:     9.91 %
+Average task activation overhead: 1.03 %
+Average other overhead:           8.34 %
+
+Average total overhead:           87.42 %
+Average execution fraction:       12.58 %
+
+======= dijkstra =======
+--- STATISTICS ---
+Number of benchmark executions:                4
+Number of task executions (total):             10078
+Number of task executions (avg per benchmark): 2519
+
+--- TIME MEASUREMENTS PER TASK ---          
+Average benchmark time:       4298 ms
+Average scheduling time:      63 us
+Average task init time:       1279 us
+Average task execution time:  161 us
+Average task commit time:     94 us
+Average task activation time: 11 us
+Average task full time:       1683 us
+Average task other time:      76 us
+
+--- OVERHEAD MEASUREMENTS PER TASK ---          
+Average scheduling overhead:      3.74 %
+Average task init overhead:       75.96 %
+Average task execution overhead:  9.54 %
+Average task commit overhead:     5.59 %
+Average task activation overhead: 0.63 %
+Average other overhead:           4.54 %
+
+Average total overhead:           90.46 %
+Average execution fraction:       9.54 %
+
+======= fft =======
+--- STATISTICS ---
+Number of benchmark executions:                11
+Number of task executions (total):             88
+Number of task executions (avg per benchmark): 8
+
+--- TIME MEASUREMENTS PER TASK ---          
+Average benchmark time:       71 ms
+Average scheduling time:      63 us
+Average task init time:       539 us
+Average task execution time:  8037 us
+Average task commit time:     93 us
+Average task activation time: 11 us
+Average task full time:       8911 us
+Average task other time:      169 us
+
+--- OVERHEAD MEASUREMENTS PER TASK ---          
+Average scheduling overhead:      0.71 %
+Average task init overhead:       6.05 %
+Average task execution overhead:  90.19 %
+Average task commit overhead:     1.04 %
+Average task activation overhead: 0.12 %
+Average other overhead:           1.89 %
+
+Average total overhead:           9.81 %
+Average execution fraction:       90.19 %
+
+======= rsa =======
+--- STATISTICS ---
+Number of benchmark executions:                5
+Number of task executions (total):             1155
+Number of task executions (avg per benchmark): 231
+
+--- TIME MEASUREMENTS PER TASK ---          
+Average benchmark time:       675 ms
+Average scheduling time:      64 us
+Average task init time:       572 us
+Average task execution time:  2084 us
+Average task commit time:     92 us
+Average task activation time: 10 us
+Average task full time:       2901 us
+Average task other time:      79 us
+
+--- OVERHEAD MEASUREMENTS PER TASK ---          
+Average scheduling overhead:      2.20 %
+Average task init overhead:       19.72 %
+Average task execution overhead:  71.83 %
+Average task commit overhead:     3.18 %
+Average task activation overhead: 0.33 %
+Average other overhead:           2.73 %
+
+Average total overhead:           28.17 %
+Average execution fraction:       71.83 %

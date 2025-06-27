@@ -6,7 +6,7 @@
     },
     "customizations": {
         "vscode": {
-            "extensions": ["ms-vscode.cmake-tools", "ms-vscode.cpptools"]
+            "extensions": ["ms-vscode.cmake-tools", "ms-vscode.cpptools", "ms-python.python"]
         }
     },
     "runArgs": [

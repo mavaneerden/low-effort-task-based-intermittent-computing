@@ -1,0 +1,7 @@
+Corrections
+
+1. See thread.c comments.
+    - Remove break statement
+    - Add next thread backup
+    - etc.
+2. Scheduler state is no longer non-volatile, see comment in scheduler.c

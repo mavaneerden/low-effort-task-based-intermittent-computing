@@ -1,0 +1,30 @@
+V1 of the instrumentation was too slow.
+It required too many function calls, both for getting/setting variables
+and for initializing the variables at the start of the function.
+
+V2 of the instrumentation was a big improvement.
+It was on par with the original, but slower than the corrected original.
+This is because it takes 2/3 instructions to get a variable from the buffer,
+compared to just 1 in case of the original.
+
+Which experiments are interesting?
+1. Benchmark execution time: to compare to InK
+2. Task execution time: to show why the new version is slower
+3. Various overheads (scheduling, init, commit, activation, other): to show that these overheads do not differ
+
+
+Major findings
+- EXECUTION TIME
+    1. The execution time does not differ by much for every benchmark, the new version is only ~4.6% slower on average over all benchmarks.
+        TODO: why is this?
+    2. The fft benchmark is 18.3% slower on average in the new version.
+        TODO: why is this?
+    3. Bitcount is about 6.3% slower on average in the new version.
+        TODO: why is this?
+    4. All of the benchmark execution time increase comes from the task execution time increases.
+        TODO: why is this?
+- OVERHEAD
+    1. Overhead for scheduling, task init, task commit & task activation do not differ significantly.
+        This is because the code for these stages remains the same.
+    2. Reboot time increased by ~6.9% in the new version.
+        TODO: why is this?

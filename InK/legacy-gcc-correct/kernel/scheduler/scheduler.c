@@ -45,7 +45,18 @@ enum { SCHED_SELECT, SCHED_BUSY };
 // the id of the current thread being executed.
 static __nv thread_t *_thread = NULL;
 
-static volatile __nv uint8_t _sched_state = SCHED_SELECT;
+/**
+ * Originally, the scheduler state was in non-volatile memory.
+ * However, this could lead to an inconsistency.
+ * If the system reboots, it commits the events and then completes the
+ * currently running task.
+ * If the scheduler state is then SCHED_BUSY, it will SKIP selecting the next thread,
+ * and keeps running the currently executing thread.
+ * This could be incorrect, if an event or the currently executing task activates
+ * a higher-priority thread.
+ * As such, the scheduler state should ALWAYS be SCHED_SELECT at reboot.
+ */
+static volatile uint8_t _sched_state = SCHED_SELECT;
 
 void __scheduler_boot_init() {
     uint8_t i;
@@ -156,6 +167,11 @@ void __scheduler_run()
     // event queue _events in isrmanager.c before enabling the interrupts.
     __events_commit();
 
+#ifdef RAISE_PIN
+    __port_on(1, 3);
+    __port_off(1, 3);
+#endif
+
     // always finalize the latest task before enabling interrupts since
     // this task might be interrupted by a power failure and the changes
     // it performs on the system variables (e.g. on _priorities due to
@@ -163,6 +179,11 @@ void __scheduler_run()
     // will be committed before enabling interrupts so that these variables
     // remain consistent and stable.
     __task_commit();
+
+#ifdef RAISE_PIN
+    __port_on(1, 3);
+    __port_off(1, 3);
+#endif
 
     __reboot_timers();
     // enable interrupts

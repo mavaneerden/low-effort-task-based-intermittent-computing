@@ -90,6 +90,11 @@ void __tick(thread_t *thread)
     case TASK_COMMIT:
         // copy the real index from temporary index
         thread->buffer.idx = thread->buffer._idx;
+#ifdef RAISE_PIN
+        __port_off(3,5);
+        __port_on(3,5);
+#endif
+
         // Task execution finished. Check if the whole tasks are executed (thread finished)
         if (thread->next == NULL)
         {

@@ -1,9 +1,0 @@
-LEGACY-GCC
-Type:Release
-ar_eval       =  2.930 s
-bitcount_eval =  0.440 s
-cem_eval      =  9.987 s
-cuckoo_eval   =  0.418 s
-dijkstra      =  4.182 s
-fft           =  0.060 s
-rsa           =  0.665 s

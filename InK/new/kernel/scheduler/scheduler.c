@@ -45,7 +45,7 @@ enum { SCHED_SELECT, SCHED_BUSY };
 // the id of the current thread being executed.
 static __nv thread_t *_thread = NULL;
 
-static volatile __nv uint8_t _sched_state = SCHED_SELECT;
+static volatile uint8_t _sched_state = SCHED_SELECT;
 
 void __scheduler_boot_init() {
     uint8_t i;
@@ -158,6 +158,13 @@ void __scheduler_run()
     // event queue _events in isrmanager.c before enabling the interrupts.
     __events_commit();
 
+#ifdef RAISE_PIN
+    __port_off(3, 5);
+    __port_off(3, 6);
+    __port_off(1, 3);
+    __port_off(1, 4);
+#endif
+
     // always finalize the latest task before enabling interrupts since
     // this task might be interrupted by a power failure and the changes
     // it performs on the system variables (e.g. on _priorities due to
@@ -169,6 +176,11 @@ void __scheduler_run()
     __reboot_timers();
     // enable interrupts
     __enable_interrupt();
+
+#ifdef RAISE_PIN
+    __port_on(1, 3);
+    __port_off(1, 3);
+#endif
 
     while (1){
         switch (_sched_state){
