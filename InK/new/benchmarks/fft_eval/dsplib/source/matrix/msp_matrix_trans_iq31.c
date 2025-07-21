@@ -35,28 +35,30 @@
 /*
  * Perform matrix transposition of a source matrix.
  */
-msp_status msp_matrix_trans_iq31(const msp_matrix_trans_iq31_params *params, const _iq31 *src, _iq31 *dst)
+msp_status msp_matrix_trans_iq31(const msp_matrix_trans_iq31_params* params, const _iq31* src, _iq31* dst)
 {
-    uint16_t i;
-    uint16_t rows;
-    uint16_t cols;
-    msp_status status;
+    uint16_t                     i;
+    uint16_t                     rows;
+    uint16_t                     cols;
+    msp_status                   status;
     msp_deinterleave_iq31_params deinterParams;
-    
+
     /* Extract matrix parameters. */
-    rows = params->rows; 
+    rows = params->rows;
     cols = params->cols;
 
     /* Initialize deinterleave parameters. */
-    deinterParams.length = rows;
+    deinterParams.length      = rows;
     deinterParams.numChannels = cols;
-    
+
     /* Iterate through source columns and deinterleave to destination. */
-    for (i = 0; i < cols; i++) {
+    for (i = 0; i < cols; i++)
+    {
         /* Transpose source columns to destination rows using deinterleave. */
         deinterParams.channel = i;
-        status = msp_deinterleave_iq31(&deinterParams, src, &dst[i*rows]);
-        if (status != MSP_SUCCESS) {
+        status                = msp_deinterleave_iq31(&deinterParams, src, &dst[i * rows]);
+        if (status != MSP_SUCCESS)
+        {
             return status;
         }
     }

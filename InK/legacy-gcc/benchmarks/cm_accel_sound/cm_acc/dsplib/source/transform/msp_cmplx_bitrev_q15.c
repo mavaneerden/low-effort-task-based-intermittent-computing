@@ -34,142 +34,142 @@
 
 #if defined(MSP_USE_LEA)
 
-msp_status msp_cmplx_bitrev_q15(const msp_cmplx_bitrev_q15_params *params, _q15 *src)
-{
-    uint16_t cmdId;
-    msp_status status;
-    uint16_t length;
-    uint16_t sqrtLength;
-    MSP_LEA_BITREVERSECOMPLEX_PARAMS *leaParams;
-    
-    /* Save input length to local. */
-    length = params->length;
+msp_status msp_cmplx_bitrev_q15(const msp_cmplx_bitrev_q15_params *params,
+                                _q15 *src) {
+  uint16_t cmdId;
+  msp_status status;
+  uint16_t length;
+  uint16_t sqrtLength;
+  MSP_LEA_BITREVERSECOMPLEX_PARAMS *leaParams;
+
+  /* Save input length to local. */
+  length = params->length;
 
 #ifndef MSP_DISABLE_DIAGNOSTICS
-    /* Check that the length is a power of two. */
-    if ((length & (length-1))) {
-        return MSP_SIZE_ERROR;
-    }
-    
-    /* Check that the data arrays are aligned and in a valid memory segment. */
-    if (!(MSP_LEA_VALID_ADDRESS(src, 4))) {
-        return MSP_LEA_INVALID_ADDRESS;
-    }
+  /* Check that the length is a power of two. */
+  if ((length & (length - 1))) {
+    return MSP_SIZE_ERROR;
+  }
 
-    /* Acquire lock for LEA module. */
-    if (!msp_lea_acquireLock()) {
-        return MSP_LEA_BUSY;
-    }
-#endif //MSP_DISABLE_DIAGNOSTICS
+  /* Check that the data arrays are aligned and in a valid memory segment. */
+  if (!(MSP_LEA_VALID_ADDRESS(src, 4))) {
+    return MSP_LEA_INVALID_ADDRESS;
+  }
 
-    /* Initialize LEA if it is not enabled. */
-    if (!(LEAPMCTL & LEACMDEN)) {
-        msp_lea_init();
-    }
-    
-    /* Check vector size to determine which bit reverse function to use. */
-    sqrtLength = 1;
-    while (length > 2) {
-        sqrtLength <<= 1;
-        length >>= 2;
-    }
-        
-    /* Allocate MSP_LEA_BITREVERSECOMPLEX_PARAMS structure. */
-    leaParams = (MSP_LEA_BITREVERSECOMPLEX_PARAMS *)msp_lea_allocMemory(sizeof(MSP_LEA_BITREVERSECOMPLEX_PARAMS)/sizeof(uint32_t));
-    
-    /* Initialize MSP_LEA_BITREVERSECOMPLEX_PARAMS structure. */
-    leaParams->sqrtVectorSize = sqrtLength;
-    LEAPMS0 = MSP_LEA_CONVERT_ADDRESS(src);
-    LEAPMS1 = MSP_LEA_CONVERT_ADDRESS(leaParams);
-    
-    /* Check if remainder is even or odd to determine which LEA function to use. */
-    if (length == 2) {
-        /* Invoke the LEACMD__BITREVERSECOMPLEXODD command. */
-        cmdId = LEACMD__BITREVERSECOMPLEXODD;
-    }
-    else {
-        /* Invoke the LEACMD__BITREVERSECOMPLEXEVEN command. */
-        cmdId = LEACMD__BITREVERSECOMPLEXEVEN;
-    }
-    
-    /* Invoke the command. */
-    msp_lea_invokeCommand(cmdId);
+  /* Acquire lock for LEA module. */
+  if (!msp_lea_acquireLock()) {
+    return MSP_LEA_BUSY;
+  }
+#endif // MSP_DISABLE_DIAGNOSTICS
 
-    /* Free MSP_LEA_BITREVERSECOMPLEX_PARAMS structure. */
-    msp_lea_freeMemory(sizeof(MSP_LEA_BITREVERSECOMPLEX_PARAMS)/sizeof(uint32_t));
-    
-    /* Set status flag. */
-    status = MSP_SUCCESS;
-        
+  /* Initialize LEA if it is not enabled. */
+  if (!(LEAPMCTL & LEACMDEN)) {
+    msp_lea_init();
+  }
+
+  /* Check vector size to determine which bit reverse function to use. */
+  sqrtLength = 1;
+  while (length > 2) {
+    sqrtLength <<= 1;
+    length >>= 2;
+  }
+
+  /* Allocate MSP_LEA_BITREVERSECOMPLEX_PARAMS structure. */
+  leaParams = (MSP_LEA_BITREVERSECOMPLEX_PARAMS *)msp_lea_allocMemory(
+      sizeof(MSP_LEA_BITREVERSECOMPLEX_PARAMS) / sizeof(uint32_t));
+
+  /* Initialize MSP_LEA_BITREVERSECOMPLEX_PARAMS structure. */
+  leaParams->sqrtVectorSize = sqrtLength;
+  LEAPMS0 = MSP_LEA_CONVERT_ADDRESS(src);
+  LEAPMS1 = MSP_LEA_CONVERT_ADDRESS(leaParams);
+
+  /* Check if remainder is even or odd to determine which LEA function to use.
+   */
+  if (length == 2) {
+    /* Invoke the LEACMD__BITREVERSECOMPLEXODD command. */
+    cmdId = LEACMD__BITREVERSECOMPLEXODD;
+  } else {
+    /* Invoke the LEACMD__BITREVERSECOMPLEXEVEN command. */
+    cmdId = LEACMD__BITREVERSECOMPLEXEVEN;
+  }
+
+  /* Invoke the command. */
+  msp_lea_invokeCommand(cmdId);
+
+  /* Free MSP_LEA_BITREVERSECOMPLEX_PARAMS structure. */
+  msp_lea_freeMemory(sizeof(MSP_LEA_BITREVERSECOMPLEX_PARAMS) /
+                     sizeof(uint32_t));
+
+  /* Set status flag. */
+  status = MSP_SUCCESS;
+
 #ifndef MSP_DISABLE_DIAGNOSTICS
-    /* Check LEA interrupt flags for any errors. */
-    if (msp_lea_ifg & LEACOVLIFG) {
-        status = MSP_LEA_COMMAND_OVERFLOW;
-    }
-    else if (msp_lea_ifg & LEAOORIFG) {
-        status = MSP_LEA_OUT_OF_RANGE;
-    }
-    else if (msp_lea_ifg & LEASDIIFG) {
-        status = MSP_LEA_SCALAR_INCONSISTENCY;
-    }
+  /* Check LEA interrupt flags for any errors. */
+  if (msp_lea_ifg & LEACOVLIFG) {
+    status = MSP_LEA_COMMAND_OVERFLOW;
+  } else if (msp_lea_ifg & LEAOORIFG) {
+    status = MSP_LEA_OUT_OF_RANGE;
+  } else if (msp_lea_ifg & LEASDIIFG) {
+    status = MSP_LEA_SCALAR_INCONSISTENCY;
+  }
 #endif
 
-    /* Free lock for LEA module and return status. */
-    msp_lea_freeLock();
-    return status;
+  /* Free lock for LEA module and return status. */
+  msp_lea_freeLock();
+  return status;
 }
 
-#else //MSP_USE_LEA
+#else // MSP_USE_LEA
 
 /*
  * Perform an in-place bit reversal of the complex input array using a lookup
  * table.
  */
-msp_status msp_cmplx_bitrev_q15(const msp_cmplx_bitrev_q15_params *params, _q15 *src)
-{
-    uint16_t i;                     // loop counter
-    uint16_t index;                 // left justified index
-    uint16_t indexInc;              // index increment
-    uint16_t length;                // src length
-    uint16_t indexBitRev;           // index bit reversal
-    uint32_t temp;                  // Temporary storage
-    uint32_t *srcPtr;               // Treat complex data pairs as 32-bit data
-    
-    /* Initialize source pointer and length. */
-    srcPtr = (uint32_t *)src;
-    length = params->length;
-    index = 0;
-    indexInc = 2;
-    
-    /* Calculate index increment for left justified index. */
-    while (length < 0x8000) {
-        indexInc <<= 1;
-        length <<= 1;
-    }
-        
+msp_status msp_cmplx_bitrev_q15(const msp_cmplx_bitrev_q15_params *params,
+                                _q15 *src) {
+  uint16_t i;           // loop counter
+  uint16_t index;       // left justified index
+  uint16_t indexInc;    // index increment
+  uint16_t length;      // src length
+  uint16_t indexBitRev; // index bit reversal
+  uint32_t temp;        // Temporary storage
+  uint32_t *srcPtr;     // Treat complex data pairs as 32-bit data
+
+  /* Initialize source pointer and length. */
+  srcPtr = (uint32_t *)src;
+  length = params->length;
+  index = 0;
+  indexInc = 2;
+
+  /* Calculate index increment for left justified index. */
+  while (length < 0x8000) {
+    indexInc <<= 1;
+    length <<= 1;
+  }
+
 #ifndef MSP_DISABLE_DIAGNOSTICS
-    /* Check that the length is a power of two. */
-    if (length != 0x8000) {
-        return MSP_SIZE_ERROR;
+  /* Check that the length is a power of two. */
+  if (length != 0x8000) {
+    return MSP_SIZE_ERROR;
+  }
+#endif // MSP_DISABLE_DIAGNOSTICS
+
+  /* In-place bit-reversal using fixed table length. */
+  length = params->length;
+  for (i = 0; i < length; i++, index += indexInc) {
+    /* Calculate bit reversed index. */
+    indexBitRev = ((uint16_t)msp_cmplx_bitrev_table_ui8[index & 0xff] << 8) +
+                  ((uint16_t)msp_cmplx_bitrev_table_ui8[(index >> 8) & 0xff]);
+
+    if (i < indexBitRev) {
+      /* Swap inputs. */
+      temp = srcPtr[i];
+      srcPtr[i] = srcPtr[indexBitRev];
+      srcPtr[indexBitRev] = temp;
     }
-#endif //MSP_DISABLE_DIAGNOSTICS
-    
-    /* In-place bit-reversal using fixed table length. */
-    length = params->length;
-    for (i = 0; i < length; i++, index += indexInc) {
-        /* Calculate bit reversed index. */
-        indexBitRev = ((uint16_t)msp_cmplx_bitrev_table_ui8[index & 0xff] << 8)
-            + ((uint16_t)msp_cmplx_bitrev_table_ui8[(index >> 8) & 0xff]);
-        
-        if (i < indexBitRev) {
-            /* Swap inputs. */
-            temp = srcPtr[i];
-            srcPtr[i] = srcPtr[indexBitRev];
-            srcPtr[indexBitRev] = temp;
-        }
-    }
-    
-    return MSP_SUCCESS;
+  }
+
+  return MSP_SUCCESS;
 }
 
-#endif //MSP_USE_LEA
+#endif // MSP_USE_LEA

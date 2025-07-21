@@ -34,48 +34,52 @@
 
 #if defined(MSP_USE_LEA)
 
-msp_status msp_min_iq31(const msp_min_iq31_params *params, const _iq31 *src, _iq31 *min, uint16_t *index)
+msp_status msp_min_iq31(const msp_min_iq31_params* params, const _iq31* src, _iq31* min, uint16_t* index)
 {
-    uint16_t cmdId;
-    uint16_t length;
-    int32_t *output;
-    msp_status status;
-    MSP_LEA_MINLONG_PARAMS *leaParams;
-    
+    uint16_t                cmdId;
+    uint16_t                length;
+    int32_t*                output;
+    msp_status              status;
+    MSP_LEA_MINLONG_PARAMS* leaParams;
+
     /* Initialize the loop counter with the vector length. */
     length = params->length;
 
 #ifndef MSP_DISABLE_DIAGNOSTICS
     /* Check that the data arrays are aligned and in a valid memory segment. */
-    if (!(MSP_LEA_VALID_ADDRESS(src, 4))) {
+    if (!(MSP_LEA_VALID_ADDRESS(src, 4)))
+    {
         return MSP_LEA_INVALID_ADDRESS;
     }
 
     /* Check that the correct revision is defined. */
-    if (MSP_LEA_REVISION != msp_lea_getRevision()) {
+    if (MSP_LEA_REVISION != msp_lea_getRevision())
+    {
         return MSP_LEA_INCORRECT_REVISION;
     }
 
     /* Acquire lock for LEA module. */
-    if (!msp_lea_acquireLock()) {
+    if (!msp_lea_acquireLock())
+    {
         return MSP_LEA_BUSY;
     }
-#endif //MSP_DISABLE_DIAGNOSTICS
+#endif  // MSP_DISABLE_DIAGNOSTICS
 
     /* Initialize LEA if it is not enabled. */
-    if (!(LEAPMCTL & LEACMDEN)) {
+    if (!(LEAPMCTL & LEACMDEN))
+    {
         msp_lea_init();
     }
-        
+
     /* Allocate MSP_LEA_MINLONG_PARAMS structure. */
-    leaParams = (MSP_LEA_MINLONG_PARAMS *)msp_lea_allocMemory(sizeof(MSP_LEA_MINLONG_PARAMS)/sizeof(uint32_t));
+    leaParams = (MSP_LEA_MINLONG_PARAMS*)msp_lea_allocMemory(sizeof(MSP_LEA_MINLONG_PARAMS) / sizeof(uint32_t));
 
     /* Allocate output vector of length two. */
-    output = (int32_t *)msp_lea_allocMemory(2*sizeof(uint32_t)/sizeof(uint32_t));
+    output = (int32_t*)msp_lea_allocMemory(2 * sizeof(uint32_t) / sizeof(uint32_t));
 
     /* Set MSP_LEA_MINLONG_PARAMS structure. */
-    leaParams->vectorSize = length;
-    leaParams->output = MSP_LEA_CONVERT_ADDRESS(output);
+    leaParams->vectorSize  = length;
+    leaParams->output      = MSP_LEA_CONVERT_ADDRESS(output);
     leaParams->inputOffset = 1;
 
     /* Load source arguments to LEA. */
@@ -84,36 +88,39 @@ msp_status msp_min_iq31(const msp_min_iq31_params *params, const _iq31 *src, _iq
 
 #if (MSP_LEA_REVISION < MSP_LEA_REVISION_B)
     /* Load function into code memory */
-    cmdId = msp_lea_loadCommand(LEACMD__MINLONGMATRIX, MSP_LEA_MINLONGMATRIX,
-            sizeof(MSP_LEA_MINLONGMATRIX)/sizeof(MSP_LEA_MINLONGMATRIX[0]));
-#else //MSP_LEA_REVISION
+    cmdId = msp_lea_loadCommand(
+        LEACMD__MINLONGMATRIX, MSP_LEA_MINLONGMATRIX, sizeof(MSP_LEA_MINLONGMATRIX) / sizeof(MSP_LEA_MINLONGMATRIX[0]));
+#else   // MSP_LEA_REVISION
     /* Invoke the LEACMD__MINLONGMATRIX command. */
     cmdId = LEACMD__MINLONGMATRIX;
-#endif //MSP_LEA_REVISION
+#endif  // MSP_LEA_REVISION
 
     /* Invoke the command. */
     msp_lea_invokeCommand(cmdId);
-    
+
     /* Write results. */
-    *min = output[0];
+    *min   = output[0];
     *index = output[1];
 
     /* Free MSP_LEA_MINLONG_PARAMS structure and output vector. */
-    msp_lea_freeMemory(2*sizeof(uint32_t)/sizeof(uint32_t));
-    msp_lea_freeMemory(sizeof(MSP_LEA_MINLONG_PARAMS)/sizeof(uint32_t));
-    
+    msp_lea_freeMemory(2 * sizeof(uint32_t) / sizeof(uint32_t));
+    msp_lea_freeMemory(sizeof(MSP_LEA_MINLONG_PARAMS) / sizeof(uint32_t));
+
     /* Set status flag. */
     status = MSP_SUCCESS;
-        
+
 #ifndef MSP_DISABLE_DIAGNOSTICS
     /* Check LEA interrupt flags for any errors. */
-    if (msp_lea_ifg & LEACOVLIFG) {
+    if (msp_lea_ifg & LEACOVLIFG)
+    {
         status = MSP_LEA_COMMAND_OVERFLOW;
     }
-    else if (msp_lea_ifg & LEAOORIFG) {
+    else if (msp_lea_ifg & LEAOORIFG)
+    {
         status = MSP_LEA_OUT_OF_RANGE;
     }
-    else if (msp_lea_ifg & LEASDIIFG) {
+    else if (msp_lea_ifg & LEASDIIFG)
+    {
         status = MSP_LEA_SCALAR_INCONSISTENCY;
     }
 #endif
@@ -123,40 +130,42 @@ msp_status msp_min_iq31(const msp_min_iq31_params *params, const _iq31 *src, _iq
     return status;
 }
 
-#else //MSP_USE_LEA
+#else  // MSP_USE_LEA
 
-msp_status msp_min_iq31(const msp_min_iq31_params *params, const _iq31 *src, _iq31 *min, uint16_t *index)
+msp_status msp_min_iq31(const msp_min_iq31_params* params, const _iq31* src, _iq31* min, uint16_t* index)
 {
     uint16_t i;
-    _iq31 temp;
-    _iq31 minimum;
+    _iq31    temp;
+    _iq31    minimum;
     uint16_t length;
-    
+
     /* Initialize the loop counter with the vector length. */
-    length = params->length; 
+    length = params->length;
 
     /* Initialize the minimum value and index. */
     minimum = INT32_MAX;
-    i = 0;
-    
+    i       = 0;
+
     /* Loop through all vector elements. */
-    while (length--) {
+    while (length--)
+    {
         /* Store vector element to local variable. */
         temp = *src++;
-        
+
         /* Compare vector element with current minimum value. */
-        if (temp <= minimum) {
+        if (temp <= minimum)
+        {
             /* Update minimum value and index. */
             minimum = temp;
-            i = length;
+            i       = length;
         }
     }
-    
+
     /* Save local minimum and index to output arguments. */
-    *min = minimum;
+    *min   = minimum;
     *index = params->length - (i + 1);
 
     return MSP_SUCCESS;
 }
 
-#endif //MSP_USE_LEA
+#endif  // MSP_USE_LEA

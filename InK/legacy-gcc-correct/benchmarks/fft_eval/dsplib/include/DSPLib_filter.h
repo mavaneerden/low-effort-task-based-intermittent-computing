@@ -32,6 +32,8 @@
 #ifndef __DSPLIB_FILTER_H__
 #define __DSPLIB_FILTER_H__
 
+#include "DSPLib_types.h"
+
 //******************************************************************************
 //
 //! \addtogroup dsplib_filter_api Filter
@@ -61,8 +63,7 @@
 //
 //******************************************************************************
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 //******************************************************************************
@@ -73,7 +74,7 @@ extern "C"
 //! parameter.
 //
 //******************************************************************************
-#define MSP_ALIGN_FIR_Q15(n)        (n*4)
+#define MSP_ALIGN_FIR_Q15(n) (n * 4)
 
 //******************************************************************************
 //
@@ -83,7 +84,7 @@ extern "C"
 //! parameter.
 //
 //******************************************************************************
-#define MSP_ALIGN_FIR_IQ31(n)        (n*8)
+#define MSP_ALIGN_FIR_IQ31(n) (n * 8)
 
 //******************************************************************************
 //
@@ -93,7 +94,7 @@ extern "C"
 //! parameter.
 //
 //******************************************************************************
-#define MSP_ALIGN_CMPLX_FIR_Q15(n)  (n*8)
+#define MSP_ALIGN_CMPLX_FIR_Q15(n) (n * 8)
 
 //******************************************************************************
 //
@@ -103,7 +104,7 @@ extern "C"
 //! parameter.
 //
 //******************************************************************************
-#define MSP_ALIGN_CMPLX_FIR_IQ31(n) (n*16)
+#define MSP_ALIGN_CMPLX_FIR_IQ31(n) (n * 16)
 
 //******************************************************************************
 //
@@ -113,18 +114,18 @@ extern "C"
 //
 //******************************************************************************
 typedef struct msp_fir_q15_params {
-    //! \details
-    //! Length of the source data, must be a multiple of two.
-    uint16_t length;
-    //! \details
-    //! Length of FIR coefficients, must be a multiple of two.
-    uint16_t tapLength;
-    //! \details
-    //! Pointer to real FIR filter coefficients.
-    const _q15 *coeffs;
-    //! \details
-    //! Enable circular buffer.
-    bool enableCircularBuffer;
+  //! \details
+  //! Length of the source data, must be a multiple of two.
+  uint16_t length;
+  //! \details
+  //! Length of FIR coefficients, must be a multiple of two.
+  uint16_t tapLength;
+  //! \details
+  //! Pointer to real FIR filter coefficients.
+  const _q15 *coeffs;
+  //! \details
+  //! Enable circular buffer.
+  bool enableCircularBuffer;
 } msp_fir_q15_params;
 
 //******************************************************************************
@@ -135,18 +136,18 @@ typedef struct msp_fir_q15_params {
 //
 //******************************************************************************
 typedef struct msp_fir_iq31_params {
-    //! \details
-    //! Length of the output, must be a multiple of two.
-    uint16_t length;
-    //! \details
-    //! Length of FIR coefficients, must be a multiple of two.
-    uint16_t tapLength;
-    //! \details
-    //! Pointer to real FIR filter coefficients.
-    const _iq31 *coeffs;
-    //! \details
-    //! Enable circular buffer.
-    bool enableCircularBuffer;
+  //! \details
+  //! Length of the output, must be a multiple of two.
+  uint16_t length;
+  //! \details
+  //! Length of FIR coefficients, must be a multiple of two.
+  uint16_t tapLength;
+  //! \details
+  //! Pointer to real FIR filter coefficients.
+  const _iq31 *coeffs;
+  //! \details
+  //! Enable circular buffer.
+  bool enableCircularBuffer;
 } msp_fir_iq31_params;
 
 //******************************************************************************
@@ -156,19 +157,19 @@ typedef struct msp_fir_iq31_params {
 //! \brief Parameter structure for complex FIR filter.
 //
 //******************************************************************************
-typedef struct msp_cmplx_fir_q15_params{
-    //! \details
-    //! Length of the output, must be a multiple of two.
-    uint16_t length;
-    //! \details
-    //! Length of FIR coefficients, must be a multiple of two.
-    uint16_t tapLength;
-    //! \details
-    //! Pointer to complex FIR filter coefficients.
-    const _q15 *coeffs;
-    //! \details
-    //! Enable circular buffer.
-    bool enableCircularBuffer;
+typedef struct msp_cmplx_fir_q15_params {
+  //! \details
+  //! Length of the output, must be a multiple of two.
+  uint16_t length;
+  //! \details
+  //! Length of FIR coefficients, must be a multiple of two.
+  uint16_t tapLength;
+  //! \details
+  //! Pointer to complex FIR filter coefficients.
+  const _q15 *coeffs;
+  //! \details
+  //! Enable circular buffer.
+  bool enableCircularBuffer;
 } msp_cmplx_fir_q15_params;
 
 //******************************************************************************
@@ -178,19 +179,19 @@ typedef struct msp_cmplx_fir_q15_params{
 //! \brief Parameter structure for complex FIR filter.
 //
 //******************************************************************************
-typedef struct msp_cmplx_fir_iq31_params{
-    //! \details
-    //! Length of the source data, must be a multiple of two.
-    uint16_t length;
-    //! \details
-    //! Length of FIR coefficients, must be a multiple of two.
-    uint16_t tapLength;
-    //! \details
-    //! Pointer to complex FIR filter coefficients.
-    const _iq31 *coeffs;
-    //! \details
-    //! Enable circular buffer.
-    bool enableCircularBuffer;
+typedef struct msp_cmplx_fir_iq31_params {
+  //! \details
+  //! Length of the source data, must be a multiple of two.
+  uint16_t length;
+  //! \details
+  //! Length of FIR coefficients, must be a multiple of two.
+  uint16_t tapLength;
+  //! \details
+  //! Pointer to complex FIR filter coefficients.
+  const _iq31 *coeffs;
+  //! \details
+  //! Enable circular buffer.
+  bool enableCircularBuffer;
 } msp_cmplx_fir_iq31_params;
 
 //******************************************************************************
@@ -201,24 +202,24 @@ typedef struct msp_cmplx_fir_iq31_params{
 //
 //******************************************************************************
 typedef struct msp_biquad_df1_q15_coeffs {
-    //! \details
-    //! Coefficient b2
-    _q15 b2;
-    //! \details
-    //! Coefficient b1 divided by two
-    _q15 b1By2;
-    //! \details
-    //! Coefficient b0
-    _q15 b0;
-    //! \details
-    //! Reserved, do not remove
-    uint16_t reserved1;
-    //! \details
-    //! Coefficient a2
-    _q15 a2;
-    //! \details
-    //! Coefficient a1 divided by two
-    _q15 a1By2;
+  //! \details
+  //! Coefficient b2
+  _q15 b2;
+  //! \details
+  //! Coefficient b1 divided by two
+  _q15 b1By2;
+  //! \details
+  //! Coefficient b0
+  _q15 b0;
+  //! \details
+  //! Reserved, do not remove
+  uint16_t reserved1;
+  //! \details
+  //! Coefficient a2
+  _q15 a2;
+  //! \details
+  //! Coefficient a1 divided by two
+  _q15 a1By2;
 } msp_biquad_df1_q15_coeffs;
 
 //******************************************************************************
@@ -229,18 +230,18 @@ typedef struct msp_biquad_df1_q15_coeffs {
 //
 //******************************************************************************
 typedef struct msp_biquad_df1_q15_states {
-    //! \details
-    //! Input x[n-2]
-    _q15 x2;
-    //! \details
-    //! Input x[n-1]
-    _q15 x1;
-    //! \details
-    //! Output y[n-2]
-    _q15 y2;
-    //! \details
-    //! Output y[n-1]
-    _q15 y1;
+  //! \details
+  //! Input x[n-2]
+  _q15 x2;
+  //! \details
+  //! Input x[n-1]
+  _q15 x1;
+  //! \details
+  //! Output y[n-2]
+  _q15 y2;
+  //! \details
+  //! Output y[n-1]
+  _q15 y1;
 } msp_biquad_df1_q15_states;
 
 //******************************************************************************
@@ -251,19 +252,19 @@ typedef struct msp_biquad_df1_q15_states {
 //
 //******************************************************************************
 typedef struct msp_biquad_df1_q15_params {
-    //! \details
-    //! Length of the source data, must be a multiple of two.
-    uint16_t length;
-    //! \details
-    //! Pointer to DF1 filter coefficients. This data block must be allocated in
-    //! shared RAM when using LEA.
-    const msp_biquad_df1_q15_coeffs *coeffs;
-    //! \details
-    //! Pointer to an array of length four used to store the state of the
-    //! operation. When continuous operation is desired the previous state
-    //! needs to be passed to the next biquad operation. This data block must be
-    //! allocated in shared RAM when using LEA.
-    msp_biquad_df1_q15_states *states;
+  //! \details
+  //! Length of the source data, must be a multiple of two.
+  uint16_t length;
+  //! \details
+  //! Pointer to DF1 filter coefficients. This data block must be allocated in
+  //! shared RAM when using LEA.
+  const msp_biquad_df1_q15_coeffs *coeffs;
+  //! \details
+  //! Pointer to an array of length four used to store the state of the
+  //! operation. When continuous operation is desired the previous state
+  //! needs to be passed to the next biquad operation. This data block must be
+  //! allocated in shared RAM when using LEA.
+  msp_biquad_df1_q15_states *states;
 } msp_biquad_df1_q15_params;
 
 //******************************************************************************
@@ -274,23 +275,23 @@ typedef struct msp_biquad_df1_q15_params {
 //
 //******************************************************************************
 typedef struct msp_biquad_cascade_df1_q15_params {
-    //! \details
-    //! Length of the source data, must be a multiple of two.
-    uint16_t length;
-    //! \details
-    //! Number of cascaded biquad filters, typically the filter order divided by
-    //! two.
-    uint16_t stages;
-    //! \details
-    //! Pointer to an array of DF1 filter coefficients of length stages. This
-    //! data block must be allocated in shared RAM when using LEA.
-    const msp_biquad_df1_q15_coeffs *coeffs;
-    //! \details
-    //! Pointer to an array of DF1 filter states of length stages. When
-    //! continuous operation is desired the previous states must be passed to
-    //! the next cascaded biquad operation. This data block must be allocated in
-    //! shared RAM when using LEA.
-    msp_biquad_df1_q15_states *states;
+  //! \details
+  //! Length of the source data, must be a multiple of two.
+  uint16_t length;
+  //! \details
+  //! Number of cascaded biquad filters, typically the filter order divided by
+  //! two.
+  uint16_t stages;
+  //! \details
+  //! Pointer to an array of DF1 filter coefficients of length stages. This
+  //! data block must be allocated in shared RAM when using LEA.
+  const msp_biquad_df1_q15_coeffs *coeffs;
+  //! \details
+  //! Pointer to an array of DF1 filter states of length stages. When
+  //! continuous operation is desired the previous states must be passed to
+  //! the next cascaded biquad operation. This data block must be allocated in
+  //! shared RAM when using LEA.
+  msp_biquad_df1_q15_states *states;
 } msp_biquad_cascade_df1_q15_params;
 
 //******************************************************************************
@@ -302,30 +303,30 @@ typedef struct msp_biquad_cascade_df1_q15_params {
 //
 //******************************************************************************
 typedef struct msp_biquad_df2_q15_coeffs {
-    //! \details
-    //! Reserved, do not remove
-    uint16_t reserved1;
-    //! \details
-    //! Coefficient a2
-    _q15 a2;
-    //! \details
-    //! Coefficient a1 divided by two
-    _q15 a1By2;
-    //! \details
-    //! Coefficient a0
-    _q15 a0;
-    //! \details
-    //! Coefficient b0
-    _q15 b0;
-    //! \details
-    //! Coefficient b1 divided by two
-    _q15 b1By2;
-    //! \details
-    //! Coefficient b2
-    _q15 b2;
-    //! \details
-    //! Reserved, do not remove
-    uint16_t reserved2;
+  //! \details
+  //! Reserved, do not remove
+  uint16_t reserved1;
+  //! \details
+  //! Coefficient a2
+  _q15 a2;
+  //! \details
+  //! Coefficient a1 divided by two
+  _q15 a1By2;
+  //! \details
+  //! Coefficient a0
+  _q15 a0;
+  //! \details
+  //! Coefficient b0
+  _q15 b0;
+  //! \details
+  //! Coefficient b1 divided by two
+  _q15 b1By2;
+  //! \details
+  //! Coefficient b2
+  _q15 b2;
+  //! \details
+  //! Reserved, do not remove
+  uint16_t reserved2;
 } msp_biquad_df2_q15_coeffs;
 
 //******************************************************************************
@@ -336,12 +337,12 @@ typedef struct msp_biquad_df2_q15_coeffs {
 //
 //******************************************************************************
 typedef struct msp_biquad_df2_q15_states {
-    //! \details
-    //! State Q1
-    _q15 q1;
-    //! \details
-    //! State Q2
-    _q15 q2;
+  //! \details
+  //! State Q1
+  _q15 q1;
+  //! \details
+  //! State Q2
+  _q15 q2;
 } msp_biquad_df2_q15_states;
 
 //******************************************************************************
@@ -352,19 +353,19 @@ typedef struct msp_biquad_df2_q15_states {
 //
 //******************************************************************************
 typedef struct msp_biquad_df2_q15_params {
-    //! \details
-    //! Length of the source data, must be a multiple of two.
-    uint16_t length;
-    //! \details
-    //! Pointer to DF2 filter coefficients. This data block must be allocated in
-    //! shared RAM when using LEA.
-    const msp_biquad_df2_q15_coeffs *coeffs;
-    //! \details
-    //! Pointer to an array of length two used to store the state of the
-    //! operation. When continuous operation is desired the previous state
-    //! needs to be passed to the next biquad operation. This data block must be
-    //! allocated in shared RAM when using LEA.
-    msp_biquad_df2_q15_states *states;
+  //! \details
+  //! Length of the source data, must be a multiple of two.
+  uint16_t length;
+  //! \details
+  //! Pointer to DF2 filter coefficients. This data block must be allocated in
+  //! shared RAM when using LEA.
+  const msp_biquad_df2_q15_coeffs *coeffs;
+  //! \details
+  //! Pointer to an array of length two used to store the state of the
+  //! operation. When continuous operation is desired the previous state
+  //! needs to be passed to the next biquad operation. This data block must be
+  //! allocated in shared RAM when using LEA.
+  msp_biquad_df2_q15_states *states;
 } msp_biquad_df2_q15_params;
 
 //******************************************************************************
@@ -375,23 +376,23 @@ typedef struct msp_biquad_df2_q15_params {
 //
 //******************************************************************************
 typedef struct msp_biquad_cascade_df2_q15_params {
-    //! \details
-    //! Length of the source data, must be a multiple of two.
-    uint16_t length;
-    //! \details
-    //! Number of cascaded biquad filters, typically the filter order divided by
-    //! two.
-    uint16_t stages;
-    //! \details
-    //! Pointer to an array of DF2 filter coefficients of length stages. This
-    //! data block must be allocated in shared RAM when using LEA.
-    const msp_biquad_df2_q15_coeffs *coeffs;
-    //! \details
-    //! Pointer to an array of DF2 filter states of length stages. When
-    //! continuous operation is desired the previous states must be passed to
-    //! the next cascaded biquad operation. This data block must be allocated in
-    //! shared RAM when using LEA.
-    msp_biquad_df2_q15_states *states;
+  //! \details
+  //! Length of the source data, must be a multiple of two.
+  uint16_t length;
+  //! \details
+  //! Number of cascaded biquad filters, typically the filter order divided by
+  //! two.
+  uint16_t stages;
+  //! \details
+  //! Pointer to an array of DF2 filter coefficients of length stages. This
+  //! data block must be allocated in shared RAM when using LEA.
+  const msp_biquad_df2_q15_coeffs *coeffs;
+  //! \details
+  //! Pointer to an array of DF2 filter states of length stages. When
+  //! continuous operation is desired the previous states must be passed to
+  //! the next cascaded biquad operation. This data block must be allocated in
+  //! shared RAM when using LEA.
+  msp_biquad_df2_q15_states *states;
 } msp_biquad_cascade_df2_q15_params;
 
 //******************************************************************************
@@ -403,33 +404,33 @@ typedef struct msp_biquad_cascade_df2_q15_params {
 //
 //******************************************************************************
 typedef struct msp_biquad_df2_ext_q15_coeffs {
-    //! \details
-    //! Constant bias added to input.
-    _iq31 bias;
-    //! \details
-    //! Reserved, do not remove
-    uint16_t reserved1;
-    //! \details
-    //! Coefficient a2
-    _q15 a2;
-    //! \details
-    //! Coefficient a1 divided by two
-    _q15 a1By2;
-    //! \details
-    //! Coefficient a0
-    _q15 a0;
-    //! \details
-    //! Coefficient b0
-    _q15 b0;
-    //! \details
-    //! Coefficient b1 divided by two
-    _q15 b1By2;
-    //! \details
-    //! Coefficient b2
-    _q15 b2;
-    //! \details
-    //! Reserved, do not remove
-    uint16_t reserved2;
+  //! \details
+  //! Constant bias added to input.
+  _iq31 bias;
+  //! \details
+  //! Reserved, do not remove
+  uint16_t reserved1;
+  //! \details
+  //! Coefficient a2
+  _q15 a2;
+  //! \details
+  //! Coefficient a1 divided by two
+  _q15 a1By2;
+  //! \details
+  //! Coefficient a0
+  _q15 a0;
+  //! \details
+  //! Coefficient b0
+  _q15 b0;
+  //! \details
+  //! Coefficient b1 divided by two
+  _q15 b1By2;
+  //! \details
+  //! Coefficient b2
+  _q15 b2;
+  //! \details
+  //! Reserved, do not remove
+  uint16_t reserved2;
 } msp_biquad_df2_ext_q15_coeffs;
 
 //******************************************************************************
@@ -440,30 +441,30 @@ typedef struct msp_biquad_df2_ext_q15_coeffs {
 //
 //******************************************************************************
 typedef struct msp_biquad_df2_ext_q15_states {
-    //! \details
-    //! State Q1
-    _q15 q1;
-    //! \details
-    //! State Q2
-    _q15 q2;
-    //! \details
-    //! Minimum of even states
-    _q15 minEven;
-    //! \details
-    //! Minimum of odd states
-    _q15 minOdd;
-    //! \details
-    //! Maximum of even states
-    _q15 maxEven;
-    //! \details
-    //! Maximum of odd states
-    _q15 maxOdd;
-    //! \details
-    //! Minimum intermediate state
-    _q15 min;
-    //! \details
-    //! Maximum intermediate state
-    _q15 max;
+  //! \details
+  //! State Q1
+  _q15 q1;
+  //! \details
+  //! State Q2
+  _q15 q2;
+  //! \details
+  //! Minimum of even states
+  _q15 minEven;
+  //! \details
+  //! Minimum of odd states
+  _q15 minOdd;
+  //! \details
+  //! Maximum of even states
+  _q15 maxEven;
+  //! \details
+  //! Maximum of odd states
+  _q15 maxOdd;
+  //! \details
+  //! Minimum intermediate state
+  _q15 min;
+  //! \details
+  //! Maximum intermediate state
+  _q15 max;
 } msp_biquad_df2_ext_q15_states;
 
 //******************************************************************************
@@ -474,19 +475,19 @@ typedef struct msp_biquad_df2_ext_q15_states {
 //
 //******************************************************************************
 typedef struct msp_biquad_df2_ext_q15_params {
-    //! \details
-    //! Length of the source data, must be a multiple of two.
-    uint16_t length;
-    //! \details
-    //! Pointer to extended DF2 filter coefficients. This data block must be
-    //! allocated in shared RAM when using LEA.
-    const msp_biquad_df2_ext_q15_coeffs *coeffs;
-    //! \details
-    //! Pointer to an array of length eight used to store the state of the
-    //! operation. When continuous operation is desired the previous state
-    //! needs to be passed to the next biquad operation. This data block must be
-    //! allocated in shared RAM when using LEA.
-    msp_biquad_df2_ext_q15_states *states;
+  //! \details
+  //! Length of the source data, must be a multiple of two.
+  uint16_t length;
+  //! \details
+  //! Pointer to extended DF2 filter coefficients. This data block must be
+  //! allocated in shared RAM when using LEA.
+  const msp_biquad_df2_ext_q15_coeffs *coeffs;
+  //! \details
+  //! Pointer to an array of length eight used to store the state of the
+  //! operation. When continuous operation is desired the previous state
+  //! needs to be passed to the next biquad operation. This data block must be
+  //! allocated in shared RAM when using LEA.
+  msp_biquad_df2_ext_q15_states *states;
 } msp_biquad_df2_ext_q15_params;
 
 //******************************************************************************
@@ -498,23 +499,23 @@ typedef struct msp_biquad_df2_ext_q15_params {
 //
 //******************************************************************************
 typedef struct msp_biquad_cascade_df2_ext_q15_params {
-    //! \details
-    //! Length of the source data, must be a multiple of two.
-    uint16_t length;
-    //! \details
-    //! Number of cascaded biquad filters, typically the filter order divided by
-    //! two.
-    uint16_t stages;
-    //! \details
-    //! Pointer to an array of DF2 filter coefficients of length stages. This
-    //! data block must be allocated in shared RAM when using LEA.
-    const msp_biquad_df2_ext_q15_coeffs *coeffs;
-    //! \details
-    //! Pointer to an array of DF2 filter states of length stages. When
-    //! continuous operation is desired the previous states must be passed to
-    //! the next cascaded biquad operation. This data block must be allocated in
-    //! shared RAM when using LEA.
-    msp_biquad_df2_ext_q15_states *states;
+  //! \details
+  //! Length of the source data, must be a multiple of two.
+  uint16_t length;
+  //! \details
+  //! Number of cascaded biquad filters, typically the filter order divided by
+  //! two.
+  uint16_t stages;
+  //! \details
+  //! Pointer to an array of DF2 filter coefficients of length stages. This
+  //! data block must be allocated in shared RAM when using LEA.
+  const msp_biquad_df2_ext_q15_coeffs *coeffs;
+  //! \details
+  //! Pointer to an array of DF2 filter states of length stages. When
+  //! continuous operation is desired the previous states must be passed to
+  //! the next cascaded biquad operation. This data block must be allocated in
+  //! shared RAM when using LEA.
+  msp_biquad_df2_ext_q15_states *states;
 } msp_biquad_cascade_df2_ext_q15_params;
 
 //******************************************************************************
@@ -535,8 +536,8 @@ typedef struct msp_biquad_cascade_df2_ext_q15_params {
 //! \par LEA Support
 //! This function is supported by LEA and requires data to be placed into
 //! shared LEA memory with 4-byte alignment when circular buffer is disabled or
-//! aligned to four times the FIR data length if circular buffer is enabled 
-//! (e.g. a 64-sample FIR with 128-sample circular buffer must be aligned to a 
+//! aligned to four times the FIR data length if circular buffer is enabled
+//! (e.g. a 64-sample FIR with 128-sample circular buffer must be aligned to a
 //! 256-byte address). When allocating data the MSP\_ALIGN\_FIR\_Q15 macro can
 //! be used to calculate the correct alignment.
 //!
@@ -547,10 +548,8 @@ typedef struct msp_biquad_cascade_df2_ext_q15_params {
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_fir_q15(
-                        const msp_fir_q15_params *params,
-                        const _q15 *src,
-                        _q15 *dst);
+extern msp_status msp_fir_q15(const msp_fir_q15_params *params, const _q15 *src,
+                              _q15 *dst);
 
 //******************************************************************************
 //
@@ -570,8 +569,8 @@ extern msp_status msp_fir_q15(
 //! \par LEA Support
 //! This function is supported by LEA and requires data to be placed into
 //! shared LEA memory with 4-byte alignment when circular buffer is disabled or
-//! aligned to eight times the FIR data length if circular buffer is enabled 
-//! (e.g. a 64-sample FIR with 128-sample circular buffer must be aligned to a 
+//! aligned to eight times the FIR data length if circular buffer is enabled
+//! (e.g. a 64-sample FIR with 128-sample circular buffer must be aligned to a
 //! 512-byte address). When allocating data the MSP\_ALIGN\_FIR\_IQ31 macro can
 //! be used to calculate the correct alignment.
 //!
@@ -582,10 +581,8 @@ extern msp_status msp_fir_q15(
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_fir_iq31(
-                        const msp_fir_iq31_params *params,
-                        const _iq31 *src,
-                        _iq31 *dst);
+extern msp_status msp_fir_iq31(const msp_fir_iq31_params *params,
+                               const _iq31 *src, _iq31 *dst);
 
 //******************************************************************************
 //
@@ -605,9 +602,9 @@ extern msp_status msp_fir_iq31(
 //! \par LEA Support
 //! This function is supported by LEA and requires data to be placed into
 //! shared LEA memory with 4-byte alignment when circular buffer is disabled or
-//! aligned to eight times the FIR data length if circular buffer is enabled 
-//! (e.g. a 64-sample FIR with 128-sample circular buffer must be aligned to a 
-//! 512-byte address). When allocating data the MSP\_ALIGN\_CMPLX\_FIR\_Q15 
+//! aligned to eight times the FIR data length if circular buffer is enabled
+//! (e.g. a 64-sample FIR with 128-sample circular buffer must be aligned to a
+//! 512-byte address). When allocating data the MSP\_ALIGN\_CMPLX\_FIR\_Q15
 //! macro can be used to calculate the correct alignment.
 //!
 //! \param params Pointer to the complex FIR parameter structure.
@@ -617,10 +614,8 @@ extern msp_status msp_fir_iq31(
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_cmplx_fir_q15(
-                        const msp_cmplx_fir_q15_params *params,
-                        const _q15 *src,
-                        _q15 *dst);
+extern msp_status msp_cmplx_fir_q15(const msp_cmplx_fir_q15_params *params,
+                                    const _q15 *src, _q15 *dst);
 
 //******************************************************************************
 //
@@ -640,9 +635,9 @@ extern msp_status msp_cmplx_fir_q15(
 //! \par LEA Support
 //! This function is supported by LEA and requires data to be placed into
 //! shared LEA memory with 4-byte alignment when circular buffer is disabled or
-//! aligned to sixteen times the FIR data length if circular buffer is enabled 
-//! (e.g. a 64-sample FIR with 128-sample circular buffer must be aligned to a 
-//! 1024-byte address). When allocating data the MSP\_ALIGN\_CMPLX\_FIR\_IQ31 
+//! aligned to sixteen times the FIR data length if circular buffer is enabled
+//! (e.g. a 64-sample FIR with 128-sample circular buffer must be aligned to a
+//! 1024-byte address). When allocating data the MSP\_ALIGN\_CMPLX\_FIR\_IQ31
 //! macro can be used to calculate the correct alignment.
 //!
 //! \param params Pointer to the complex FIR parameter structure.
@@ -652,10 +647,8 @@ extern msp_status msp_cmplx_fir_q15(
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_cmplx_fir_iq31(
-                        const msp_cmplx_fir_iq31_params *params,
-                        const _iq31 *src,
-                        _iq31 *dst);
+extern msp_status msp_cmplx_fir_iq31(const msp_cmplx_fir_iq31_params *params,
+                                     const _iq31 *src, _iq31 *dst);
 
 //******************************************************************************
 //
@@ -684,10 +677,8 @@ extern msp_status msp_cmplx_fir_iq31(
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_biquad_df1_q15(
-                        const msp_biquad_df1_q15_params *params,
-                        const _q15 *src,
-                        _q15 *dst);
+extern msp_status msp_biquad_df1_q15(const msp_biquad_df1_q15_params *params,
+                                     const _q15 *src, _q15 *dst);
 
 //******************************************************************************
 //
@@ -714,10 +705,9 @@ extern msp_status msp_biquad_df1_q15(
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_biquad_cascade_df1_q15(
-                        const msp_biquad_cascade_df1_q15_params *params,
-                        const _q15 *src,
-                        _q15 *dst);
+extern msp_status
+msp_biquad_cascade_df1_q15(const msp_biquad_cascade_df1_q15_params *params,
+                           const _q15 *src, _q15 *dst);
 
 //******************************************************************************
 //
@@ -747,10 +737,8 @@ extern msp_status msp_biquad_cascade_df1_q15(
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_biquad_df2_q15(
-                        const msp_biquad_df2_q15_params *params,
-                        const _q15 *src,
-                        _q15 *dst);
+extern msp_status msp_biquad_df2_q15(const msp_biquad_df2_q15_params *params,
+                                     const _q15 *src, _q15 *dst);
 
 //******************************************************************************
 //
@@ -777,10 +765,9 @@ extern msp_status msp_biquad_df2_q15(
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_biquad_cascade_df2_q15(
-                        const msp_biquad_cascade_df2_q15_params *params,
-                        const _q15 *src,
-                        _q15 *dst);
+extern msp_status
+msp_biquad_cascade_df2_q15(const msp_biquad_cascade_df2_q15_params *params,
+                           const _q15 *src, _q15 *dst);
 
 //******************************************************************************
 //
@@ -813,10 +800,9 @@ extern msp_status msp_biquad_cascade_df2_q15(
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_biquad_df2_ext_q15(
-                        const msp_biquad_df2_ext_q15_params *params,
-                        const _q15 *src,
-                        _q15 *dst);
+extern msp_status
+msp_biquad_df2_ext_q15(const msp_biquad_df2_ext_q15_params *params,
+                       const _q15 *src, _q15 *dst);
 
 //******************************************************************************
 //
@@ -846,9 +832,8 @@ extern msp_status msp_biquad_df2_ext_q15(
 //
 //******************************************************************************
 extern msp_status msp_biquad_cascade_df2_ext_q15(
-                        const msp_biquad_cascade_df2_ext_q15_params *params,
-                        const _q15 *src,
-                        _q15 *dst);
+    const msp_biquad_cascade_df2_ext_q15_params *params, const _q15 *src,
+    _q15 *dst);
 
 //*****************************************************************************
 //

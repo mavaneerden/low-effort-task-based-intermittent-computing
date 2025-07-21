@@ -35,14 +35,13 @@
 /*
  * Perform matrix addition of two source matrices.
  */
-msp_status msp_matrix_add_q15(const msp_matrix_add_q15_params *params, const int16_t *srcA, const int16_t *srcB, int16_t *dst)
-{
-    msp_add_q15_params paramsTemp;
-    
-    /* Use real vector addition function. */
-    paramsTemp.length = params->rows * params->cols;
-    
-    return msp_add_q15(&paramsTemp, srcA, srcB, dst);
+msp_status msp_matrix_add_q15(const msp_matrix_add_q15_params *params,
+                              const int16_t *srcA, const int16_t *srcB,
+                              int16_t *dst) {
+  msp_add_q15_params paramsTemp;
+
+  /* Use real vector addition function. */
+  paramsTemp.length = params->rows * params->cols;
+
+  return msp_add_q15(&paramsTemp, srcA, srcB, dst);
 }
-
-

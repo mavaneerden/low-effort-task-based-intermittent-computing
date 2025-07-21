@@ -1,0 +1,35 @@
+For FFT, analysis is the same as bitcount. Except that the FFT benchmark
+has variable lookup code inside hot loops (128, 32, 16 iterations), which significantly
+affects its performance, especially in the case of -Os.
+
+HOT LOOP:
+
+NEW (-Os):
+    msp_cmplx_btfly_c0_auto_q15(&((int16_t *)__INK_TRANSLATE_POINTER_DEREFERENCE_READ(srcPtr, 15))[0], &((int16_t *)__INK_TRANSLATE_POINTER_DEREFERENCE_READ(srcPtr, 15))[0 + STAGE1_STEP], &scale, &overflow);
+    a0a0:	34 40 04 a5 	mov	#-23292,r4	;#0xa504
+    a0a4:	7e 40 0f 00 	mov.b	#15,	r14	;#0x000f
+    a0a8:	4d 43       	clr.b	r13		;
+    a0aa:	0c 46       	mov	r6,	r12	;
+    a0ac:	84 12       	call	r4		;
+    a0ae:	05 4c       	mov	r12,	r5	;
+    a0b0:	7e 40 0f 00 	mov.b	#15,	r14	;#0x000f
+    a0b4:	4d 43       	clr.b	r13		;
+    a0b6:	0c 46       	mov	r6,	r12	;
+    a0b8:	84 12       	call	r4		;
+    a0ba:	0f 41       	mov	r1,	r15	;
+    a0bc:	1f 53       	inc	r15		;
+    a0be:	4e 47       	mov.b	r7,	r14	;
+    a0c0:	0d 4c       	mov	r12,	r13	;
+    a0c2:	2d 52       	add	#4,	r13	;r2 As==10
+    a0c4:	0c 45       	mov	r5,	r12	;
+    a0c6:	b0 12 d6 9f 	call	#-24618	;#0x9fd6
+
+LEGACY (-Os):
+    msp_cmplx_btfly_c0_auto_q15(&srcPtr[0], &srcPtr[0 + STAGE1_STEP], &scale, &overflow);
+    9f98:	0f 41       	mov	r1,	r15	;
+    9f9a:	1f 53       	inc	r15		;
+    9f9c:	4e 47       	mov.b	r7,	r14	;
+    9f9e:	0d 48       	mov	r8,	r13	;
+    9fa0:	2d 52       	add	#4,	r13	;r2 As==10
+    9fa2:	0c 48       	mov	r8,	r12	;
+    9fa4:	b0 12 e2 9e 	call	#-24862	;#0x9ee2

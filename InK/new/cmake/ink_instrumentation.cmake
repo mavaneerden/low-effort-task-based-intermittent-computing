@@ -35,7 +35,7 @@ function(ink_instrument_target ARG_TARGET)
             OUTPUT ${OUTPUT_FILE_PATH}
             COMMAND "${INK_INSTRUMENTATION_SCRIPT}" "${ABSOLUTE_FILE_PATH}" "${OUTPUT_FILE_NAME}" "${INCLUDE_DIRS_ARG} --extra-arg=-D${DEVICE_DEFINE}"
             WORKING_DIRECTORY ${INK_INSTRUMENTATION_DIR}
-            COMMENT "Instrumenting source file '${ABSOLUTE_FILE_PATH}'..."
+            COMMENT "Instrumenting source file ${ABSOLUTE_FILE_PATH}"
             VERBATIM
         )
     endforeach()

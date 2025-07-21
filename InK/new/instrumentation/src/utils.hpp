@@ -40,3 +40,9 @@ const N* getParentNode(const clang::Stmt *d, clang::ASTContext *context)
 
     return nullptr;
 }
+
+// Source: https://stackoverflow.com/a/72642060
+const clang::Expr* getFirstParentNode(const clang::Stmt *d, clang::ASTContext *context);
+
+// Source: https://stackoverflow.com/a/72642060
+const clang::Expr* getFirstParentNodeWithCast(const clang::Stmt *d, clang::ASTContext *context);

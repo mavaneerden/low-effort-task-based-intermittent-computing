@@ -32,6 +32,8 @@
 #ifndef __DSPLIB_VECTOR_H__
 #define __DSPLIB_VECTOR_H__
 
+#include "DSPLib_types.h"
+
 //******************************************************************************
 //
 //! \addtogroup dsplib_vector_api Vector
@@ -56,8 +58,7 @@
 //
 //******************************************************************************
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 //******************************************************************************
@@ -68,8 +69,8 @@ extern "C"
 //
 //******************************************************************************
 typedef struct msp_add_q15_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_add_q15_params;
 
 //******************************************************************************
@@ -80,8 +81,8 @@ typedef struct msp_add_q15_params {
 //
 //******************************************************************************
 typedef struct msp_add_iq31_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_add_iq31_params;
 
 //******************************************************************************
@@ -92,8 +93,8 @@ typedef struct msp_add_iq31_params {
 //
 //******************************************************************************
 typedef struct msp_sub_q15_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_sub_q15_params;
 
 //******************************************************************************
@@ -104,8 +105,8 @@ typedef struct msp_sub_q15_params {
 //
 //******************************************************************************
 typedef struct msp_sub_iq31_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_sub_iq31_params;
 
 //******************************************************************************
@@ -116,8 +117,8 @@ typedef struct msp_sub_iq31_params {
 //
 //******************************************************************************
 typedef struct msp_mpy_q15_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_mpy_q15_params;
 
 //******************************************************************************
@@ -128,32 +129,34 @@ typedef struct msp_mpy_q15_params {
 //
 //******************************************************************************
 typedef struct msp_mpy_iq31_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_mpy_iq31_params;
 
 //******************************************************************************
 //
 //! \ingroup dsplib_vector_real
 //!
-//! \brief Parameter structure for the Q15 vector multiply and accumulate function.
+//! \brief Parameter structure for the Q15 vector multiply and accumulate
+//! function.
 //
 //******************************************************************************
 typedef struct msp_mac_q15_params {
-    //! Length of source data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source data, must be a multiple of two.
+  uint16_t length;
 } msp_mac_q15_params;
 
 //******************************************************************************
 //
 //! \ingroup dsplib_vector_real
 //!
-//! \brief Parameter structure for the IQ31 vector multiply and accumulate function.
+//! \brief Parameter structure for the IQ31 vector multiply and accumulate
+//! function.
 //
 //******************************************************************************
 typedef struct msp_mac_iq31_params {
-    //! Length of source data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source data, must be a multiple of two.
+  uint16_t length;
 } msp_mac_iq31_params;
 
 //******************************************************************************
@@ -164,8 +167,8 @@ typedef struct msp_mac_iq31_params {
 //
 //******************************************************************************
 typedef struct msp_neg_q15_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_neg_q15_params;
 
 //******************************************************************************
@@ -176,8 +179,8 @@ typedef struct msp_neg_q15_params {
 //
 //******************************************************************************
 typedef struct msp_neg_iq31_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_neg_iq31_params;
 
 //******************************************************************************
@@ -188,8 +191,8 @@ typedef struct msp_neg_iq31_params {
 //
 //******************************************************************************
 typedef struct msp_abs_q15_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_abs_q15_params;
 
 //******************************************************************************
@@ -200,8 +203,8 @@ typedef struct msp_abs_q15_params {
 //
 //******************************************************************************
 typedef struct msp_abs_iq31_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_abs_iq31_params;
 
 //******************************************************************************
@@ -212,10 +215,10 @@ typedef struct msp_abs_iq31_params {
 //
 //******************************************************************************
 typedef struct msp_offset_q15_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
-    //! Offset to add to each vector element.
-    _q15 offset;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
+  //! Offset to add to each vector element.
+  _q15 offset;
 } msp_offset_q15_params;
 
 //******************************************************************************
@@ -226,10 +229,10 @@ typedef struct msp_offset_q15_params {
 //
 //******************************************************************************
 typedef struct msp_offset_iq31_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
-    //! Offset to add to each vector element.
-    _iq31 offset;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
+  //! Offset to add to each vector element.
+  _iq31 offset;
 } msp_offset_iq31_params;
 
 //******************************************************************************
@@ -240,12 +243,12 @@ typedef struct msp_offset_iq31_params {
 //
 //******************************************************************************
 typedef struct msp_scale_q15_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
-    //! Q15 fractional value scale to multiply each vector element by.
-    _q15 scale;
-    //! Unsigned integer value to shift each vector result left by.
-    uint8_t shift;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
+  //! Q15 fractional value scale to multiply each vector element by.
+  _q15 scale;
+  //! Unsigned integer value to shift each vector result left by.
+  uint8_t shift;
 } msp_scale_q15_params;
 
 //******************************************************************************
@@ -256,12 +259,12 @@ typedef struct msp_scale_q15_params {
 //
 //******************************************************************************
 typedef struct msp_scale_iq31_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
-    //! q31 fractional value scale to multiply each vector element by.
-    _iq31 scale;
-    //! Unsigned integer value to shift each vector result left by.
-    uint8_t shift;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
+  //! q31 fractional value scale to multiply each vector element by.
+  _iq31 scale;
+  //! Unsigned integer value to shift each vector result left by.
+  uint8_t shift;
 } msp_scale_iq31_params;
 
 //******************************************************************************
@@ -272,11 +275,11 @@ typedef struct msp_scale_iq31_params {
 //
 //******************************************************************************
 typedef struct msp_shift_q15_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
-    //! Integer value to shift each vector element by. Positive values will
-    //! shift to the left and negative values will shift to the right.
-    int8_t shift;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
+  //! Integer value to shift each vector element by. Positive values will
+  //! shift to the left and negative values will shift to the right.
+  int8_t shift;
 } msp_shift_q15_params;
 
 //******************************************************************************
@@ -287,11 +290,11 @@ typedef struct msp_shift_q15_params {
 //
 //******************************************************************************
 typedef struct msp_shift_iq31_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
-    //! Integer value to shift each vector element by. Positive values will
-    //! shift to the left and negative values will shift to the right.
-    int8_t shift;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
+  //! Integer value to shift each vector element by. Positive values will
+  //! shift to the left and negative values will shift to the right.
+  int8_t shift;
 } msp_shift_iq31_params;
 
 //******************************************************************************
@@ -302,8 +305,8 @@ typedef struct msp_shift_iq31_params {
 //
 //******************************************************************************
 typedef struct msp_max_q15_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_max_q15_params;
 
 //******************************************************************************
@@ -314,8 +317,8 @@ typedef struct msp_max_q15_params {
 //
 //******************************************************************************
 typedef struct msp_max_iq31_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_max_iq31_params;
 
 //******************************************************************************
@@ -326,8 +329,8 @@ typedef struct msp_max_iq31_params {
 //
 //******************************************************************************
 typedef struct msp_max_uq15_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_max_uq15_params;
 
 //******************************************************************************
@@ -338,8 +341,8 @@ typedef struct msp_max_uq15_params {
 //
 //******************************************************************************
 typedef struct msp_max_uq31_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_max_uq31_params;
 
 //******************************************************************************
@@ -350,8 +353,8 @@ typedef struct msp_max_uq31_params {
 //
 //******************************************************************************
 typedef struct msp_min_q15_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_min_q15_params;
 
 //******************************************************************************
@@ -362,8 +365,8 @@ typedef struct msp_min_q15_params {
 //
 //******************************************************************************
 typedef struct msp_min_iq31_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_min_iq31_params;
 
 //******************************************************************************
@@ -374,8 +377,8 @@ typedef struct msp_min_iq31_params {
 //
 //******************************************************************************
 typedef struct msp_min_uq15_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_min_uq15_params;
 
 //******************************************************************************
@@ -386,8 +389,8 @@ typedef struct msp_min_uq15_params {
 //
 //******************************************************************************
 typedef struct msp_min_uq31_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_min_uq31_params;
 
 //******************************************************************************
@@ -398,8 +401,8 @@ typedef struct msp_min_uq31_params {
 //
 //******************************************************************************
 typedef struct msp_cmplx_add_q15_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_cmplx_add_q15_params;
 
 //******************************************************************************
@@ -410,8 +413,8 @@ typedef struct msp_cmplx_add_q15_params {
 //
 //******************************************************************************
 typedef struct msp_cmplx_add_iq31_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_cmplx_add_iq31_params;
 
 //******************************************************************************
@@ -422,8 +425,8 @@ typedef struct msp_cmplx_add_iq31_params {
 //
 //******************************************************************************
 typedef struct msp_cmplx_sub_q15_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_cmplx_sub_q15_params;
 
 //******************************************************************************
@@ -434,8 +437,8 @@ typedef struct msp_cmplx_sub_q15_params {
 //
 //******************************************************************************
 typedef struct msp_cmplx_sub_iq31_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_cmplx_sub_iq31_params;
 
 //******************************************************************************
@@ -446,8 +449,8 @@ typedef struct msp_cmplx_sub_iq31_params {
 //
 //******************************************************************************
 typedef struct msp_cmplx_mpy_q15_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_cmplx_mpy_q15_params;
 
 //******************************************************************************
@@ -458,8 +461,8 @@ typedef struct msp_cmplx_mpy_q15_params {
 //
 //******************************************************************************
 typedef struct msp_cmplx_mpy_iq31_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_cmplx_mpy_iq31_params;
 
 //******************************************************************************
@@ -471,8 +474,8 @@ typedef struct msp_cmplx_mpy_iq31_params {
 //
 //******************************************************************************
 typedef struct msp_cmplx_mpy_real_q15_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_cmplx_mpy_real_q15_params;
 
 //******************************************************************************
@@ -484,8 +487,8 @@ typedef struct msp_cmplx_mpy_real_q15_params {
 //
 //******************************************************************************
 typedef struct msp_cmplx_mpy_real_iq31_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_cmplx_mpy_real_iq31_params;
 
 //******************************************************************************
@@ -497,8 +500,8 @@ typedef struct msp_cmplx_mpy_real_iq31_params {
 //
 //******************************************************************************
 typedef struct msp_cmplx_mac_q15_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_cmplx_mac_q15_params;
 
 //******************************************************************************
@@ -510,8 +513,8 @@ typedef struct msp_cmplx_mac_q15_params {
 //
 //******************************************************************************
 typedef struct msp_cmplx_mac_iq31_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_cmplx_mac_iq31_params;
 
 //******************************************************************************
@@ -522,8 +525,8 @@ typedef struct msp_cmplx_mac_iq31_params {
 //
 //******************************************************************************
 typedef struct msp_cmplx_conj_q15_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_cmplx_conj_q15_params;
 
 //******************************************************************************
@@ -534,8 +537,8 @@ typedef struct msp_cmplx_conj_q15_params {
 //
 //******************************************************************************
 typedef struct msp_cmplx_conj_iq31_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
 } msp_cmplx_conj_iq31_params;
 
 //******************************************************************************
@@ -547,12 +550,12 @@ typedef struct msp_cmplx_conj_iq31_params {
 //
 //******************************************************************************
 typedef struct msp_cmplx_scale_q15_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
-    //! Q15 real fractional scale to multiply each complex vector element by.
-    _q15 scale;
-    //! Unsigned integer value to shift each complex vector result left by.
-    uint8_t shift;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
+  //! Q15 real fractional scale to multiply each complex vector element by.
+  _q15 scale;
+  //! Unsigned integer value to shift each complex vector result left by.
+  uint8_t shift;
 } msp_cmplx_scale_q15_params;
 
 //******************************************************************************
@@ -564,12 +567,12 @@ typedef struct msp_cmplx_scale_q15_params {
 //
 //******************************************************************************
 typedef struct msp_cmplx_scale_iq31_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
-    //! q31 real fractional scale to multiply each complex vector element by.
-    _iq31 scale;
-    //! Unsigned integer value to shift each complex vector result left by.
-    uint8_t shift;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
+  //! q31 real fractional scale to multiply each complex vector element by.
+  _iq31 scale;
+  //! Unsigned integer value to shift each complex vector result left by.
+  uint8_t shift;
 } msp_cmplx_scale_iq31_params;
 
 //******************************************************************************
@@ -580,13 +583,13 @@ typedef struct msp_cmplx_scale_iq31_params {
 //
 //******************************************************************************
 typedef struct msp_cmplx_shift_q15_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
-    //! Integer value to shift each vector element by. Positive values will
-    //! shift to the left and negative values will shift to the right.
-    int8_t shift;
-    //! Return complex conjugate result.
-    bool conjugate;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
+  //! Integer value to shift each vector element by. Positive values will
+  //! shift to the left and negative values will shift to the right.
+  int8_t shift;
+  //! Return complex conjugate result.
+  bool conjugate;
 } msp_cmplx_shift_q15_params;
 
 //******************************************************************************
@@ -597,13 +600,13 @@ typedef struct msp_cmplx_shift_q15_params {
 //
 //******************************************************************************
 typedef struct msp_cmplx_shift_iq31_params {
-    //! Length of source and destination data, must be a multiple of two.
-    uint16_t length;
-    //! Integer value to shift each vector element by. Positive values will
-    //! shift to the left and negative values will shift to the right.
-    int8_t shift;
-    //! Take complex conjugate of the result.
-    bool conjugate;
+  //! Length of source and destination data, must be a multiple of two.
+  uint16_t length;
+  //! Integer value to shift each vector element by. Positive values will
+  //! shift to the left and negative values will shift to the right.
+  int8_t shift;
+  //! Take complex conjugate of the result.
+  bool conjugate;
 } msp_cmplx_shift_iq31_params;
 
 //******************************************************************************
@@ -632,9 +635,7 @@ typedef struct msp_cmplx_shift_iq31_params {
 //
 //******************************************************************************
 extern msp_status msp_add_q15(const msp_add_q15_params *params,
-                              const _q15 *srcA,
-                              const _q15 *srcB,
-                              _q15 *dst);
+                              const _q15 *srcA, const _q15 *srcB, _q15 *dst);
 
 //******************************************************************************
 //
@@ -662,8 +663,7 @@ extern msp_status msp_add_q15(const msp_add_q15_params *params,
 //
 //******************************************************************************
 extern msp_status msp_add_iq31(const msp_add_iq31_params *params,
-                               const _iq31 *srcA,
-                               const _iq31 *srcB,
+                               const _iq31 *srcA, const _iq31 *srcB,
                                _iq31 *dst);
 
 //******************************************************************************
@@ -692,9 +692,7 @@ extern msp_status msp_add_iq31(const msp_add_iq31_params *params,
 //
 //******************************************************************************
 extern msp_status msp_sub_q15(const msp_sub_q15_params *params,
-                              const _q15 *srcA,
-                              const _q15 *srcB,
-                              _q15 *dst);
+                              const _q15 *srcA, const _q15 *srcB, _q15 *dst);
 
 //******************************************************************************
 //
@@ -722,8 +720,7 @@ extern msp_status msp_sub_q15(const msp_sub_q15_params *params,
 //
 //******************************************************************************
 extern msp_status msp_sub_iq31(const msp_sub_iq31_params *params,
-                               const _iq31 *srcA,
-                               const _iq31 *srcB,
+                               const _iq31 *srcA, const _iq31 *srcB,
                                _iq31 *dst);
 
 //******************************************************************************
@@ -752,9 +749,7 @@ extern msp_status msp_sub_iq31(const msp_sub_iq31_params *params,
 //
 //******************************************************************************
 extern msp_status msp_mpy_q15(const msp_mpy_q15_params *params,
-                              const _q15 *srcA,
-                              const _q15 *srcB,
-                              _q15 *dst);
+                              const _q15 *srcA, const _q15 *srcB, _q15 *dst);
 
 //******************************************************************************
 //
@@ -782,8 +777,7 @@ extern msp_status msp_mpy_q15(const msp_mpy_q15_params *params,
 //
 //******************************************************************************
 extern msp_status msp_mpy_iq31(const msp_mpy_iq31_params *params,
-                               const _iq31 *srcA,
-                               const _iq31 *srcB,
+                               const _iq31 *srcA, const _iq31 *srcB,
                                _iq31 *dst);
 
 //******************************************************************************
@@ -813,8 +807,7 @@ extern msp_status msp_mpy_iq31(const msp_mpy_iq31_params *params,
 //
 //******************************************************************************
 extern msp_status msp_mac_q15(const msp_mac_q15_params *params,
-                              const _q15 *srcA,
-                              const _q15 *srcB,
+                              const _q15 *srcA, const _q15 *srcB,
                               _iq31 *result);
 
 //******************************************************************************
@@ -844,8 +837,7 @@ extern msp_status msp_mac_q15(const msp_mac_q15_params *params,
 //
 //******************************************************************************
 extern msp_status msp_mac_iq31(const msp_mac_iq31_params *params,
-                               const _iq31 *srcA,
-                               const _iq31 *srcB,
+                               const _iq31 *srcA, const _iq31 *srcB,
                                _iq31 *result);
 
 //******************************************************************************
@@ -855,7 +847,7 @@ extern msp_status msp_mac_iq31(const msp_mac_iq31_params *params,
 //! \brief Negation of a source vector.
 //!
 //! \par Details
-//! Element-wise Q15 multiplication by negative one with a real source vector. 
+//! Element-wise Q15 multiplication by negative one with a real source vector.
 //! This function supports in-place operation.
 //!
 //! \par Pseudo code
@@ -872,8 +864,7 @@ extern msp_status msp_mac_iq31(const msp_mac_iq31_params *params,
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_neg_q15(const msp_neg_q15_params *params,
-                              const _q15 *src,
+extern msp_status msp_neg_q15(const msp_neg_q15_params *params, const _q15 *src,
                               _q15 *dst);
 
 //******************************************************************************
@@ -883,7 +874,7 @@ extern msp_status msp_neg_q15(const msp_neg_q15_params *params,
 //! \brief Negation of a source vector.
 //!
 //! \par Details
-//! Element-wise IQ31 multiplication by negative one with a real source vector. 
+//! Element-wise IQ31 multiplication by negative one with a real source vector.
 //! This function supports in-place operation.
 //!
 //! \par Pseudo code
@@ -901,8 +892,7 @@ extern msp_status msp_neg_q15(const msp_neg_q15_params *params,
 //
 //******************************************************************************
 extern msp_status msp_neg_iq31(const msp_neg_iq31_params *params,
-                               const _iq31 *src,
-                               _iq31 *dst);
+                               const _iq31 *src, _iq31 *dst);
 
 //******************************************************************************
 //
@@ -926,8 +916,7 @@ extern msp_status msp_neg_iq31(const msp_neg_iq31_params *params,
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_abs_q15(const msp_abs_q15_params *params,
-                              const _q15 *src,
+extern msp_status msp_abs_q15(const msp_abs_q15_params *params, const _q15 *src,
                               _q15 *dst);
 
 //******************************************************************************
@@ -953,8 +942,7 @@ extern msp_status msp_abs_q15(const msp_abs_q15_params *params,
 //
 //******************************************************************************
 extern msp_status msp_abs_iq31(const msp_abs_iq31_params *params,
-                               const _iq31 *src,
-                               _iq31 *dst);
+                               const _iq31 *src, _iq31 *dst);
 
 //******************************************************************************
 //
@@ -981,8 +969,7 @@ extern msp_status msp_abs_iq31(const msp_abs_iq31_params *params,
 //
 //******************************************************************************
 extern msp_status msp_offset_q15(const msp_offset_q15_params *params,
-                                 const _q15 *src,
-                                 _q15 *dst);
+                                 const _q15 *src, _q15 *dst);
 
 //******************************************************************************
 //
@@ -1009,8 +996,7 @@ extern msp_status msp_offset_q15(const msp_offset_q15_params *params,
 //
 //******************************************************************************
 extern msp_status msp_offset_iq31(const msp_offset_iq31_params *params,
-                                  const _iq31 *src,
-                                  _iq31 *dst);
+                                  const _iq31 *src, _iq31 *dst);
 
 //******************************************************************************
 //
@@ -1037,8 +1023,7 @@ extern msp_status msp_offset_iq31(const msp_offset_iq31_params *params,
 //
 //******************************************************************************
 extern msp_status msp_scale_q15(const msp_scale_q15_params *params,
-                                const _q15 *src,
-                                _q15 *dst);
+                                const _q15 *src, _q15 *dst);
 
 //******************************************************************************
 //
@@ -1065,8 +1050,7 @@ extern msp_status msp_scale_q15(const msp_scale_q15_params *params,
 //
 //******************************************************************************
 extern msp_status msp_scale_iq31(const msp_scale_iq31_params *params,
-                                 const _iq31 *src,
-                                 _iq31 *dst);
+                                 const _iq31 *src, _iq31 *dst);
 
 //******************************************************************************
 //
@@ -1094,8 +1078,7 @@ extern msp_status msp_scale_iq31(const msp_scale_iq31_params *params,
 //
 //******************************************************************************
 extern msp_status msp_shift_q15(const msp_shift_q15_params *params,
-                                const _q15 *src,
-                                _q15 *dst);
+                                const _q15 *src, _q15 *dst);
 
 //******************************************************************************
 //
@@ -1123,8 +1106,7 @@ extern msp_status msp_shift_q15(const msp_shift_q15_params *params,
 //
 //******************************************************************************
 extern msp_status msp_shift_iq31(const msp_shift_iq31_params *params,
-                                 const _iq31 *src,
-                                 _iq31 *dst);
+                                 const _iq31 *src, _iq31 *dst);
 
 //******************************************************************************
 //
@@ -1133,7 +1115,7 @@ extern msp_status msp_shift_iq31(const msp_shift_iq31_params *params,
 //! \brief Signed maximum of a source vector.
 //!
 //! \par Details
-//! This function returns the 16-bit signed maximum value and corresponding 
+//! This function returns the 16-bit signed maximum value and corresponding
 //! index of a single source vector.
 //!
 //! \par Pseudo code
@@ -1151,10 +1133,8 @@ extern msp_status msp_shift_iq31(const msp_shift_iq31_params *params,
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_max_q15(const msp_max_q15_params *params,
-                              const _q15 *src,
-                              _q15 *max,
-                              uint16_t *index);
+extern msp_status msp_max_q15(const msp_max_q15_params *params, const _q15 *src,
+                              _q15 *max, uint16_t *index);
 
 //******************************************************************************
 //
@@ -1163,7 +1143,7 @@ extern msp_status msp_max_q15(const msp_max_q15_params *params,
 //! \brief Signed maximum of a source vector.
 //!
 //! \par Details
-//! This function returns the 32-bit signed maximum value and corresponding 
+//! This function returns the 32-bit signed maximum value and corresponding
 //! index of a single source vector.
 //!
 //! \par Pseudo code
@@ -1182,9 +1162,7 @@ extern msp_status msp_max_q15(const msp_max_q15_params *params,
 //
 //******************************************************************************
 extern msp_status msp_max_iq31(const msp_max_iq31_params *params,
-                               const _iq31 *src,
-                               _iq31 *max,
-                               uint16_t *index);
+                               const _iq31 *src, _iq31 *max, uint16_t *index);
 
 //******************************************************************************
 //
@@ -1193,7 +1171,7 @@ extern msp_status msp_max_iq31(const msp_max_iq31_params *params,
 //! \brief Unsigned maximum of a source vector.
 //!
 //! \par Details
-//! This function returns the 16-bit unsigned maximum value and corresponding 
+//! This function returns the 16-bit unsigned maximum value and corresponding
 //! index of a single source vector.
 //!
 //! \par Pseudo code
@@ -1212,9 +1190,7 @@ extern msp_status msp_max_iq31(const msp_max_iq31_params *params,
 //
 //******************************************************************************
 extern msp_status msp_max_uq15(const msp_max_uq15_params *params,
-                               const _uq15 *src,
-                               _uq15 *max,
-                               uint16_t *index);
+                               const _uq15 *src, _uq15 *max, uint16_t *index);
 
 //******************************************************************************
 //
@@ -1223,7 +1199,7 @@ extern msp_status msp_max_uq15(const msp_max_uq15_params *params,
 //! \brief Unsigned maximum of a source vector.
 //!
 //! \par Details
-//! This function returns the 32-bit unsigned maximum value and corresponding 
+//! This function returns the 32-bit unsigned maximum value and corresponding
 //! index of a single source vector.
 //!
 //! \par Pseudo code
@@ -1242,9 +1218,7 @@ extern msp_status msp_max_uq15(const msp_max_uq15_params *params,
 //
 //******************************************************************************
 extern msp_status msp_max_uq31(const msp_max_uq31_params *params,
-                               const _uq31 *src,
-                               _uq31 *max,
-                               uint16_t *index);
+                               const _uq31 *src, _uq31 *max, uint16_t *index);
 
 //******************************************************************************
 //
@@ -1253,7 +1227,7 @@ extern msp_status msp_max_uq31(const msp_max_uq31_params *params,
 //! \brief Signed minimum of a source vector.
 //!
 //! \par Details
-//! This function returns the 16-bit signed minimum value and corresponding 
+//! This function returns the 16-bit signed minimum value and corresponding
 //! index of a single source vector.
 //!
 //! \par Pseudo code
@@ -1271,10 +1245,8 @@ extern msp_status msp_max_uq31(const msp_max_uq31_params *params,
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_min_q15(const msp_min_q15_params *params,
-                              const _q15 *src,
-                              _q15 *min,
-                              uint16_t *index);
+extern msp_status msp_min_q15(const msp_min_q15_params *params, const _q15 *src,
+                              _q15 *min, uint16_t *index);
 
 //******************************************************************************
 //
@@ -1283,7 +1255,7 @@ extern msp_status msp_min_q15(const msp_min_q15_params *params,
 //! \brief Signed minimum of a source vector.
 //!
 //! \par Details
-//! This function returns the 32-bit signed minimum value and corresponding 
+//! This function returns the 32-bit signed minimum value and corresponding
 //! index of a single source vector.
 //!
 //! \par Pseudo code
@@ -1302,9 +1274,7 @@ extern msp_status msp_min_q15(const msp_min_q15_params *params,
 //
 //******************************************************************************
 extern msp_status msp_min_iq31(const msp_min_iq31_params *params,
-                               const _iq31 *src,
-                               _iq31 *min,
-                               uint16_t *index);
+                               const _iq31 *src, _iq31 *min, uint16_t *index);
 
 //******************************************************************************
 //
@@ -1313,7 +1283,7 @@ extern msp_status msp_min_iq31(const msp_min_iq31_params *params,
 //! \brief Unsigned minimum of a source vector.
 //!
 //! \par Details
-//! This function returns the 16-bit unsigned minimum value and corresponding 
+//! This function returns the 16-bit unsigned minimum value and corresponding
 //! index of a single source vector.
 //!
 //! \par Pseudo code
@@ -1332,9 +1302,7 @@ extern msp_status msp_min_iq31(const msp_min_iq31_params *params,
 //
 //******************************************************************************
 extern msp_status msp_min_uq15(const msp_min_uq15_params *params,
-                               const _uq15 *src,
-                               _uq15 *min,
-                               uint16_t *index);
+                               const _uq15 *src, _uq15 *min, uint16_t *index);
 
 //******************************************************************************
 //
@@ -1343,7 +1311,7 @@ extern msp_status msp_min_uq15(const msp_min_uq15_params *params,
 //! \brief Unsigned minimum of a source vector.
 //!
 //! \par Details
-//! This function returns the 32-bit unsigned minimum value and corresponding 
+//! This function returns the 32-bit unsigned minimum value and corresponding
 //! index of a single source vector.
 //!
 //! \par Pseudo code
@@ -1362,9 +1330,7 @@ extern msp_status msp_min_uq15(const msp_min_uq15_params *params,
 //
 //******************************************************************************
 extern msp_status msp_min_uq31(const msp_min_uq31_params *params,
-                               const _uq31 *src,
-                               _uq31 *min,
-                               uint16_t *index);
+                               const _uq31 *src, _uq31 *min, uint16_t *index);
 
 //******************************************************************************
 //
@@ -1392,8 +1358,7 @@ extern msp_status msp_min_uq31(const msp_min_uq31_params *params,
 //
 //******************************************************************************
 extern msp_status msp_cmplx_add_q15(const msp_cmplx_add_q15_params *params,
-                                    const _q15 *srcA,
-                                    const _q15 *srcB,
+                                    const _q15 *srcA, const _q15 *srcB,
                                     _q15 *dst);
 
 //******************************************************************************
@@ -1422,8 +1387,7 @@ extern msp_status msp_cmplx_add_q15(const msp_cmplx_add_q15_params *params,
 //
 //******************************************************************************
 extern msp_status msp_cmplx_add_iq31(const msp_cmplx_add_iq31_params *params,
-                                     const _iq31 *srcA,
-                                     const _iq31 *srcB,
+                                     const _iq31 *srcA, const _iq31 *srcB,
                                      _iq31 *dst);
 
 //******************************************************************************
@@ -1452,8 +1416,7 @@ extern msp_status msp_cmplx_add_iq31(const msp_cmplx_add_iq31_params *params,
 //
 //******************************************************************************
 extern msp_status msp_cmplx_sub_q15(const msp_cmplx_sub_q15_params *params,
-                                    const _q15 *srcA,
-                                    const _q15 *srcB,
+                                    const _q15 *srcA, const _q15 *srcB,
                                     _q15 *dst);
 
 //******************************************************************************
@@ -1482,8 +1445,7 @@ extern msp_status msp_cmplx_sub_q15(const msp_cmplx_sub_q15_params *params,
 //
 //******************************************************************************
 extern msp_status msp_cmplx_sub_iq31(const msp_cmplx_sub_iq31_params *params,
-                                     const _iq31 *srcA,
-                                     const _iq31 *srcB,
+                                     const _iq31 *srcA, const _iq31 *srcB,
                                      _iq31 *dst);
 
 //******************************************************************************
@@ -1512,8 +1474,7 @@ extern msp_status msp_cmplx_sub_iq31(const msp_cmplx_sub_iq31_params *params,
 //
 //******************************************************************************
 extern msp_status msp_cmplx_mpy_q15(const msp_cmplx_mpy_q15_params *params,
-                                    const _q15 *srcA,
-                                    const _q15 *srcB,
+                                    const _q15 *srcA, const _q15 *srcB,
                                     _q15 *dst);
 
 //******************************************************************************
@@ -1541,8 +1502,7 @@ extern msp_status msp_cmplx_mpy_q15(const msp_cmplx_mpy_q15_params *params,
 //
 //******************************************************************************
 extern msp_status msp_cmplx_mpy_iq31(const msp_cmplx_mpy_iq31_params *params,
-                                     const _iq31 *srcA,
-                                     const _iq31 *srcB,
+                                     const _iq31 *srcA, const _iq31 *srcB,
                                      _iq31 *dst);
 
 //******************************************************************************
@@ -1553,8 +1513,8 @@ extern msp_status msp_cmplx_mpy_iq31(const msp_cmplx_mpy_iq31_params *params,
 //!
 //! \par Details
 //! Element-wise Q15 multiply of a complex vector by real vector without
-//! saturation. The length of complex and real vectors should be equal, that is 
-//! the complex source vector contains twice the allocated bytes for data 
+//! saturation. The length of complex and real vectors should be equal, that is
+//! the complex source vector contains twice the allocated bytes for data
 //! storage. This function supports in-place operations.
 //!
 //! \par Pseudo code
@@ -1571,11 +1531,9 @@ extern msp_status msp_cmplx_mpy_iq31(const msp_cmplx_mpy_iq31_params *params,
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_cmplx_mpy_real_q15(
-                                const msp_cmplx_mpy_real_q15_params *params,
-                                const _q15 *srcCmplx,
-                                const _q15 *srcReal,
-                                _q15 *dst);
+extern msp_status
+msp_cmplx_mpy_real_q15(const msp_cmplx_mpy_real_q15_params *params,
+                       const _q15 *srcCmplx, const _q15 *srcReal, _q15 *dst);
 
 //******************************************************************************
 //
@@ -1585,8 +1543,8 @@ extern msp_status msp_cmplx_mpy_real_q15(
 //!
 //! \par Details
 //! Element-wise IQ31 multiply of a complex vector by real vector without
-//! saturation. The length of complex and real vectors should be equal, that is 
-//! the complex source vector contains twice the allocated bytes for data 
+//! saturation. The length of complex and real vectors should be equal, that is
+//! the complex source vector contains twice the allocated bytes for data
 //! storage. This function supports in-place operations.
 //!
 //! \par Pseudo code
@@ -1604,11 +1562,10 @@ extern msp_status msp_cmplx_mpy_real_q15(
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_cmplx_mpy_real_iq31(
-                                const msp_cmplx_mpy_real_iq31_params *params,
-                                const _iq31 *srcCmplx,
-                                const _iq31 *srcReal,
-                                _iq31 *dst);
+extern msp_status
+msp_cmplx_mpy_real_iq31(const msp_cmplx_mpy_real_iq31_params *params,
+                        const _iq31 *srcCmplx, const _iq31 *srcReal,
+                        _iq31 *dst);
 
 //******************************************************************************
 //
@@ -1637,8 +1594,7 @@ extern msp_status msp_cmplx_mpy_real_iq31(
 //
 //******************************************************************************
 extern msp_status msp_cmplx_mac_q15(const msp_cmplx_mac_q15_params *params,
-                                    const _q15 *srcA,
-                                    const _q15 *srcB,
+                                    const _q15 *srcA, const _q15 *srcB,
                                     _iq31 *result);
 
 //******************************************************************************
@@ -1667,8 +1623,7 @@ extern msp_status msp_cmplx_mac_q15(const msp_cmplx_mac_q15_params *params,
 //
 //******************************************************************************
 extern msp_status msp_cmplx_mac_iq31(const msp_cmplx_mac_iq31_params *params,
-                                     const _iq31 *srcA,
-                                     const _iq31 *srcB,
+                                     const _iq31 *srcA, const _iq31 *srcB,
                                      _iq31 *result);
 
 //******************************************************************************
@@ -1678,7 +1633,7 @@ extern msp_status msp_cmplx_mac_iq31(const msp_cmplx_mac_iq31_params *params,
 //! \brief Conjugation of a source vector.
 //!
 //! \par Details
-//! Conjugation of each element in a complex vector. This function supports 
+//! Conjugation of each element in a complex vector. This function supports
 //! in-place operations.
 //!
 //! \par Pseudo code
@@ -1695,8 +1650,7 @@ extern msp_status msp_cmplx_mac_iq31(const msp_cmplx_mac_iq31_params *params,
 //
 //******************************************************************************
 extern msp_status msp_cmplx_conj_q15(const msp_cmplx_conj_q15_params *params,
-                                     const _q15 *src,
-                                     _q15 *dst);
+                                     const _q15 *src, _q15 *dst);
 
 //******************************************************************************
 //
@@ -1705,7 +1659,7 @@ extern msp_status msp_cmplx_conj_q15(const msp_cmplx_conj_q15_params *params,
 //! \brief Conjugation of a source vector.
 //!
 //! \par Details
-//! Conjugation of each element in a complex vector. This function supports 
+//! Conjugation of each element in a complex vector. This function supports
 //! in-place operations.
 //!
 //! \par Pseudo code
@@ -1723,8 +1677,7 @@ extern msp_status msp_cmplx_conj_q15(const msp_cmplx_conj_q15_params *params,
 //
 //******************************************************************************
 extern msp_status msp_cmplx_conj_iq31(const msp_cmplx_conj_iq31_params *params,
-                                      const _iq31 *src,
-                                      _iq31 *dst);
+                                      const _iq31 *src, _iq31 *dst);
 
 //******************************************************************************
 //
@@ -1734,7 +1687,7 @@ extern msp_status msp_cmplx_conj_iq31(const msp_cmplx_conj_iq31_params *params,
 //!
 //! \par Details
 //! Element-wise scaling of both imaginary and real values of a complex vector.
-//! Source data is multiplied by a IQ31 constant and then shifted left. This 
+//! Source data is multiplied by a IQ31 constant and then shifted left. This
 //! function supports in-place operation.
 //!
 //! \par Pseudo code
@@ -1751,8 +1704,7 @@ extern msp_status msp_cmplx_conj_iq31(const msp_cmplx_conj_iq31_params *params,
 //
 //******************************************************************************
 extern msp_status msp_cmplx_scale_q15(const msp_cmplx_scale_q15_params *params,
-                                      const _q15 *src,
-                                      _q15 *dst);
+                                      const _q15 *src, _q15 *dst);
 
 //******************************************************************************
 //
@@ -1762,7 +1714,7 @@ extern msp_status msp_cmplx_scale_q15(const msp_cmplx_scale_q15_params *params,
 //!
 //! \par Details
 //! Element-wise scaling of both imaginary and real values of a complex vector.
-//! Source data is multiplied by a IQ31 constant and then shifted left. This 
+//! Source data is multiplied by a IQ31 constant and then shifted left. This
 //! function supports in-place operation.
 //!
 //! \par Pseudo code
@@ -1778,9 +1730,9 @@ extern msp_status msp_cmplx_scale_q15(const msp_cmplx_scale_q15_params *params,
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_cmplx_scale_iq31(const msp_cmplx_scale_iq31_params *params,
-                                       const _iq31 *src,
-                                       _iq31 *dst);
+extern msp_status
+msp_cmplx_scale_iq31(const msp_cmplx_scale_iq31_params *params,
+                     const _iq31 *src, _iq31 *dst);
 
 //******************************************************************************
 //
@@ -1789,7 +1741,7 @@ extern msp_status msp_cmplx_scale_iq31(const msp_cmplx_scale_iq31_params *params
 //! \brief Bitwise shift of a complex source vector.
 //!
 //! \par Details
-//! Element-wise bitwise shift of both imaginary and real elements of a complex 
+//! Element-wise bitwise shift of both imaginary and real elements of a complex
 //! vector to the left or right by a signed integer value. This function does
 //! not saturate and supports in-place operation.
 //!
@@ -1808,8 +1760,7 @@ extern msp_status msp_cmplx_scale_iq31(const msp_cmplx_scale_iq31_params *params
 //
 //******************************************************************************
 extern msp_status msp_cmplx_shift_q15(const msp_cmplx_shift_q15_params *params,
-                                      const _q15 *src,
-                                      _q15 *dst);
+                                      const _q15 *src, _q15 *dst);
 
 //******************************************************************************
 //
@@ -1818,7 +1769,7 @@ extern msp_status msp_cmplx_shift_q15(const msp_cmplx_shift_q15_params *params,
 //! \brief Bitwise shift of a complex source vector.
 //!
 //! \par Details
-//! Element-wise bitwise shift of both imaginary and real elements of a complex 
+//! Element-wise bitwise shift of both imaginary and real elements of a complex
 //! vector to the left or right by a signed int. This function does not saturate
 //! and supports in-place operation.
 //!
@@ -1836,9 +1787,9 @@ extern msp_status msp_cmplx_shift_q15(const msp_cmplx_shift_q15_params *params,
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_cmplx_shift_iq31(const msp_cmplx_shift_iq31_params *params,
-                                       const _iq31 *src,
-                                       _iq31 *dst);
+extern msp_status
+msp_cmplx_shift_iq31(const msp_cmplx_shift_iq31_params *params,
+                     const _iq31 *src, _iq31 *dst);
 
 //*****************************************************************************
 //

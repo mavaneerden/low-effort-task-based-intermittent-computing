@@ -23,21 +23,19 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "ink/ink.h"
 #include "benchmark_helpers.h"
-#include <stdint.h>
+#include "ink/ink.h"
 
 // bitcount specific definitions
 
-#define SEED 4L
-#define ITER 100
+#define SEED     4L
+#define ITER     100
 #define CHAR_BIT 8
 #ifdef RAISE_PIN
 INK_PERSISTENT uint8_t full_run_started = 0;
 #endif
 
-INK_PERSISTENT static const char bits[256] =
-{
+INK_PERSISTENT static const char bits[256] = {
     0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, /* 0   - 15  */
     1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, /* 16  - 31  */
     1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, /* 32  - 47  */
@@ -57,7 +55,7 @@ INK_PERSISTENT static const char bits[256] =
 };
 
 // define task-shared persistent variables.
-uint8_t pinCont;
+uint8_t  pinCont;
 unsigned n_0;
 unsigned n_1;
 unsigned n_2;
@@ -69,16 +67,15 @@ unsigned function;
 unsigned iteration;
 uint32_t seed;
 
-void *t_init();
-void *t_select_func();
-void *t_bit_count();
-void *t_bitcount();
-void *t_ntbl_bitcnt();
-void *t_ntbl_bitcount();
-void *t_BW_btbl_bitcount();
-void *t_AR_btbl_bitcount();
-void *t_bit_shifter();
-void *t_end();
+static void* t_select_func();
+static void* t_bit_count();
+static void* t_bitcount();
+static void* t_ntbl_bitcnt();
+static void* t_ntbl_bitcount();
+static void* t_BW_btbl_bitcount();
+static void* t_AR_btbl_bitcount();
+static void* t_bit_shifter();
+static void* t_end();
 
 // Helper functions
 int recursive_cnt(uint32_t x)
@@ -86,7 +83,9 @@ int recursive_cnt(uint32_t x)
     int cnt = bits[(int)(x & 0x0000000FL)];
 
     if (0L != (x >>= 4))
+    {
         cnt += recursive_cnt(x);
+    }
 
     return cnt;
 }
@@ -105,98 +104,108 @@ int non_recursive_cnt(uint32_t x)
 
 INK_CREATE_THREAD(15, true)
 {
-    // One-time initialization on first boot, not required.
-
-    return t_init;
-}
-
-void *t_init()
-{
 #ifdef RAISE_PIN
     full_run_started = 1;
 #endif
 
-    pinCont = 1;
+    pinCont  = 1;
     function = 0;
-    n_0 = 0;
-    n_1 = 0;
-    n_2 = 0;
-    n_3 = 0;
-    n_4 = 0;
-    n_5 = 0;
-    n_6 = 0;
+    n_0      = 0;
+    n_1      = 0;
+    n_2      = 0;
+    n_3      = 0;
+    n_4      = 0;
+    n_5      = 0;
+    n_6      = 0;
 
     // next task is t_select_func
     return t_select_func;
 }
 
-void *t_select_func()
+static void* t_select_func()
 {
+    /* ------ local variables for persistents ------*/
+    uint32_t seed_tmp;
+    unsigned function_tmp;
+    unsigned iteration_tmp;
+
 #ifdef RANDOM
-    seed = rand();
+    seed_tmp = rand();
 #else
-    seed = SEED;
+    seed_tmp = SEED;
 #endif
 
     iteration = 0;
+    seed = seed_tmp;
 
-    if (function == 0)
+    function_tmp = function;
+
+    if (function_tmp == 0)
     {
-        ++function;
+        function = ++function_tmp;
         return t_bit_count;
     }
-    else if (function == 1)
+    else if (function_tmp == 1)
     {
-        ++function;
+        function = ++function_tmp;
         return t_bitcount;
     }
-    else if (function == 2)
+    else if (function_tmp == 2)
     {
-        ++function;
+        function = ++function_tmp;
         return t_ntbl_bitcnt;
     }
-    else if (function == 3)
+    else if (function_tmp == 3)
     {
-        ++function;
+        function = ++function_tmp;
         return t_ntbl_bitcount;
     }
-    else if (function == 4)
+    else if (function_tmp == 4)
     {
-        ++function;
+        function = ++function_tmp;
         return t_BW_btbl_bitcount;
     }
-    else if (function == 5)
+    else if (function_tmp == 5)
     {
-        ++function;
+        function = ++function_tmp;
         return t_AR_btbl_bitcount;
     }
-    else if (function == 6)
+    else if (function_tmp == 6)
     {
-        ++function;
+        function = ++function_tmp;
         return t_bit_shifter;
     }
     else
     {
-        ++function;
+        function = ++function_tmp;
         return t_end;
     }
 }
 
-void *t_bit_count()
+static void* t_bit_count()
 {
-    uint32_t tmp_seed = seed;
-    seed = tmp_seed + 13;
+    uint32_t seed_tmp      = seed;
+    unsigned n_0_tmp       = n_0;
+    unsigned iteration_tmp = iteration;
+
+    uint32_t tmp_seed = seed_tmp;
+    seed_tmp              = tmp_seed + 13;
+    seed = seed_tmp;
+
 
     unsigned temp = 0;
     if (tmp_seed)
+    {
         do
+        {
             temp++;
-        while (0 != (tmp_seed = tmp_seed & (tmp_seed - 1)));
+        } while (0 != (tmp_seed = tmp_seed & (tmp_seed - 1)));
+    }
 
-    n_0 += temp;
-    ++iteration;
+    n_0 = n_0_tmp + temp;
+    iteration = ++iteration_tmp;
 
-    if (iteration < ITER)
+    if (iteration_tmp < ITER)
     {
         return t_bit_count;
     }
@@ -206,10 +215,15 @@ void *t_bit_count()
     }
 }
 
-void *t_bitcount()
+static void* t_bitcount()
 {
-    uint32_t tmp_seed = seed;
-    seed = tmp_seed + 13;
+    uint32_t seed_tmp      = seed;
+    unsigned n_1_tmp       = n_1;
+    unsigned iteration_tmp = iteration;
+
+    uint32_t tmp_seed = seed_tmp;
+    seed_tmp              = tmp_seed + 13;
+    seed = seed_tmp;
 
     tmp_seed = ((tmp_seed & 0xAAAAAAAAL) >> 1) + (tmp_seed & 0x55555555L);
     tmp_seed = ((tmp_seed & 0xCCCCCCCCL) >> 2) + (tmp_seed & 0x33333333L);
@@ -217,10 +231,10 @@ void *t_bitcount()
     tmp_seed = ((tmp_seed & 0xFF00FF00L) >> 8) + (tmp_seed & 0x00FF00FFL);
     tmp_seed = ((tmp_seed & 0xFFFF0000L) >> 16) + (tmp_seed & 0x0000FFFFL);
 
-    n_1 += (int)tmp_seed;
-    ++iteration;
+    n_1 = n_1_tmp + (int)tmp_seed;
+    iteration = ++iteration_tmp;
 
-    if (iteration < ITER)
+    if (iteration_tmp < ITER)
     {
         return t_bitcount;
     }
@@ -230,15 +244,22 @@ void *t_bitcount()
     }
 }
 
-void *t_ntbl_bitcnt()
+static void* t_ntbl_bitcnt()
 {
+    uint32_t seed_tmp      = seed;
+    unsigned n_2_tmp       = n_2;
+    unsigned iteration_tmp = iteration;
 
-    uint32_t tmp_seed = seed;
-    n_2 += non_recursive_cnt(tmp_seed);
-    seed = tmp_seed + 13;
-    iteration++;
+    uint32_t tmp_seed  = seed_tmp;
+    n_2_tmp               += non_recursive_cnt(tmp_seed);
+    seed_tmp               = tmp_seed + 13;
+    iteration_tmp++;
 
-    if (iteration < ITER)
+    n_2 = n_2_tmp;
+    seed = seed_tmp;
+    iteration = iteration_tmp;
+
+    if (iteration_tmp < ITER)
     {
         return t_ntbl_bitcnt;
     }
@@ -248,24 +269,28 @@ void *t_ntbl_bitcnt()
     }
 }
 
-void *t_ntbl_bitcount()
+static void* t_ntbl_bitcount()
 {
+    /* ------ local variables for persistents ------*/
+    uint32_t seed_tmp      = seed;
+    unsigned n_3_tmp       = n_3;
+    unsigned iteration_tmp = iteration;
 
-    uint16_t __cry = seed;
-    n_3 += bits[(int)(__cry & 0x0000000FUL)] +
-           bits[(int)((__cry & 0x000000F0UL) >> 4)] +
-           bits[(int)((__cry & 0x00000F00UL) >> 8)] +
-           bits[(int)((__cry & 0x0000F000UL) >> 12)] +
-           bits[(int)((__cry & 0x000F0000UL) >> 16)] +
-           bits[(int)((__cry & 0x00F00000UL) >> 20)] +
-           bits[(int)((__cry & 0x0F000000UL) >> 24)] +
-           bits[(int)((__cry & 0xF0000000UL) >> 28)];
+    uint16_t __cry  = seed_tmp;
+    n_3_tmp            += bits[(int)(__cry & 0x0000000FUL)] + bits[(int)((__cry & 0x000000F0UL) >> 4)] +
+           bits[(int)((__cry & 0x00000F00UL) >> 8)] + bits[(int)((__cry & 0x0000F000UL) >> 12)] +
+           bits[(int)((__cry & 0x000F0000UL) >> 16)] + bits[(int)((__cry & 0x00F00000UL) >> 20)] +
+           bits[(int)((__cry & 0x0F000000UL) >> 24)] + bits[(int)((__cry & 0xF0000000UL) >> 28)];
 
-    uint32_t tmp_seed = seed;
-    seed = tmp_seed + 13;
-    iteration++;
+    uint32_t tmp_seed = seed_tmp;
+    seed_tmp              = tmp_seed + 13;
+    iteration_tmp++;
 
-    if (iteration < ITER)
+    n_3 = n_3_tmp;
+    seed = seed_tmp;
+    iteration = iteration_tmp;
+
+    if (iteration_tmp < ITER)
     {
         return t_ntbl_bitcount;
     }
@@ -275,24 +300,31 @@ void *t_ntbl_bitcount()
     }
 }
 
-void *t_BW_btbl_bitcount()
+static void* t_BW_btbl_bitcount()
 {
+    /* ------ local variables for persistents ------*/
+    uint32_t seed_tmp      = seed;
+    unsigned n_4_tmp       = n_4;
+    unsigned iteration_tmp = iteration;
 
     union
     {
         unsigned char ch[4];
-        long y;
+        long          y;
     } U;
 
-    U.y = seed;
+    U.y = seed_tmp;
 
-    n_4 += bits[U.ch[0]] + bits[U.ch[1]] +
-           bits[U.ch[3]] + bits[U.ch[2]];
-    uint32_t tmp_seed = seed;
-    seed = tmp_seed + 13;
-    iteration++;
+    n_4_tmp               += bits[U.ch[0]] + bits[U.ch[1]] + bits[U.ch[3]] + bits[U.ch[2]];
+    uint32_t tmp_seed  = seed_tmp;
+    seed_tmp               = tmp_seed + 13;
+    iteration_tmp++;
 
-    if (iteration < ITER)
+    n_4 = n_4_tmp;
+    seed = seed_tmp;
+    iteration = iteration_tmp;
+
+    if (iteration_tmp < ITER)
     {
         return t_BW_btbl_bitcount;
     }
@@ -302,21 +334,30 @@ void *t_BW_btbl_bitcount()
     }
 }
 
-void *t_AR_btbl_bitcount()
+static void* t_AR_btbl_bitcount()
 {
-    unsigned char *Ptr = (unsigned char *)&seed;
-    int Accu;
+    /* ------ local variables for persistents ------*/
+    uint32_t seed_tmp      = seed;
+    unsigned n_5_tmp       = n_5;
+    unsigned iteration_tmp = iteration;
 
-    Accu = bits[*Ptr++];
-    Accu += bits[*Ptr++];
-    Accu += bits[*Ptr++];
-    Accu += bits[*Ptr];
-    n_5 += Accu;
-    uint32_t tmp_seed = seed;
-    seed = tmp_seed + 13;
-    iteration++;
+    unsigned char* Ptr = (unsigned char*)&seed_tmp;
+    int            Accu;
 
-    if (iteration < ITER)
+    Accu               = bits[*Ptr++];
+    Accu              += bits[*Ptr++];
+    Accu              += bits[*Ptr++];
+    Accu              += bits[*Ptr];
+    n_5_tmp               += Accu;
+    uint32_t tmp_seed  = seed_tmp;
+    seed_tmp               = tmp_seed + 13;
+    iteration_tmp++;
+
+    n_5 = n_5_tmp;
+    seed = seed_tmp;
+    iteration = iteration_tmp;
+
+    if (iteration_tmp < ITER)
     {
         return t_AR_btbl_bitcount;
     }
@@ -326,20 +367,31 @@ void *t_AR_btbl_bitcount()
     }
 }
 
-void *t_bit_shifter()
+static void* t_bit_shifter()
 {
+    /* ------ local variables for persistents ------*/
+    uint32_t seed_tmp      = seed;
+    unsigned n_6_tmp       = n_6;
+    unsigned iteration_tmp = iteration;
+
     unsigned i, nn;
-    uint32_t tmp_seed = seed;
+    uint32_t tmp_seed = seed_tmp;
     for (i = nn = 0; tmp_seed && (i < (sizeof(long) * CHAR_BIT)); ++i, tmp_seed >>= 1)
+    {
         nn += (unsigned)(tmp_seed & 1L);
-    n_6 += nn;
-    tmp_seed = seed;
+    }
+    n_6_tmp      += nn;
+    tmp_seed  = seed_tmp;
     tmp_seed += 13;
-    seed = tmp_seed;
+    seed_tmp      = tmp_seed;
 
-    iteration++;
+    iteration_tmp++;
 
-    if (iteration < ITER)
+    n_6 = n_6_tmp;
+    seed = seed_tmp;
+    iteration = iteration_tmp;
+
+    if (iteration_tmp < ITER)
     {
         return t_bit_shifter;
     }
@@ -349,8 +401,12 @@ void *t_bit_shifter()
     }
 }
 
-void *t_end()
+static void* t_end()
 {
+    /* ------ local variables for persistents ------*/
+    uint8_t pinCont_tmp = pinCont;
+    /* ------------------------------------- */
+
 #ifdef RAISE_PIN
     if (full_run_started)
     {
@@ -360,12 +416,12 @@ void *t_end()
     }
 #endif
 
-    if (pinCont)
+    if (pinCont_tmp)
     {
-        __delay_cycles(1);
+        __no_operation();
     }
 
     pinCont = 0;
 
-    return t_init;
+    return INK_THREAD_ENTRY_TASK;
 }

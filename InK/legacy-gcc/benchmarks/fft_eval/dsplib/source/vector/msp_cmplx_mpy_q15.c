@@ -34,125 +34,128 @@
 
 #if defined(MSP_USE_LEA)
 
-msp_status msp_cmplx_mpy_q15(const msp_cmplx_mpy_q15_params *params, const _q15 *srcA, const _q15 *srcB, _q15 *dst)
-{
-    uint16_t length;
-    msp_status status;
-    MSP_LEA_MPYCOMPLEXMATRIX_PARAMS *leaParams;
-    
-    /* Initialize the loop counter with the vector length. */
-    length = params->length;
+msp_status msp_cmplx_mpy_q15(const msp_cmplx_mpy_q15_params *params,
+                             const _q15 *srcA, const _q15 *srcB, _q15 *dst) {
+  uint16_t length;
+  msp_status status;
+  MSP_LEA_MPYCOMPLEXMATRIX_PARAMS *leaParams;
+
+  /* Initialize the loop counter with the vector length. */
+  length = params->length;
 
 #ifndef MSP_DISABLE_DIAGNOSTICS
-    /* Check that the data arrays are aligned and in a valid memory segment. */
-    if (!(MSP_LEA_VALID_ADDRESS(srcA, 4) &
-          MSP_LEA_VALID_ADDRESS(srcB, 4) &
-          MSP_LEA_VALID_ADDRESS(dst, 4))) {
-        return MSP_LEA_INVALID_ADDRESS;
-    }
+  /* Check that the data arrays are aligned and in a valid memory segment. */
+  if (!(MSP_LEA_VALID_ADDRESS(srcA, 4) & MSP_LEA_VALID_ADDRESS(srcB, 4) &
+        MSP_LEA_VALID_ADDRESS(dst, 4))) {
+    return MSP_LEA_INVALID_ADDRESS;
+  }
 
-    /* Acquire lock for LEA module. */
-    if (!msp_lea_acquireLock()) {
-        return MSP_LEA_BUSY;
-    }
-#endif //MSP_DISABLE_DIAGNOSTICS
+  /* Acquire lock for LEA module. */
+  if (!msp_lea_acquireLock()) {
+    return MSP_LEA_BUSY;
+  }
+#endif // MSP_DISABLE_DIAGNOSTICS
 
-    /* Initialize LEA if it is not enabled. */
-    if (!(LEAPMCTL & LEACMDEN)) {
-        msp_lea_init();
-    }
-        
-    /* Allocate MSP_LEA_MPYCOMPLEXMATRIX_PARAMS structure. */
-    leaParams = (MSP_LEA_MPYCOMPLEXMATRIX_PARAMS *)msp_lea_allocMemory(sizeof(MSP_LEA_MPYCOMPLEXMATRIX_PARAMS)/sizeof(uint32_t));
+  /* Initialize LEA if it is not enabled. */
+  if (!(LEAPMCTL & LEACMDEN)) {
+    msp_lea_init();
+  }
 
-    /* Set MSP_LEA_MPYCOMPLEXMATRIX_PARAMS structure. */
-    leaParams->input2 = MSP_LEA_CONVERT_ADDRESS(srcB);
-    leaParams->output = MSP_LEA_CONVERT_ADDRESS(dst);
-    leaParams->vectorSize = length;
-    leaParams->input1Offset = 1;
-    leaParams->input2Offset = 1;
-    leaParams->outputOffset = 1;
+  /* Allocate MSP_LEA_MPYCOMPLEXMATRIX_PARAMS structure. */
+  leaParams = (MSP_LEA_MPYCOMPLEXMATRIX_PARAMS *)msp_lea_allocMemory(
+      sizeof(MSP_LEA_MPYCOMPLEXMATRIX_PARAMS) / sizeof(uint32_t));
 
-    /* Load source arguments to LEA. */
-    LEAPMS0 = MSP_LEA_CONVERT_ADDRESS(srcA);
-    LEAPMS1 = MSP_LEA_CONVERT_ADDRESS(leaParams);
+  /* Set MSP_LEA_MPYCOMPLEXMATRIX_PARAMS structure. */
+  leaParams->input2 = MSP_LEA_CONVERT_ADDRESS(srcB);
+  leaParams->output = MSP_LEA_CONVERT_ADDRESS(dst);
+  leaParams->vectorSize = length;
+  leaParams->input1Offset = 1;
+  leaParams->input2Offset = 1;
+  leaParams->outputOffset = 1;
 
-    /* Invoke the LEACMD__MPYCOMPLEXMATRIX command. */
-    msp_lea_invokeCommand(LEACMD__MPYCOMPLEXMATRIX);
+  /* Load source arguments to LEA. */
+  LEAPMS0 = MSP_LEA_CONVERT_ADDRESS(srcA);
+  LEAPMS1 = MSP_LEA_CONVERT_ADDRESS(leaParams);
 
-    /* Free MSP_LEA_MPYCOMPLEXMATRIX_PARAMS structure. */
-    msp_lea_freeMemory(sizeof(MSP_LEA_MPYCOMPLEXMATRIX_PARAMS)/sizeof(uint32_t));
-    
-    /* Set status flag. */
-    status = MSP_SUCCESS;
-        
+  /* Invoke the LEACMD__MPYCOMPLEXMATRIX command. */
+  msp_lea_invokeCommand(LEACMD__MPYCOMPLEXMATRIX);
+
+  /* Free MSP_LEA_MPYCOMPLEXMATRIX_PARAMS structure. */
+  msp_lea_freeMemory(sizeof(MSP_LEA_MPYCOMPLEXMATRIX_PARAMS) /
+                     sizeof(uint32_t));
+
+  /* Set status flag. */
+  status = MSP_SUCCESS;
+
 #ifndef MSP_DISABLE_DIAGNOSTICS
-    /* Check LEA interrupt flags for any errors. */
-    if (msp_lea_ifg & LEACOVLIFG) {
-        status = MSP_LEA_COMMAND_OVERFLOW;
-    }
-    else if (msp_lea_ifg & LEAOORIFG) {
-        status = MSP_LEA_OUT_OF_RANGE;
-    }
-    else if (msp_lea_ifg & LEASDIIFG) {
-        status = MSP_LEA_SCALAR_INCONSISTENCY;
-    }
+  /* Check LEA interrupt flags for any errors. */
+  if (msp_lea_ifg & LEACOVLIFG) {
+    status = MSP_LEA_COMMAND_OVERFLOW;
+  } else if (msp_lea_ifg & LEAOORIFG) {
+    status = MSP_LEA_OUT_OF_RANGE;
+  } else if (msp_lea_ifg & LEASDIIFG) {
+    status = MSP_LEA_SCALAR_INCONSISTENCY;
+  }
 #endif
 
-    /* Free lock for LEA module and return status. */
-    msp_lea_freeLock();
-    return status;
+  /* Free lock for LEA module and return status. */
+  msp_lea_freeLock();
+  return status;
 }
 
-#else //MSP_USE_LEA
+#else // MSP_USE_LEA
 
-msp_status msp_cmplx_mpy_q15(const msp_cmplx_mpy_q15_params *params, const _q15 *srcA, const _q15 *srcB, _q15 *dst)
-{
-    uint16_t length;
-    
-    /* Initialize the loop counter with the vector length. */
-    length = params->length;
+msp_status msp_cmplx_mpy_q15(const msp_cmplx_mpy_q15_params *params,
+                             const _q15 *srcA, const _q15 *srcB, _q15 *dst) {
+  uint16_t length;
+
+  /* Initialize the loop counter with the vector length. */
+  length = params->length;
 
 #if defined(__MSP430_HAS_MPY32__)
-    /* If MPY32 is available save control context and set to fractional mode. */
-    uint16_t ui16MPYState = MPY32CTL0;
-    MPY32CTL0 = MPYFRAC | MPYDLYWRTEN;
-    
-    /* Loop through all vector elements. */
-    while (length--) {
-        /* Complex multiply srcA and srcB and store to dst. */
-        MPYS = CMPLX_REAL(srcA);
-        OP2  = CMPLX_REAL(srcB);
-        MACS = -CMPLX_IMAG(srcA);
-        OP2  = CMPLX_IMAG(srcB);
-        *dst++ = RESHI;
-        MPYS = CMPLX_REAL(srcA);
-        OP2  = CMPLX_IMAG(srcB);
-        MACS = CMPLX_IMAG(srcA);
-        OP2  = CMPLX_REAL(srcB);
-        *dst++ = RESHI;
-        
-        /* Increment pointers. */
-        srcA += CMPLX_INCREMENT;
-        srcB += CMPLX_INCREMENT;
-    }
+  /* If MPY32 is available save control context and set to fractional mode. */
+  uint16_t ui16MPYState = MPY32CTL0;
+  MPY32CTL0 = MPYFRAC | MPYDLYWRTEN;
 
-    /* Restore MPY32 control context. */
-    MPY32CTL0 = ui16MPYState;
-#else //__MSP430_HAS_MPY32__
-    /* Loop through all vector elements. */
-    while (length--) {
-        /* Complex multiply srcA and srcB and store to dst. */
-        *dst++ = (((int32_t)CMPLX_REAL(srcA) * (int32_t)CMPLX_REAL(srcB)) - ((int32_t)CMPLX_IMAG(srcA) * (int32_t)CMPLX_IMAG(srcB))) >> 15;
-        *dst++ = (((int32_t)CMPLX_REAL(srcA) * (int32_t)CMPLX_IMAG(srcB)) + ((int32_t)CMPLX_IMAG(srcA) * (int32_t)CMPLX_REAL(srcB))) >> 15;
-        
-        /* Increment pointers. */
-        srcA += CMPLX_INCREMENT;
-        srcB += CMPLX_INCREMENT;
-    }
+  /* Loop through all vector elements. */
+  while (length--) {
+    /* Complex multiply srcA and srcB and store to dst. */
+    MPYS = CMPLX_REAL(srcA);
+    OP2 = CMPLX_REAL(srcB);
+    MACS = -CMPLX_IMAG(srcA);
+    OP2 = CMPLX_IMAG(srcB);
+    *dst++ = RESHI;
+    MPYS = CMPLX_REAL(srcA);
+    OP2 = CMPLX_IMAG(srcB);
+    MACS = CMPLX_IMAG(srcA);
+    OP2 = CMPLX_REAL(srcB);
+    *dst++ = RESHI;
+
+    /* Increment pointers. */
+    srcA += CMPLX_INCREMENT;
+    srcB += CMPLX_INCREMENT;
+  }
+
+  /* Restore MPY32 control context. */
+  MPY32CTL0 = ui16MPYState;
+#else  //__MSP430_HAS_MPY32__
+  /* Loop through all vector elements. */
+  while (length--) {
+    /* Complex multiply srcA and srcB and store to dst. */
+    *dst++ = (((int32_t)CMPLX_REAL(srcA) * (int32_t)CMPLX_REAL(srcB)) -
+              ((int32_t)CMPLX_IMAG(srcA) * (int32_t)CMPLX_IMAG(srcB))) >>
+             15;
+    *dst++ = (((int32_t)CMPLX_REAL(srcA) * (int32_t)CMPLX_IMAG(srcB)) +
+              ((int32_t)CMPLX_IMAG(srcA) * (int32_t)CMPLX_REAL(srcB))) >>
+             15;
+
+    /* Increment pointers. */
+    srcA += CMPLX_INCREMENT;
+    srcB += CMPLX_INCREMENT;
+  }
 #endif //__MSP430_HAS_MPY32__
 
-    return MSP_SUCCESS;
+  return MSP_SUCCESS;
 }
 
-#endif //MSP_USE_LEA
+#endif // MSP_USE_LEA

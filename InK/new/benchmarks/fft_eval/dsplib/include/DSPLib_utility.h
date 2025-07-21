@@ -32,6 +32,8 @@
 #ifndef __DSPLIB_UTILITY_H__
 #define __DSPLIB_UTILITY_H__
 
+#include "DSPLib_types.h"
+
 //******************************************************************************
 //
 //! \addtogroup dsplib_utility_api Utility
@@ -62,7 +64,8 @@ extern "C"
 //! \brief Parameters for Q15 to IQ31 conversion.
 //
 //******************************************************************************
-typedef struct msp_q15_to_iq31_params {
+typedef struct msp_q15_to_iq31_params
+{
     //! Length of the source data, must be a multiple of two.
     uint16_t length;
 } msp_q15_to_iq31_params;
@@ -74,7 +77,8 @@ typedef struct msp_q15_to_iq31_params {
 //! \brief Parameters for IQ31 to Q15 conversion.
 //
 //******************************************************************************
-typedef struct msp_iq31_to_q15_params {
+typedef struct msp_iq31_to_q15_params
+{
     //! Length of the source data, must be a multiple of two.
     uint16_t length;
 } msp_iq31_to_q15_params;
@@ -87,7 +91,8 @@ typedef struct msp_iq31_to_q15_params {
 //! vectors.
 //
 //******************************************************************************
-typedef struct msp_cmplx_q15_params {
+typedef struct msp_cmplx_q15_params
+{
     //! Length of the source data.
     uint16_t length;
 } msp_cmplx_q15_params;
@@ -100,7 +105,8 @@ typedef struct msp_cmplx_q15_params {
 //! vectors.
 //
 //******************************************************************************
-typedef struct msp_cmplx_iq31_params {
+typedef struct msp_cmplx_iq31_params
+{
     //! Length of the source data.
     uint16_t length;
 } msp_cmplx_iq31_params;
@@ -112,7 +118,8 @@ typedef struct msp_cmplx_iq31_params {
 //! \brief Parameters for Q15 vector copy function.
 //
 //******************************************************************************
-typedef struct msp_copy_q15_params {
+typedef struct msp_copy_q15_params
+{
     //! Length of the source data, must be a multiple of two.
     uint16_t length;
 } msp_copy_q15_params;
@@ -124,7 +131,8 @@ typedef struct msp_copy_q15_params {
 //! \brief Parameters for IQ31 vector copy function.
 //
 //******************************************************************************
-typedef struct msp_copy_iq31_params {
+typedef struct msp_copy_iq31_params
+{
     //! Length of the source data.
     uint16_t length;
 } msp_copy_iq31_params;
@@ -136,7 +144,8 @@ typedef struct msp_copy_iq31_params {
 //!  \brief Parameters for Q15 real vector fill
 //
 //******************************************************************************
-typedef struct msp_fill_q15_params {
+typedef struct msp_fill_q15_params
+{
     //! Length of the source data, must be a multiple of two.
     uint16_t length;
     //! Scalar constant to fill the destination vector with.
@@ -150,7 +159,8 @@ typedef struct msp_fill_q15_params {
 //!  \brief Parameters for IQ31 real vector fill
 //
 //******************************************************************************
-typedef struct msp_fill_iq31_params {
+typedef struct msp_fill_iq31_params
+{
     //! Length of the source data.
     uint16_t length;
     //! Scalar constant to fill the destination vector with.
@@ -164,7 +174,8 @@ typedef struct msp_fill_iq31_params {
 //!  \brief Parameters for Q15 complex vector fill
 //
 //******************************************************************************
-typedef struct msp_cmplx_fill_q15_params {
+typedef struct msp_cmplx_fill_q15_params
+{
     //! Length of the source data, must be a multiple of two.
     uint16_t length;
     //! Real constant value to fill real indices with.
@@ -180,7 +191,8 @@ typedef struct msp_cmplx_fill_q15_params {
 //!  \brief Parameters for IQ31 complex vector fill
 //
 //******************************************************************************
-typedef struct msp_cmplx_fill_iq31_params {
+typedef struct msp_cmplx_fill_iq31_params
+{
     //! Length of the source data.
     uint16_t length;
     //! Real constant value to fill real indices with.
@@ -196,7 +208,8 @@ typedef struct msp_cmplx_fill_iq31_params {
 //!  \brief Parameters for Q15 vector interleave
 //
 //******************************************************************************
-typedef struct msp_interleave_q15_params {
+typedef struct msp_interleave_q15_params
+{
     //! Length of each channel, must be a multiple of two.
     uint16_t length;
     //! Specific zero-indexed channel to insert source into.
@@ -212,7 +225,8 @@ typedef struct msp_interleave_q15_params {
 //!  \brief Parameters for IQ31 vector interleave
 //
 //******************************************************************************
-typedef struct msp_interleave_iq31_params {
+typedef struct msp_interleave_iq31_params
+{
     //! Length of each channel.
     uint16_t length;
     //! Specific zero-indexed channel to insert source into.
@@ -228,7 +242,8 @@ typedef struct msp_interleave_iq31_params {
 //!  \brief Parameters for Q15 vector deinterleave
 //
 //******************************************************************************
-typedef struct msp_deinterleave_q15_params {
+typedef struct msp_deinterleave_q15_params
+{
     //! Length of each channel, must be a multiple of two.
     uint16_t length;
     //! Specific zero-indexed channel to pull from source.
@@ -244,7 +259,8 @@ typedef struct msp_deinterleave_q15_params {
 //!  \brief Parameters for IQ31 vector deinterleave
 //
 //******************************************************************************
-typedef struct msp_deinterleave_iq31_params {
+typedef struct msp_deinterleave_iq31_params
+{
     //! Length of each channel.
     uint16_t length;
     //! Specific zero-indexed channel to pull from source.
@@ -260,15 +276,16 @@ typedef struct msp_deinterleave_iq31_params {
 //!  \brief Parameters for Q15 sinusoid generation
 //
 //******************************************************************************
-typedef struct msp_sinusoid_q15_params {
+typedef struct msp_sinusoid_q15_params
+{
     //! Length of the generated sinusoid, must be a multiple of two.
     uint16_t length;
     //! Amplitude of the generated sinusoid.
     _q15 amplitude;
-    //! Q15 constant equal to cos(2*pi*frequency/fs) where fs is the sampling 
-    //! frequency and freq is the desired sinusoid frequency. For example a 200 
-    //! Hz sinusoid with sampling frequency of 8192 would have a cosOmega 
-    //! constant equal to cos(2*pi*200/8192) = _Q15(0.988258) or 0x7E7F in 
+    //! Q15 constant equal to cos(2*pi*frequency/fs) where fs is the sampling
+    //! frequency and freq is the desired sinusoid frequency. For example a 200
+    //! Hz sinusoid with sampling frequency of 8192 would have a cosOmega
+    //! constant equal to cos(2*pi*200/8192) = _Q15(0.988258) or 0x7E7F in
     //! hexadecimal.
     _q15 cosOmega;
     //! Q15 constant equal to sin(2*pi*frequency/fs) where fs is the sampling
@@ -299,9 +316,7 @@ typedef struct msp_sinusoid_q15_params {
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_q15_to_iq31(const msp_q15_to_iq31_params *params,
-                                   const _q15 *src,
-                                   _iq31 *dst);
+extern msp_status msp_q15_to_iq31(const msp_q15_to_iq31_params* params, const _q15* src, _iq31* dst);
 
 //******************************************************************************
 //
@@ -323,9 +338,7 @@ extern msp_status msp_q15_to_iq31(const msp_q15_to_iq31_params *params,
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_iq31_to_q15(const msp_iq31_to_q15_params *params,
-                                   const _iq31 *src,
-                                   _q15 *dst);
+extern msp_status msp_iq31_to_q15(const msp_iq31_to_q15_params* params, const _iq31* src, _q15* dst);
 
 //******************************************************************************
 //
@@ -348,10 +361,7 @@ extern msp_status msp_iq31_to_q15(const msp_iq31_to_q15_params *params,
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_cmplx_q15(const msp_cmplx_q15_params *params,
-                                   const _q15 *real,
-                                   const _q15 *imag,
-                                   _q15 *dst);
+extern msp_status msp_cmplx_q15(const msp_cmplx_q15_params* params, const _q15* real, const _q15* imag, _q15* dst);
 
 //******************************************************************************
 //
@@ -375,10 +385,7 @@ extern msp_status msp_cmplx_q15(const msp_cmplx_q15_params *params,
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_cmplx_iq31(const msp_cmplx_iq31_params *params,
-                                   const _iq31 *real,
-                                   const _iq31 *imag,
-                                   _iq31 *dst);
+extern msp_status msp_cmplx_iq31(const msp_cmplx_iq31_params* params, const _iq31* real, const _iq31* imag, _iq31* dst);
 
 //******************************************************************************
 //
@@ -400,9 +407,7 @@ extern msp_status msp_cmplx_iq31(const msp_cmplx_iq31_params *params,
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_copy_q15(const msp_copy_q15_params *params,
-                               const _q15 *src,
-                               _q15 *dst);
+extern msp_status msp_copy_q15(const msp_copy_q15_params* params, const _q15* src, _q15* dst);
 
 //******************************************************************************
 //
@@ -424,9 +429,7 @@ extern msp_status msp_copy_q15(const msp_copy_q15_params *params,
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_copy_iq31(const msp_copy_iq31_params *params,
-                                const _iq31 *src,
-                                _iq31 *dst);
+extern msp_status msp_copy_iq31(const msp_copy_iq31_params* params, const _iq31* src, _iq31* dst);
 
 //******************************************************************************
 //
@@ -447,7 +450,7 @@ extern msp_status msp_copy_iq31(const msp_copy_iq31_params *params,
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_fill_q15(const msp_fill_q15_params *params, _q15 *dst);
+extern msp_status msp_fill_q15(const msp_fill_q15_params* params, _q15* dst);
 
 //******************************************************************************
 //
@@ -468,7 +471,7 @@ extern msp_status msp_fill_q15(const msp_fill_q15_params *params, _q15 *dst);
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_fill_iq31(const msp_fill_iq31_params *params, _iq31 *dst);
+extern msp_status msp_fill_iq31(const msp_fill_iq31_params* params, _iq31* dst);
 
 //******************************************************************************
 //
@@ -490,8 +493,7 @@ extern msp_status msp_fill_iq31(const msp_fill_iq31_params *params, _iq31 *dst);
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_cmplx_fill_q15(const msp_cmplx_fill_q15_params *params,
-                                     _q15 *dst);
+extern msp_status msp_cmplx_fill_q15(const msp_cmplx_fill_q15_params* params, _q15* dst);
 
 //******************************************************************************
 //
@@ -513,8 +515,7 @@ extern msp_status msp_cmplx_fill_q15(const msp_cmplx_fill_q15_params *params,
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_cmplx_fill_iq31(const msp_cmplx_fill_iq31_params *params,
-                                      _iq31 *dst);
+extern msp_status msp_cmplx_fill_iq31(const msp_cmplx_fill_iq31_params* params, _iq31* dst);
 
 //******************************************************************************
 //
@@ -524,7 +525,7 @@ extern msp_status msp_cmplx_fill_iq31(const msp_cmplx_fill_iq31_params *params,
 //!
 //! \par Details
 //! A single Q15 vector is inserted into multiple interleaved vectors. For
-//! example, a interleave operation to insert a source vector x[] into channel 
+//! example, a interleave operation to insert a source vector x[] into channel
 //! one of a four channel destination vector y[] will yield the following data
 //! result:
 //!
@@ -541,9 +542,7 @@ extern msp_status msp_cmplx_fill_iq31(const msp_cmplx_fill_iq31_params *params,
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_interleave_q15(const msp_interleave_q15_params *params,
-                                     const _q15 *src,
-                                     _q15 *dst);
+extern msp_status msp_interleave_q15(const msp_interleave_q15_params* params, const _q15* src, _q15* dst);
 
 //******************************************************************************
 //
@@ -553,7 +552,7 @@ extern msp_status msp_interleave_q15(const msp_interleave_q15_params *params,
 //!
 //! \par Details
 //! A single IQ31 vector is inserted into multiple interleaved vectors. For
-//! example, a interleave operation to insert a source vector x[] into channel 
+//! example, a interleave operation to insert a source vector x[] into channel
 //! one of a four channel destination vector y[] will yield the following data
 //! result:
 //!
@@ -570,9 +569,7 @@ extern msp_status msp_interleave_q15(const msp_interleave_q15_params *params,
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_interleave_iq31(const msp_interleave_iq31_params *params,
-                                     const _iq31 *src,
-                                     _iq31 *dst);
+extern msp_status msp_interleave_iq31(const msp_interleave_iq31_params* params, const _iq31* src, _iq31* dst);
 
 //******************************************************************************
 //
@@ -598,10 +595,7 @@ extern msp_status msp_interleave_iq31(const msp_interleave_iq31_params *params,
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_deinterleave_q15(
-                                    const msp_deinterleave_q15_params *params,
-                                    const _q15 *src,
-                                    _q15 *dst);
+extern msp_status msp_deinterleave_q15(const msp_deinterleave_q15_params* params, const _q15* src, _q15* dst);
 
 //******************************************************************************
 //
@@ -627,16 +621,13 @@ extern msp_status msp_deinterleave_q15(
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_deinterleave_iq31(
-                                    const msp_deinterleave_iq31_params *params,
-                                    const _iq31 *src,
-                                    _iq31 *dst);
+extern msp_status msp_deinterleave_iq31(const msp_deinterleave_iq31_params* params, const _iq31* src, _iq31* dst);
 
 //******************************************************************************
 //
 //! \ingroup dsplib_utility_api
 //!
-//! \brief Generate a sinusoid with specified amplitude and frequency. 
+//! \brief Generate a sinusoid with specified amplitude and frequency.
 //!
 //! \par Details
 //! Generate a sinusoid waveform with configured amplitude and frequency
@@ -652,8 +643,7 @@ extern msp_status msp_deinterleave_iq31(
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_sinusoid_q15(const msp_sinusoid_q15_params *params,
-                                   _q15 *dst);
+extern msp_status msp_sinusoid_q15(const msp_sinusoid_q15_params* params, _q15* dst);
 
 //*****************************************************************************
 //
@@ -664,4 +654,4 @@ extern msp_status msp_sinusoid_q15(const msp_sinusoid_q15_params *params,
 }
 #endif
 
-#endif //__DSPLIB_UTILITY_H__
+#endif  //__DSPLIB_UTILITY_H__

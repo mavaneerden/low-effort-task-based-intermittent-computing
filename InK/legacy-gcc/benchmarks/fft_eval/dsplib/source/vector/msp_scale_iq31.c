@@ -38,80 +38,83 @@
  * saturation between steps however the result will overflow if the result is
  * outside the Q31 range of operation.
  */
-msp_status msp_scale_iq31(const msp_scale_iq31_params *params, const _iq31 *src, _iq31 *dst)
-{
-    uint8_t shift;
-    uint16_t length;
-    int32_t scale;
-    
-    /* Initialize the loop counter, scale and shift variables. */
-    length = params->length;
-    scale = params->scale;
-    shift = params->shift;
+msp_status msp_scale_iq31(const msp_scale_iq31_params *params, const _iq31 *src,
+                          _iq31 *dst) {
+  uint8_t shift;
+  uint16_t length;
+  int32_t scale;
+
+  /* Initialize the loop counter, scale and shift variables. */
+  length = params->length;
+  scale = params->scale;
+  shift = params->shift;
 
 #ifndef MSP_DISABLE_DIAGNOSTICS
-    /* Check for invalid shift size (maximum of 31). */
-    if (shift > 31) {
-        return MSP_SHIFT_SIZE_ERROR;
-    }
-#endif //MSP_DISABLE_DIAGNOSTICS
-    
+  /* Check for invalid shift size (maximum of 31). */
+  if (shift > 31) {
+    return MSP_SHIFT_SIZE_ERROR;
+  }
+#endif // MSP_DISABLE_DIAGNOSTICS
+
 #if defined(__MSP430_HAS_MPY32__)
-    int32_t result;
-    
-    /* If MPY32 is available save control context and set to fractional mode. */
-    uint16_t ui16MPYState = MPY32CTL0;
-    MPY32CTL0 = MPYFRAC | MPYDLYWRTEN;
-    
-    /* Load scale arguments once. */
-    MPYS32L = (uint16_t)scale;
-    MPYS32H = (uint16_t)(scale >> 16);
+  int32_t result;
 
-    /* Select 48-bit result registers based on shift count. */
-    if (shift >= 16) {
-        /* Decrement shift and use registers offset by 16-bits. */
-        shift -= 16;
-        
-        /* Loop through all vector elements. */
-        while (length--) {
-            /* Multiply src and the combined scale and shift value. */
-            OP2L = (uint16_t)*src;
-            OP2H = (uint16_t)(*src++ >> 16);
+  /* If MPY32 is available save control context and set to fractional mode. */
+  uint16_t ui16MPYState = MPY32CTL0;
+  MPY32CTL0 = MPYFRAC | MPYDLYWRTEN;
 
-            /* Combine the three registers comprising the result, with appropriate shifts */
-            result = ((uint32_t)RES0 >> (16 - shift));
-            result += ((uint32_t)RES1 << (shift));
-            result += (int32_t)((uint32_t)RES2 << (shift + 16));
-            *dst++ = result;
-        }
-    }
-    else {
-        /* Loop through all vector elements. */
-        while (length--) {
-            /* Multiply src and the combined scale and shift value. */
-            OP2L = (uint16_t)*src;
-            OP2H = (uint16_t)(*src++ >> 16);
+  /* Load scale arguments once. */
+  MPYS32L = (uint16_t)scale;
+  MPYS32H = (uint16_t)(scale >> 16);
 
-            /* Combine the three registers comprising the result, with appropriate shifts */
-            result = ((uint32_t)RES1 >> (16 - shift));
-            result += ((uint32_t)RES2 << (shift));
-            result += (int32_t)((uint32_t)RES3 << (shift + 16));
-            *dst++ = result;
-        }
-    }
+  /* Select 48-bit result registers based on shift count. */
+  if (shift >= 16) {
+    /* Decrement shift and use registers offset by 16-bits. */
+    shift -= 16;
 
-    /* Restore MPY32 control context. */
-    MPY32CTL0 = ui16MPYState;
-#else //__MSP430_HAS_MPY32__
-    /* Recalculate shift value to be a shift right offset by the default Q15 shift by 15. */
-    shift = 31 - shift;
-    
     /* Loop through all vector elements. */
     while (length--) {
-        /* Multiply src by scale and shift result right by the offset shift value. */
-        *dst++ = (_iq31)(((int64_t)*src++ * (int64_t)scale) >> shift);
+      /* Multiply src and the combined scale and shift value. */
+      OP2L = (uint16_t)*src;
+      OP2H = (uint16_t)(*src++ >> 16);
+
+      /* Combine the three registers comprising the result, with appropriate
+       * shifts */
+      result = ((uint32_t)RES0 >> (16 - shift));
+      result += ((uint32_t)RES1 << (shift));
+      result += (int32_t)((uint32_t)RES2 << (shift + 16));
+      *dst++ = result;
     }
+  } else {
+    /* Loop through all vector elements. */
+    while (length--) {
+      /* Multiply src and the combined scale and shift value. */
+      OP2L = (uint16_t)*src;
+      OP2H = (uint16_t)(*src++ >> 16);
+
+      /* Combine the three registers comprising the result, with appropriate
+       * shifts */
+      result = ((uint32_t)RES1 >> (16 - shift));
+      result += ((uint32_t)RES2 << (shift));
+      result += (int32_t)((uint32_t)RES3 << (shift + 16));
+      *dst++ = result;
+    }
+  }
+
+  /* Restore MPY32 control context. */
+  MPY32CTL0 = ui16MPYState;
+#else  //__MSP430_HAS_MPY32__
+  /* Recalculate shift value to be a shift right offset by the default Q15 shift
+   * by 15. */
+  shift = 31 - shift;
+
+  /* Loop through all vector elements. */
+  while (length--) {
+    /* Multiply src by scale and shift result right by the offset shift value.
+     */
+    *dst++ = (_iq31)(((int64_t)*src++ * (int64_t)scale) >> shift);
+  }
 #endif //__MSP430_HAS_MPY32__
 
-    return MSP_SUCCESS;
+  return MSP_SUCCESS;
 }

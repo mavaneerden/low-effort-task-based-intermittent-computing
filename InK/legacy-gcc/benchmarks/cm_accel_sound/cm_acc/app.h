@@ -8,4 +8,3 @@
 #define THREAD2 50
 #define THREAD3 10
 #endif /* CM_FK_APP_H_ */
-

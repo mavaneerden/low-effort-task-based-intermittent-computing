@@ -33,7 +33,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 
 target_link_libraries(${PROJECT_NAME}
     ${INK_LIB}
-    /usr/lib/libdriverlib.a
+    ${DRIVERLIB}
 )
 
 ink_instrument_target(${PROJECT_NAME})

@@ -86,3 +86,43 @@ locations_t getBeginEndLoc(clang::Rewriter &Rewrite, const clang::Stmt* stmt)
 
     return {sm.getExpansionLoc(stmt->getBeginLoc()), sm.getExpansionLoc(stmt->getEndLoc())};
 }
+
+const clang::Expr* getFirstParentNode(const clang::Stmt *d, clang::ASTContext *context)
+{
+    clang::DynTypedNodeList NodeList = context->getParents(*d);
+
+    while (!NodeList.empty()) {
+        // Get the first parent.
+        clang::DynTypedNode ParentNode = NodeList[0];
+
+        // Is the parent a FunctionDecl?
+        if (!ParentNode.get<clang::CStyleCastExpr>() && !ParentNode.get<clang::ParenExpr>() && !ParentNode.get<clang::ImplicitCastExpr>() && ParentNode.get<clang::Expr>()) {
+            return ParentNode.get<clang::Expr>();
+        }
+
+        // It was not a FunctionDecl.  Keep going up.
+        NodeList = context->getParents(ParentNode);
+    }
+
+    return nullptr;
+}
+
+const clang::Expr* getFirstParentNodeWithCast(const clang::Stmt *d, clang::ASTContext *context)
+{
+    clang::DynTypedNodeList NodeList = context->getParents(*d);
+
+    while (!NodeList.empty()) {
+        // Get the first parent.
+        clang::DynTypedNode ParentNode = NodeList[0];
+
+        // Is the parent a FunctionDecl?
+        if (!ParentNode.get<clang::ParenExpr>() && ParentNode.get<clang::Expr>()) {
+            return ParentNode.get<clang::Expr>();
+        }
+
+        // It was not a FunctionDecl.  Keep going up.
+        NodeList = context->getParents(ParentNode);
+    }
+
+    return nullptr;
+}

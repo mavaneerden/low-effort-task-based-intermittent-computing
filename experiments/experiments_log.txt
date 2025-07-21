@@ -20,9 +20,9 @@ Major findings
     2. The fft benchmark is 18.3% slower on average in the new version.
         TODO: why is this?
     3. Bitcount is about 6.3% slower on average in the new version.
-        TODO: why is this?
+        TODO: why is this? rerun experiment
     4. All of the benchmark execution time increase comes from the task execution time increases.
-        TODO: why is this?
+        All other code is the same. TODO: analyse assembly
 - OVERHEAD
     1. Overhead for scheduling, task init, task commit & task activation do not differ significantly.
         This is because the code for these stages remains the same.

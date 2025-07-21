@@ -15,6 +15,7 @@ set(PUBLIC_HEADERS
     api/include/thread.h
     api/include/scheduler.h
     api/include/events.h
+    api/include/timer.h
 )
 
 add_library(${PROJECT_NAME} STATIC)
@@ -26,6 +27,7 @@ target_sources(${PROJECT_NAME}
         api/thread.c
         api/scheduler.c
         api/events.c
+        api/timer.c
     PRIVATE
         isr/isrmanager.c
         isr/persistentqueue.c

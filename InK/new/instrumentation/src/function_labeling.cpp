@@ -98,17 +98,27 @@ class FunctionLabeler : public MatchFinder::MatchCallback {
                     {
                         FunctionDecl *child_task = dyn_cast<FunctionDecl>(decl_candidate);
 
+                        /* Get the macro expansion location, so we can support function names that are expanded from macro's. */
+                        SourceLocation loc = child_task->getBeginLoc();
+                        SourceLocation expansion_loc = sm.getFileLoc(loc);
+
                         /* Disallow declarations in other files (source or header). */
                         if (child_task->getStorageClass() == StorageClass::SC_Extern)
                         {
                             reportError("Task function '" + child_task->getNameAsString() + "' declared as 'extern', this is not allowed.");
                             exit(1);
                         }
-                        if (sm.getFileID(child_task->getLocation()) != sm.getMainFileID())
+                        if (sm.getFileID(expansion_loc) != sm.getMainFileID())
                         {
                             reportError("Task function '" + child_task->getNameAsString() + "' declared in header file, this is not allowed.");
                             exit(1);
                         }
+                        if (!child_task->isStatic())
+                        {
+                            reportError("Task function '" + child_task->getNameAsString() + "' is not static, this is not allowed.");
+                            exit(1);
+                        }
+
 
                         /* If the decl was not already processed, add it to the set
                          * and traverse its own return values recursively.
@@ -138,7 +148,12 @@ class FunctionLabeler : public MatchFinder::MatchCallback {
                 return;
             }
 
-            total_root_tasks++;
+            /* Only one root task is allowed. */
+            if (++total_root_tasks > 1)
+            {
+                reportError("Too many root tasks in file (expected 1, was " + std::to_string(total_root_tasks) + ")");
+                exit(1);
+            }
 
             /* Collect all child task functions into the task_functions set. */
             SourceManager &sm = Result.Context->getSourceManager();
@@ -212,12 +227,6 @@ int main(int argc, const char **argv) {
     ClangTool Tool(op.get().getCompilations(), op.get().getSourcePathList());
 
     Tool.run(newFrontendActionFactory<MyFrontendAction>().get());
-
-    if (total_root_tasks > 1)
-    {
-        reportError("Too many root tasks in file (expected 1, was " + std::to_string(total_root_tasks) + ")");
-        return 1;
-    }
 
     return 0;
 }

@@ -1,18 +1,19 @@
-#include <stdint.h>
 #include <msp430.h>
+#include <stdint.h>
+
 #include "gpio.h"
 #include "ink/ink.h"
 
-#define MAX_BLINK 5
+#define MAX_BLINK       5
 #define TEST_ARRAY_SIZE 9998
 
-static uint8_t test_array[TEST_ARRAY_SIZE];
+static uint8_t  test_array[TEST_ARRAY_SIZE];
 static uint16_t blink_counter;
 
-static void *t_init();
-static void *t_blink_on();
-static void *t_blink_off();
-static void *t_end();
+static void* t_init();
+static void* t_blink_on();
+static void* t_blink_off();
+static void* t_end();
 
 INK_CREATE_THREAD(17, true)
 {
@@ -22,7 +23,7 @@ INK_CREATE_THREAD(17, true)
     return t_blink_on;
 }
 
-void *t_blink_on()
+static void* t_blink_on()
 {
     GPIO_setOutputHighOnPin(GPIO_PORT_P1, GPIO_PIN0);
     blink_counter += 1;
@@ -32,7 +33,7 @@ void *t_blink_on()
     return t_blink_off;
 }
 
-void *t_blink_off()
+static void* t_blink_off()
 {
     GPIO_setOutputLowOnPin(GPIO_PORT_P1, GPIO_PIN0);
 
@@ -46,7 +47,7 @@ void *t_blink_off()
     return t_blink_on;
 }
 
-void *t_end()
+static void* t_end()
 {
-    return (void *)0;
+    return (void*)0;
 }

@@ -1,0 +1,23 @@
+minsizerel
+new
+
+task_init: 92 us
+task_sample: 6644 us
+task_fft_prologue: 6884 us 
+task_fft_stage_1: 12468 us
+task_fft_stage_2: 8688 us
+task_fft_stage_3: 99346 us
+task_fft_epilogue: 27368 us
+task_done: 48 us
+
+legacy
+
+task_init: 156 us
+task_sample: 4530 us
+task_fft_prologue: 6675 us 
+task_fft_stage_1: 9010 us
+task_fft_stage_2: 5339 us
+task_fft_stage_3: 28977 us
+task_fft_epilogue: 8587 us
+task_done: 53 us
+

@@ -1,0 +1,375 @@
+00009dc4 <task_fft_stage_3>:
+{
+    9dc4:	6a 15       	pushm	#7,	r10	;16-bit words
+
+00009dc6 <.LCFI11>:
+    9dc6:	31 80 18 00 	sub	#24,	r1	;#0x0018
+
+00009dca <.LCFI12>:
+    __INK_SET_CURRENT_TASK_BUFFER_INDEX
+    9dca:	b0 12 e6 a4 	call	#-23322	;#0xa4e6
+    9dce:	08 4c       	mov	r12,	r8	;
+
+00009dd0 <.LVL26>:
+    overflow = __INK_GET_VAR_FROM_BUF(fft_overflow);
+    9dd0:	5c 06       	rlam	#2,	r12	;
+    9dd2:	0c 58       	add	r8,	r12	;
+    9dd4:	5c 02       	rlam	#1,	r12	;
+    9dd6:	1d 4c 06 8a 	mov	-30202(r12),r13	;0xffff8a06
+    9dda:	3c 50 00 8a 	add	#-30208,r12	;#0x8a00
+
+00009dde <.Loc.270.1>:
+    9dde:	e1 4d 17 00 	mov.b	@r13,	23(r1)	; 0x0017
+
+00009de2 <.LVL27>:
+    for (i = 0; i < N_SAMPLES; i++)
+    9de2:	1c 4c 08 00 	mov	8(r12),	r12	;
+    9de6:	b1 40 00 8b 	mov	#-29952,12(r1)	;#0x8b00, 0x000c
+    9dea:	0c 00
+    9dec:	0e 4c       	mov	r12,	r14	;
+    9dee:	3e 50 00 01 	add	#256,	r14	;#0x0100
+
+00009df2 <.Loc.275.1>:
+        fft_array_copy[i] = __INK_GET_VAR_FROM_BUF_ARRAY(fft_array)[i];
+    9df2:	3d 40 00 8b 	mov	#-29952,r13	;#0x8b00
+
+00009df6 <.L25>:
+    9df6:	bd 4c 00 00 	mov	@r12+,	0(r13)	;
+    9dfa:	2d 53       	incd	r13		;
+
+00009dfc <.Loc.273.1>:
+    for (i = 0; i < N_SAMPLES; i++)
+    9dfc:	0c 9e       	cmp	r14,	r12	;
+    9dfe:	fb 23       	jnz	$-8      	;abs 0x9df6
+
+00009e00 <.Loc.279.1>:
+    twiddleIncrement = 2 * (*((uint16_t *)__INK_TRANSLATE_POINTER_DEREFERENCE_READ((uint16_t*)TWIDDLE_TABLE, 15))) / STAGE3_STEP;
+    9e00:	7e 40 0f 00 	mov.b	#15,	r14	;#0x000f
+    9e04:	4d 43       	clr.b	r13		;
+    9e06:	3c 40 14 85 	mov	#-31468,r12	;#0x8514
+    9e0a:	b0 12 04 a5 	call	#-23292	;#0xa504
+
+00009e0e <.Loc.280.1>:
+    9e0e:	2c 4c       	mov	@r12,	r12	;
+    9e10:	5c 02       	rlam	#1,	r12	;
+
+00009e12 <.Loc.280.1>:
+    9e12:	5c 0b       	rrum	#3,	r12	;
+    9e14:	81 4c 04 00 	mov	r12,	4(r1)	;
+
+00009e18 <.LVL31>:
+    uint16_t ui16MPYState = MPY32CTL0;
+    9e18:	91 42 ec 04 	mov	&0x04ec,18(r1)	;0x04ec, 0x0012
+    9e1c:	12 00
+
+00009e1e <.Loc.286.1>:
+    MPY32CTL0             = MPYFRAC | MPYDLYWRTEN;
+    9e1e:	b2 40 04 01 	mov	#260,	&0x04ec	;#0x0104
+    9e22:	ec 04
+
+00009e24 <.Loc.286.1>:
+    9e24:	a1 42 06 00 	mov	#4,	6(r1)	;r2 As==10
+
+00009e28 <.Loc.279.1>:
+    step             = STAGE3_STEP;
+    9e28:	b1 42 00 00 	mov	#8,	0(r1)	;r2 As==11
+
+00009e2c <.L32>:
+        scale      = overflow;
+    9e2c:	5c 41 17 00 	mov.b	23(r1),	r12	;0x00017
+    9e30:	81 4c 08 00 	mov	r12,	8(r1)	;
+
+00009e34 <.LVL34>:
+        overflow   = false;
+    9e34:	c1 43 17 00 	mov.b	#0,	23(r1)	;r3 As==00, 0x0017
+
+00009e38 <.Loc.298.1>:
+        __INK_GET_VAR_FROM_BUF(fft_shift) += scale ? 1 : 0;
+    9e38:	0c 48       	mov	r8,	r12	;
+    9e3a:	5c 06       	rlam	#2,	r12	;
+    9e3c:	0c 58       	add	r8,	r12	;
+    9e3e:	5c 02       	rlam	#1,	r12	;
+    9e40:	1c 4c 02 8a 	mov	-30206(r12),r12	;0xffff8a02
+
+00009e44 <.Loc.298.1>:
+    9e44:	9c 51 08 00 	add	8(r1),	0(r12)	;
+    9e48:	00 00
+
+00009e4a <.Loc.300.1>:
+        for (i = 0; i < (step / 2); i++)
+    9e4a:	a1 41 0e 00 	mov	@r1,	14(r1)	; 0x000e
+
+00009e4e <.Loc.306.1>:
+                msp_cmplx_btfly_auto_q15(srcPtr, srcPtr + step, &((const _q15 *)__INK_TRANSLATE_POINTER_DEREFERENCE_READ(twiddlePtr, 15))[twiddleIndex], &scale, &overflow);
+    9e4e:	2d 41       	mov	@r1,	r13	;
+    9e50:	5d 02       	rlam	#1,	r13	;
+    9e52:	81 4d 00 00 	mov	r13,	0(r1)	;
+
+00009e56 <.LVL36>:
+        for (i = 0; i < (step / 2); i++)
+    9e56:	1e 41 0e 00 	mov	14(r1),	r14	;0x0000e
+    9e5a:	5e 03       	rrum	#1,	r14	;
+    9e5c:	81 4e 10 00 	mov	r14,	16(r1)	; 0x0010
+
+00009e60 <.Loc.293.1>:
+        twiddleIndex = 0;
+    9e60:	81 43 02 00 	mov	#0,	2(r1)	;r3 As==00
+
+00009e64 <.Loc.300.1>:
+        for (i = 0; i < (step / 2); i++)
+    9e64:	81 43 0a 00 	mov	#0,	10(r1)	;r3 As==00, 0x000a
+    9e68:	46 43       	clr.b	r6		;
+
+00009e6a <.L26>:
+                srcPtr = fft_array_copy + j * 2;
+    9e6a:	05 46       	mov	r6,	r5	;
+    9e6c:	55 06       	rlam	#2,	r5	;
+
+00009e6e <.Loc.305.1>:
+    9e6e:	07 45       	mov	r5,	r7	;
+    9e70:	37 50 00 8b 	add	#-29952,r7	;#0x8b00
+
+00009e74 <.Loc.306.1>:
+                msp_cmplx_btfly_auto_q15(srcPtr, srcPtr + step, &((const _q15 *)__INK_TRANSLATE_POINTER_DEREFERENCE_READ(twiddlePtr, 15))[twiddleIndex], &scale, &overflow);
+    9e74:	29 41       	mov	@r1,	r9	;
+    9e76:	09 57       	add	r7,	r9	;
+
+00009e78 <.Loc.306.1>:
+    9e78:	7e 40 0f 00 	mov.b	#15,	r14	;#0x000f
+    9e7c:	4d 43       	clr.b	r13		;
+    9e7e:	3c 40 18 85 	mov	#-31464,r12	;#0x8518
+
+00009e82 <.LVL39>:
+    9e82:	b0 12 04 a5 	call	#-23292	;#0xa504
+
+00009e86 <.LVL40>:
+    9e86:	1d 41 02 00 	mov	2(r1),	r13	;
+    9e8a:	5d 02       	rlam	#1,	r13	;
+
+00009e8c <.Loc.306.1>:
+    9e8c:	04 4c       	mov	r12,	r4	;
+    9e8e:	04 5d       	add	r13,	r4	;
+
+00009e90 <.LBB10>:
+//! \return Q15 result
+//
+//******************************************************************************
+static inline void __q15cmpy(int16_t* aR, int16_t* aI, const int16_t* bR, const int16_t* bI)
+{
+    int16_t resR = __q15mpy(*aR, *bR) - __q15mpy(*aI, *bI);
+    9e90:	2c 44       	mov	@r4,	r12	;
+    9e92:	2d 49       	mov	@r9,	r13	;
+    9e94:	b0 12 72 bb 	call	#-17550	;#0xbb72
+
+00009e98 <.LVL42>:
+    9e98:	7e 40 0f 00 	mov.b	#15,	r14	;#0x000f
+    9e9c:	b0 12 58 bb 	call	#-17576	;#0xbb58
+    9ea0:	0a 4c       	mov	r12,	r10	;
+
+00009ea2 <.Loc.601.2>:
+    9ea2:	1c 44 02 00 	mov	2(r4),	r12	;
+
+00009ea6 <.LVL44>:
+    9ea6:	1d 49 02 00 	mov	2(r9),	r13	;
+    9eaa:	b0 12 72 bb 	call	#-17550	;#0xbb72
+
+00009eae <.LVL45>:
+    9eae:	7e 40 0f 00 	mov.b	#15,	r14	;#0x000f
+    9eb2:	b0 12 58 bb 	call	#-17576	;#0xbb58
+
+00009eb6 <.Loc.601.2>:
+    9eb6:	0a 8c       	sub	r12,	r10	;
+
+00009eb8 <.LVL47>:
+    int16_t resI = __q15mpy(*aR, *bI) + __q15mpy(*aI, *bR);
+    9eb8:	2c 44       	mov	@r4,	r12	;
+
+00009eba <.LVL48>:
+    9eba:	1d 49 02 00 	mov	2(r9),	r13	;
+    9ebe:	b0 12 72 bb 	call	#-17550	;#0xbb72
+
+00009ec2 <.LVL49>:
+    9ec2:	7e 40 0f 00 	mov.b	#15,	r14	;#0x000f
+    9ec6:	b0 12 58 bb 	call	#-17576	;#0xbb58
+    9eca:	81 4c 14 00 	mov	r12,	20(r1)	; 0x0014
+
+00009ece <.Loc.602.2>:
+    9ece:	2c 49       	mov	@r9,	r12	;
+    9ed0:	1d 44 02 00 	mov	2(r4),	r13	;
+
+00009ed4 <.LVL51>:
+    9ed4:	b0 12 72 bb 	call	#-17550	;#0xbb72
+
+00009ed8 <.LVL52>:
+    9ed8:	7e 40 0f 00 	mov.b	#15,	r14	;#0x000f
+    9edc:	b0 12 58 bb 	call	#-17576	;#0xbb58
+
+00009ee0 <.Loc.602.2>:
+    9ee0:	1c 51 14 00 	add	20(r1),	r12	;0x00014
+
+00009ee4 <.LBE12>:
+
+    /* Scale result if necessary. */
+    if (*scale)
+    {
+        /* B = (A - coeff*B)/2 */
+        CMPLX_REAL(srcB) = (CMPLX_REAL(srcA) - tempR) >> 1;
+    9ee4:	1d 45 00 8b 	mov	-29952(r5),r13	;0xffff8b00
+    9ee8:	0d 8a       	sub	r10,	r13	;
+
+00009eea <.Loc.438.1>:
+    if (*scale)
+    9eea:	81 93 08 00 	cmp	#0,	8(r1)	;r3 As==00
+    9eee:	34 24       	jz	$+106    	;abs 0x9f58
+
+00009ef0 <.Loc.441.1>:
+        CMPLX_REAL(srcB) = (CMPLX_REAL(srcA) - tempR) >> 1;
+    9ef0:	5d 01       	rram	#1,	r13	;
+    9ef2:	89 4d 00 00 	mov	r13,	0(r9)	;
+
+00009ef6 <.Loc.442.1>:
+        CMPLX_IMAG(srcB) = (CMPLX_IMAG(srcA) - tempI) >> 1;
+    9ef6:	1d 47 02 00 	mov	2(r7),	r13	;
+    9efa:	0d 8c       	sub	r12,	r13	;
+
+00009efc <.Loc.442.1>:
+    9efc:	5d 01       	rram	#1,	r13	;
+    9efe:	89 4d 02 00 	mov	r13,	2(r9)	;
+
+00009f02 <.Loc.445.1>:
+
+        /* A = (A + coeff*B)/2 */
+        CMPLX_REAL(srcA) = (CMPLX_REAL(srcA) + tempR) >> 1;
+    9f02:	1a 55 00 8b 	add	-29952(r5),r10	;0xffff8b00
+
+00009f06 <.LVL55>:
+    9f06:	5a 01       	rram	#1,	r10	;
+    9f08:	85 4a 00 8b 	mov	r10,	-29952(r5); 0x8b00
+
+00009f0c <.Loc.446.1>:
+        CMPLX_IMAG(srcA) = (CMPLX_IMAG(srcA) + tempI) >> 1;
+    9f0c:	1c 57 02 00 	add	2(r7),	r12	;
+
+00009f10 <.LVL56>:
+    9f10:	5c 01       	rram	#1,	r12	;
+    9f12:	87 4c 02 00 	mov	r12,	2(r7)	;
+
+00009f16 <.L28>:
+        CMPLX_REAL(srcA) = CMPLX_REAL(srcA) + tempR;
+        CMPLX_IMAG(srcA) = CMPLX_IMAG(srcA) + tempI;
+    }
+
+    /* Check for possibility of overflow. */
+    if (!*overflow)
+    9f16:	c1 93 17 00 	cmp.b	#0,	23(r1)	;r3 As==00, 0x0017
+    9f1a:	0c 20       	jnz	$+26     	;abs 0x9f34
+
+00009f1c <.Loc.462.1>:
+    {
+        msp_cmplx_overflow_q15(srcA, overflow);
+    9f1c:	3a 40 3a 9c 	mov	#-25542,r10	;#0x9c3a
+    9f20:	0d 41       	mov	r1,	r13	;
+    9f22:	3d 50 17 00 	add	#23,	r13	;#0x0017
+    9f26:	0c 47       	mov	r7,	r12	;
+    9f28:	8a 12       	call	r10		;
+
+00009f2a <.Loc.463.1>:
+        msp_cmplx_overflow_q15(srcB, overflow);
+    9f2a:	0d 41       	mov	r1,	r13	;
+    9f2c:	3d 50 17 00 	add	#23,	r13	;#0x0017
+    9f30:	0c 49       	mov	r9,	r12	;
+    9f32:	8a 12       	call	r10		;
+
+00009f34 <.L29>:
+            for (j = i; j < length; j += step)
+    9f34:	16 51 0e 00 	add	14(r1),	r6	;0x0000e
+
+00009f38 <.Loc.303.1>:
+    9f38:	7c 40 3f 00 	mov.b	#63,	r12	;#0x003f
+    9f3c:	0c 96       	cmp	r6,	r12	;
+    9f3e:	95 2f       	jc	$-212    	;abs 0x9e6a
+    9f40:	16 41 0a 00 	mov	10(r1),	r6	;0x0000a
+
+00009f44 <.LVL60>:
+    9f44:	16 53       	inc	r6		;
+
+00009f46 <.Loc.300.1>:
+        for (i = 0; i < (step / 2); i++)
+    9f46:	16 91 10 00 	cmp	16(r1),	r6	;0x00010
+    9f4a:	12 2c       	jc	$+38     	;abs 0x9f70
+    9f4c:	91 51 04 00 	rla	4(r1)		;
+    9f50:	02 00
+
+00009f52 <.LVL62>:
+    9f52:	81 46 0a 00 	mov	r6,	10(r1)	; 0x000a
+    9f56:	89 3f       	jmp	$-236    	;abs 0x9e6a
+
+00009f58 <.L27>:
+        CMPLX_REAL(srcB) = CMPLX_REAL(srcA) - tempR;
+    9f58:	89 4d 00 00 	mov	r13,	0(r9)	;
+
+00009f5c <.Loc.452.1>:
+        CMPLX_IMAG(srcB) = CMPLX_IMAG(srcA) - tempI;
+    9f5c:	1e 47 02 00 	mov	2(r7),	r14	;
+    9f60:	0e 8c       	sub	r12,	r14	;
+    9f62:	89 4e 02 00 	mov	r14,	2(r9)	;
+
+00009f66 <.Loc.455.1>:
+        CMPLX_REAL(srcA) = CMPLX_REAL(srcA) + tempR;
+    9f66:	85 5a 00 8b 	add	r10,	-29952(r5); 0x8b00
+
+00009f6a <.Loc.456.1>:
+        CMPLX_IMAG(srcA) = CMPLX_IMAG(srcA) + tempI;
+    9f6a:	87 5c 02 00 	add	r12,	2(r7)	;
+    9f6e:	d3 3f       	jmp	$-88     	;abs 0x9f16
+
+00009f70 <.L31>:
+        twiddleIncrement  = twiddleIncrement / 2;
+    9f70:	1d 41 04 00 	mov	4(r1),	r13	;
+    9f74:	5d 03       	rrum	#1,	r13	;
+    9f76:	81 4d 04 00 	mov	r13,	4(r1)	;
+
+00009f7a <.LVL65>:
+    while (step <= length)
+    9f7a:	b1 53 06 00 	add	#-1,	6(r1)	;r3 As==11
+    9f7e:	81 93 06 00 	cmp	#0,	6(r1)	;r3 As==00
+    9f82:	54 23       	jnz	$-342    	;abs 0x9e2c
+
+00009f84 <.Loc.319.1>:
+    MPY32CTL0 = ui16MPYState;
+    9f84:	92 41 12 00 	mov	18(r1),	&0x04ec	;0x00012
+    9f88:	ec 04
+
+00009f8a <.Loc.323.1>:
+        __INK_GET_VAR_FROM_BUF_ARRAY(fft_array)[i] = fft_array_copy[i];
+    9f8a:	0c 48       	mov	r8,	r12	;
+    9f8c:	5c 06       	rlam	#2,	r12	;
+    9f8e:	08 5c       	add	r12,	r8	;
+    9f90:	58 02       	rlam	#1,	r8	;
+    9f92:	1c 48 08 8a 	mov	-30200(r8),r12	;0xffff8a08
+    9f96:	0d 4c       	mov	r12,	r13	;
+
+00009f98 <.LVL68>:
+    9f98:	3d 50 00 01 	add	#256,	r13	;#0x0100
+
+00009f9c <.L33>:
+    9f9c:	1e 41 0c 00 	mov	12(r1),	r14	;0x0000c
+    9fa0:	a1 53 0c 00 	incd	12(r1)		;
+    9fa4:	bc 4e 00 00 	mov	@r14+,	0(r12)	;
+    9fa8:	2c 53       	incd	r12		;
+
+00009faa <.Loc.323.1>:
+    for (i = 0; i < N_SAMPLES; i++)
+    9faa:	0d 9c       	cmp	r12,	r13	;
+    9fac:	f7 23       	jnz	$-16     	;abs 0x9f9c
+
+00009fae <.LVL70>:
+}
+    9fae:	3c 40 48 9d 	mov	#-25272,r12	;#0x9d48
+    9fb2:	31 50 18 00 	add	#24,	r1	;#0x0018
+
+00009fb6 <.LCFI13>:
+    9fb6:	64 17       	popm	#7,	r10	;16-bit words
+
+00009fb8 <.LCFI14>:
+    9fb8:	30 41       	ret

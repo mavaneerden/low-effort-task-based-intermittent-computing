@@ -20,4 +20,16 @@ cd build
 # Configure
 cmake -DCMAKE_BUILD_TYPE=$1 .. -DCMAKE_TOOLCHAIN_FILE=../../../../devices/msp430/toolchains/msp430fr5969.cmake -DRAISE_PIN=$2
 # Install
+# LIMITATION: we cannot use more than 1 processor because the instrumentation has multiple phases.
 make
+
+cd ..
+mkdir -p as
+shopt -s nullglob
+
+for i in bin/*; do
+
+../../../devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/msp430-elf-objdump -d -S $i > as/$(basename ${i})_source.S
+../../../devices/msp430/msp430-gcc/msp430-gcc-9.3.1.11-source-full/install/usr/local/bin/msp430-elf-objdump -d $i > as/$(basename ${i}).S
+
+done

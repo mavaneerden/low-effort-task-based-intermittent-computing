@@ -35,40 +35,41 @@
 /*
  * Perform matrix transposition of a source matrix.
  */
-msp_status msp_matrix_trans_q15(const msp_matrix_trans_q15_params *params, const _q15 *src, _q15 *dst)
+msp_status msp_matrix_trans_q15(const msp_matrix_trans_q15_params* params, const _q15* src, _q15* dst)
 {
-    uint16_t i;
-    uint16_t rows;
-    uint16_t cols;
-    msp_status status;
+    uint16_t                    i;
+    uint16_t                    rows;
+    uint16_t                    cols;
+    msp_status                  status;
     msp_deinterleave_q15_params deinterParams;
-    
+
     /* Extract matrix parameters. */
-    rows = params->rows; 
+    rows = params->rows;
     cols = params->cols;
 
 #ifndef MSP_DISABLE_DIAGNOSTICS
     /* Check that row and column sizes are even. */
-    if ((rows & 1) || (cols & 1)) {
+    if ((rows & 1) || (cols & 1))
+    {
         return MSP_SIZE_ERROR;
     }
-#endif //MSP_DISABLE_DIAGNOSTICS
+#endif  // MSP_DISABLE_DIAGNOSTICS
 
     /* Initialize deinterleave parameters. */
-    deinterParams.length = rows;
+    deinterParams.length      = rows;
     deinterParams.numChannels = cols;
-    
+
     /* Iterate through source columns and deinterleave to destination. */
-    for (i = 0; i < cols; i++) {
+    for (i = 0; i < cols; i++)
+    {
         /* Transpose source columns to destination rows using deinterleave. */
         deinterParams.channel = i;
-        status = msp_deinterleave_q15(&deinterParams, src, &dst[i*rows]);
-        if (status != MSP_SUCCESS) {
+        status                = msp_deinterleave_q15(&deinterParams, src, &dst[i * rows]);
+        if (status != MSP_SUCCESS)
+        {
             return status;
         }
     }
 
     return MSP_SUCCESS;
 }
-
-

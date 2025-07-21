@@ -25,8 +25,7 @@
 
 /* Emulate the division and modulus operation.  */
 
-unsigned short
-udivmodhi4(unsigned short num, unsigned short den, short modwanted)
+unsigned short udivmodhi4(unsigned short num, unsigned short den, short modwanted)
 {
     unsigned short bit = 1;
     unsigned short res = 0;
@@ -48,7 +47,9 @@ udivmodhi4(unsigned short num, unsigned short den, short modwanted)
     }
 
     if (modwanted)
+    {
         return num;
+    }
     return res;
 }
 
@@ -59,20 +60,22 @@ short __divhi3(short a, short b)
 
     if (a < 0)
     {
-        a = -a;
+        a   = -a;
         neg = !neg;
     }
 
     if (b < 0)
     {
-        b = -b;
+        b   = -b;
         neg = !neg;
     }
 
     res = udivmodhi4(a, b, 0);
 
     if (neg)
+    {
         res = -res;
+    }
 
     return res;
 }
@@ -84,17 +87,21 @@ short __modhi3(short a, short b)
 
     if (a < 0)
     {
-        a = -a;
+        a   = -a;
         neg = 1;
     }
 
     if (b < 0)
+    {
         b = -b;
+    }
 
     res = udivmodhi4(a, b, 1);
 
     if (neg)
+    {
         res = -res;
+    }
 
     return res;
 }

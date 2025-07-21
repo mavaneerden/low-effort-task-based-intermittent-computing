@@ -34,47 +34,50 @@
 
 #if defined(MSP_USE_LEA)
 
-msp_status msp_mpy_iq31(const msp_mpy_iq31_params *params, const _iq31 *srcA, const _iq31 *srcB, _iq31 *dst)
+msp_status msp_mpy_iq31(const msp_mpy_iq31_params* params, const _iq31* srcA, const _iq31* srcB, _iq31* dst)
 {
-    uint16_t cmdId;
-    uint16_t length;
-    msp_status status;
-    MSP_LEA_MPYLONGMATRIX_PARAMS *leaParams;
-    
+    uint16_t                      cmdId;
+    uint16_t                      length;
+    msp_status                    status;
+    MSP_LEA_MPYLONGMATRIX_PARAMS* leaParams;
+
     /* Initialize the loop counter with the vector length. */
     length = params->length;
 
 #ifndef MSP_DISABLE_DIAGNOSTICS
     /* Check that the data arrays are aligned and in a valid memory segment. */
-    if (!(MSP_LEA_VALID_ADDRESS(srcA, 4) &
-          MSP_LEA_VALID_ADDRESS(srcB, 4) &
-          MSP_LEA_VALID_ADDRESS(dst, 4))) {
+    if (!(MSP_LEA_VALID_ADDRESS(srcA, 4) & MSP_LEA_VALID_ADDRESS(srcB, 4) & MSP_LEA_VALID_ADDRESS(dst, 4)))
+    {
         return MSP_LEA_INVALID_ADDRESS;
     }
 
     /* Check that the correct revision is defined. */
-    if (MSP_LEA_REVISION != msp_lea_getRevision()) {
+    if (MSP_LEA_REVISION != msp_lea_getRevision())
+    {
         return MSP_LEA_INCORRECT_REVISION;
     }
 
     /* Acquire lock for LEA module. */
-    if (!msp_lea_acquireLock()) {
+    if (!msp_lea_acquireLock())
+    {
         return MSP_LEA_BUSY;
     }
-#endif //MSP_DISABLE_DIAGNOSTICS
+#endif  // MSP_DISABLE_DIAGNOSTICS
 
     /* Initialize LEA if it is not enabled. */
-    if (!(LEAPMCTL & LEACMDEN)) {
+    if (!(LEAPMCTL & LEACMDEN))
+    {
         msp_lea_init();
     }
-        
+
     /* Allocate MSP_LEA_MPYLONGMATRIX_PARAMS structure. */
-    leaParams = (MSP_LEA_MPYLONGMATRIX_PARAMS *)msp_lea_allocMemory(sizeof(MSP_LEA_MPYLONGMATRIX_PARAMS)/sizeof(uint32_t));
+    leaParams =
+        (MSP_LEA_MPYLONGMATRIX_PARAMS*)msp_lea_allocMemory(sizeof(MSP_LEA_MPYLONGMATRIX_PARAMS) / sizeof(uint32_t));
 
     /* Set MSP_LEA_MPYMATRIX_PARAMS structure. */
-    leaParams->input2 = MSP_LEA_CONVERT_ADDRESS(srcB);
-    leaParams->output = MSP_LEA_CONVERT_ADDRESS(dst);
-    leaParams->vectorSize = length;
+    leaParams->input2       = MSP_LEA_CONVERT_ADDRESS(srcB);
+    leaParams->output       = MSP_LEA_CONVERT_ADDRESS(dst);
+    leaParams->vectorSize   = length;
     leaParams->input1Offset = 1;
     leaParams->input2Offset = 1;
     leaParams->outputOffset = 1;
@@ -85,31 +88,34 @@ msp_status msp_mpy_iq31(const msp_mpy_iq31_params *params, const _iq31 *srcA, co
 
 #if (MSP_LEA_REVISION < MSP_LEA_REVISION_B)
     /* Load function into code memory */
-    cmdId = msp_lea_loadCommand(LEACMD__MPYLONGMATRIX, MSP_LEA_MPYLONGMATRIX,
-            sizeof(MSP_LEA_MPYLONGMATRIX)/sizeof(MSP_LEA_MPYLONGMATRIX[0]));
-#else //MSP_LEA_REVISION
+    cmdId = msp_lea_loadCommand(
+        LEACMD__MPYLONGMATRIX, MSP_LEA_MPYLONGMATRIX, sizeof(MSP_LEA_MPYLONGMATRIX) / sizeof(MSP_LEA_MPYLONGMATRIX[0]));
+#else   // MSP_LEA_REVISION
     /* Invoke the LEACMD__MPYLONGMATRIX command. */
     cmdId = LEACMD__MPYLONGMATRIX;
-#endif //MSP_LEA_REVISION
+#endif  // MSP_LEA_REVISION
 
     /* Invoke the command. */
     msp_lea_invokeCommand(cmdId);
 
     /* Free MSP_LEA_MPYLONGMATRIX_PARAMS structure. */
-    msp_lea_freeMemory(sizeof(MSP_LEA_MPYLONGMATRIX_PARAMS)/sizeof(uint32_t));
-    
+    msp_lea_freeMemory(sizeof(MSP_LEA_MPYLONGMATRIX_PARAMS) / sizeof(uint32_t));
+
     /* Set status flag. */
     status = MSP_SUCCESS;
-        
+
 #ifndef MSP_DISABLE_DIAGNOSTICS
     /* Check LEA interrupt flags for any errors. */
-    if (msp_lea_ifg & LEACOVLIFG) {
+    if (msp_lea_ifg & LEACOVLIFG)
+    {
         status = MSP_LEA_COMMAND_OVERFLOW;
     }
-    else if (msp_lea_ifg & LEAOORIFG) {
+    else if (msp_lea_ifg & LEAOORIFG)
+    {
         status = MSP_LEA_OUT_OF_RANGE;
     }
-    else if (msp_lea_ifg & LEASDIIFG) {
+    else if (msp_lea_ifg & LEASDIIFG)
+    {
         status = MSP_LEA_SCALAR_INCONSISTENCY;
     }
 #endif
@@ -119,44 +125,46 @@ msp_status msp_mpy_iq31(const msp_mpy_iq31_params *params, const _iq31 *srcA, co
     return status;
 }
 
-#else //MSP_USE_LEA
+#else  // MSP_USE_LEA
 
-msp_status msp_mpy_iq31(const msp_mpy_iq31_params *params, const _iq31 *srcA, const _iq31 *srcB, _iq31 *dst)
+msp_status msp_mpy_iq31(const msp_mpy_iq31_params* params, const _iq31* srcA, const _iq31* srcB, _iq31* dst)
 {
     uint16_t length;
-    
+
     /* Initialize the loop counter with the vector length. */
     length = params->length;
 
 #if defined(__MSP430_HAS_MPY32__)
-    uint16_t *dstPtr = (uint16_t *)dst;
-    
+    uint16_t* dstPtr = (uint16_t*)dst;
+
     /* If MPY32 is available save control context and set to fractional mode. */
     uint16_t ui16MPYState = MPY32CTL0;
-    MPY32CTL0 = MPYFRAC | MPYDLYWRTEN;
-    
+    MPY32CTL0             = MPYFRAC | MPYDLYWRTEN;
+
     /* Loop through all vector elements. */
-    while (length--) {
+    while (length--)
+    {
         /* Multiply srcA and srcB and store to dst. */
-        MPYS32L = (uint16_t)*srcA;
-        MPYS32H = (uint16_t)(*srcA++ >> 16);
-        OP2L    = (uint16_t)*srcB;
-        OP2H    = (uint16_t)(*srcB++ >> 16);
+        MPYS32L   = (uint16_t)*srcA;
+        MPYS32H   = (uint16_t)(*srcA++ >> 16);
+        OP2L      = (uint16_t)*srcB;
+        OP2H      = (uint16_t)(*srcB++ >> 16);
         *dstPtr++ = RES2;
         *dstPtr++ = RES3;
     }
-    
+
     /* Restore MPY32 control context. */
     MPY32CTL0 = ui16MPYState;
-#else //__MSP430_HAS_MPY32__
+#else   //__MSP430_HAS_MPY32__
     /* Loop through all vector elements. */
-    while (length--) {
+    while (length--)
+    {
         /* Multiply srcA and srcB and store to dst. */
         *dst++ = __q31mpy(*srcA++, *srcB++);
     }
-#endif //__MSP430_HAS_MPY32__
+#endif  //__MSP430_HAS_MPY32__
 
     return MSP_SUCCESS;
 }
 
-#endif //MSP_USE_LEA
+#endif  // MSP_USE_LEA

@@ -34,48 +34,53 @@
 
 #if defined(MSP_USE_LEA)
 
-msp_status msp_max_uq31(const msp_max_uq31_params *params, const _uq31 *src, _uq31 *max, uint16_t *index)
+msp_status msp_max_uq31(const msp_max_uq31_params* params, const _uq31* src, _uq31* max, uint16_t* index)
 {
-    uint16_t cmdId;
-    uint16_t length;
-    uint32_t *output;
-    msp_status status;
-    MSP_LEA_MAXLONGUNSIGNED_PARAMS *leaParams;
-    
+    uint16_t                        cmdId;
+    uint16_t                        length;
+    uint32_t*                       output;
+    msp_status                      status;
+    MSP_LEA_MAXLONGUNSIGNED_PARAMS* leaParams;
+
     /* Initialize the loop counter with the vector length. */
     length = params->length;
 
 #ifndef MSP_DISABLE_DIAGNOSTICS
     /* Check that the data arrays are aligned and in a valid memory segment. */
-    if (!(MSP_LEA_VALID_ADDRESS(src, 4))) {
+    if (!(MSP_LEA_VALID_ADDRESS(src, 4)))
+    {
         return MSP_LEA_INVALID_ADDRESS;
     }
 
     /* Check that the correct revision is defined. */
-    if (MSP_LEA_REVISION != msp_lea_getRevision()) {
+    if (MSP_LEA_REVISION != msp_lea_getRevision())
+    {
         return MSP_LEA_INCORRECT_REVISION;
     }
 
     /* Acquire lock for LEA module. */
-    if (!msp_lea_acquireLock()) {
+    if (!msp_lea_acquireLock())
+    {
         return MSP_LEA_BUSY;
     }
-#endif //MSP_DISABLE_DIAGNOSTICS
+#endif  // MSP_DISABLE_DIAGNOSTICS
 
     /* Initialize LEA if it is not enabled. */
-    if (!(LEAPMCTL & LEACMDEN)) {
+    if (!(LEAPMCTL & LEACMDEN))
+    {
         msp_lea_init();
     }
-        
+
     /* Allocate MSP_LEA_MAXLONGUNSIGNED_PARAMS structure. */
-    leaParams = (MSP_LEA_MAXLONGUNSIGNED_PARAMS *)msp_lea_allocMemory(sizeof(MSP_LEA_MAXLONGUNSIGNED_PARAMS)/sizeof(uint32_t));
+    leaParams =
+        (MSP_LEA_MAXLONGUNSIGNED_PARAMS*)msp_lea_allocMemory(sizeof(MSP_LEA_MAXLONGUNSIGNED_PARAMS) / sizeof(uint32_t));
 
     /* Allocate output vector of length two. */
-    output = (uint32_t *)msp_lea_allocMemory(2*sizeof(uint32_t)/sizeof(uint32_t));
+    output = (uint32_t*)msp_lea_allocMemory(2 * sizeof(uint32_t) / sizeof(uint32_t));
 
     /* Set MSP_LEA_MAXLONGUNSIGNED_PARAMS structure. */
-    leaParams->vectorSize = length;
-    leaParams->output = MSP_LEA_CONVERT_ADDRESS(output);
+    leaParams->vectorSize  = length;
+    leaParams->output      = MSP_LEA_CONVERT_ADDRESS(output);
     leaParams->inputOffset = 1;
 
     /* Load source arguments to LEA. */
@@ -84,36 +89,41 @@ msp_status msp_max_uq31(const msp_max_uq31_params *params, const _uq31 *src, _uq
 
 #if (MSP_LEA_REVISION < MSP_LEA_REVISION_B)
     /* Load function into code memory */
-    cmdId = msp_lea_loadCommand(LEACMD__MAXUNSIGNEDLONGMATRIX, MSP_LEA_MAXUNSIGNEDLONGMATRIX,
-            sizeof(MSP_LEA_MAXUNSIGNEDLONGMATRIX)/sizeof(MSP_LEA_MAXUNSIGNEDLONGMATRIX[0]));
-#else //MSP_LEA_REVISION
+    cmdId = msp_lea_loadCommand(
+        LEACMD__MAXUNSIGNEDLONGMATRIX,
+        MSP_LEA_MAXUNSIGNEDLONGMATRIX,
+        sizeof(MSP_LEA_MAXUNSIGNEDLONGMATRIX) / sizeof(MSP_LEA_MAXUNSIGNEDLONGMATRIX[0]));
+#else   // MSP_LEA_REVISION
     /* Invoke the LEACMD__MAXUNSIGNEDLONGMATRIX command. */
     cmdId = LEACMD__MAXUNSIGNEDLONGMATRIX;
-#endif //MSP_LEA_REVISION
+#endif  // MSP_LEA_REVISION
 
     /* Invoke the command. */
     msp_lea_invokeCommand(cmdId);
-    
+
     /* Write results. */
-    *max = output[0];
+    *max   = output[0];
     *index = output[1];
 
     /* Free MSP_LEA_MAXLONGUNSIGNED_PARAMS structure and output vector. */
-    msp_lea_freeMemory(2*sizeof(uint32_t)/sizeof(uint32_t));
-    msp_lea_freeMemory(sizeof(MSP_LEA_MAXLONGUNSIGNED_PARAMS)/sizeof(uint32_t));
-    
+    msp_lea_freeMemory(2 * sizeof(uint32_t) / sizeof(uint32_t));
+    msp_lea_freeMemory(sizeof(MSP_LEA_MAXLONGUNSIGNED_PARAMS) / sizeof(uint32_t));
+
     /* Set status flag. */
     status = MSP_SUCCESS;
-        
+
 #ifndef MSP_DISABLE_DIAGNOSTICS
     /* Check LEA interrupt flags for any errors. */
-    if (msp_lea_ifg & LEACOVLIFG) {
+    if (msp_lea_ifg & LEACOVLIFG)
+    {
         status = MSP_LEA_COMMAND_OVERFLOW;
     }
-    else if (msp_lea_ifg & LEAOORIFG) {
+    else if (msp_lea_ifg & LEAOORIFG)
+    {
         status = MSP_LEA_OUT_OF_RANGE;
     }
-    else if (msp_lea_ifg & LEASDIIFG) {
+    else if (msp_lea_ifg & LEASDIIFG)
+    {
         status = MSP_LEA_SCALAR_INCONSISTENCY;
     }
 #endif
@@ -123,40 +133,42 @@ msp_status msp_max_uq31(const msp_max_uq31_params *params, const _uq31 *src, _uq
     return status;
 }
 
-#else //MSP_USE_LEA
+#else  // MSP_USE_LEA
 
-msp_status msp_max_uq31(const msp_max_uq31_params *params, const _uq31 *src, _uq31 *max, uint16_t *index)
+msp_status msp_max_uq31(const msp_max_uq31_params* params, const _uq31* src, _uq31* max, uint16_t* index)
 {
     uint16_t i;
-    _uq31 temp;
-    _uq31 maximum;
+    _uq31    temp;
+    _uq31    maximum;
     uint16_t length;
-    
+
     /* Initialize the loop counter with the vector length. */
     length = params->length;
-    
+
     /* Initialize the maximum value and index. */
     maximum = 0;
-    i = 0;
-    
+    i       = 0;
+
     /* Loop through all vector elements. */
-    while (length--) {
+    while (length--)
+    {
         /* Store vector element to local variable. */
         temp = *src++;
-        
+
         /* Compare vector element with current maximum value. */
-        if (temp >= maximum) {
+        if (temp >= maximum)
+        {
             /* Update maximum value and index. */
             maximum = temp;
-            i = length;
+            i       = length;
         }
     }
-    
+
     /* Save local maximum and index to output arguments. */
-    *max = maximum;
+    *max   = maximum;
     *index = params->length - (i + 1);
 
     return MSP_SUCCESS;
 }
 
-#endif //MSP_USE_LEA
+#endif  // MSP_USE_LEA

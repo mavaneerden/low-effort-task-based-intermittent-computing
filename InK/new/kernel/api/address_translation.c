@@ -22,7 +22,7 @@ inline int __ink_get_current_task_buffer_index()
     return current_task_buffer_index;
 }
 
-inline bool is_shared(void* address)
+bool is_shared(void* address)
 {
     return address >= buffer_start_address && address < buffer_end_address;
 }

@@ -11,4 +11,3 @@
 #define THREAD4 60
 
 #endif /* CM_FK_APP_H_ */
-

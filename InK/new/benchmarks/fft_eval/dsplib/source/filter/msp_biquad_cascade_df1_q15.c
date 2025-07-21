@@ -32,38 +32,40 @@
 
 #include "../../include/DSPLib.h"
 
-msp_status msp_biquad_cascade_df1_q15(const msp_biquad_cascade_df1_q15_params *params, const _q15 *src, _q15 *dst)
+msp_status msp_biquad_cascade_df1_q15(const msp_biquad_cascade_df1_q15_params* params, const _q15* src, _q15* dst)
 {
-    uint16_t i;
-    uint16_t stages;
-    const _q15 *srcPtr;
-    msp_status status;
+    uint16_t                  i;
+    uint16_t                  stages;
+    const _q15*               srcPtr;
+    msp_status                status;
     msp_biquad_df1_q15_params df1Params;
-    
+
     /* Load the number of stages from the parameters. */
     stages = params->stages;
-    
+
     /* Set initial source pointer. */
     srcPtr = src;
 
     /* Run the input through all stages of the cascaded biquad. */
-    for (i = 0; i < stages; i++) {
+    for (i = 0; i < stages; i++)
+    {
         /* Initialize the DF1 biquad parameter structure. */
         df1Params.length = params->length;
         df1Params.coeffs = &params->coeffs[i];
         df1Params.states = &params->states[i];
-    
+
         /* Invoke the msp_biquad_df1_q15 function and check status flag. */
         status = msp_biquad_df1_q15(&df1Params, srcPtr, dst);
-        if (status != MSP_SUCCESS) {
+        if (status != MSP_SUCCESS)
+        {
             /* Something went wrong, return the status of the operation. */
             return status;
         }
-        
+
         /* Set source pointer to destination for next stage. */
         srcPtr = dst;
     }
-    
+
     /* Return the status of the operation. */
     return status;
 }

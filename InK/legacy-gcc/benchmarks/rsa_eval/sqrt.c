@@ -28,43 +28,38 @@
 #include "msp-math.h"
 
 /* Square root by Newton's method */
-uint16_t sqrt16(uint32_t x)
-{
-    uint16_t hi = 0xffff;
-    uint16_t lo = 0;
-    uint16_t mid = ((uint32_t)hi + (uint32_t)lo) >> 1;
-    uint32_t s = 0;
+uint16_t sqrt16(uint32_t x) {
+  uint16_t hi = 0xffff;
+  uint16_t lo = 0;
+  uint16_t mid = ((uint32_t)hi + (uint32_t)lo) >> 1;
+  uint32_t s = 0;
 
-    while (s != x && hi - lo > 1)
-    {
-        mid = ((uint32_t)hi + (uint32_t)lo) >> 1;
-        s = (uint32_t)mid * (uint32_t)mid;
-        if (s < x)
-            lo = mid;
-        else
-            hi = mid;
-    }
+  while (s != x && hi - lo > 1) {
+    mid = ((uint32_t)hi + (uint32_t)lo) >> 1;
+    s = (uint32_t)mid * (uint32_t)mid;
+    if (s < x)
+      lo = mid;
+    else
+      hi = mid;
+  }
 
-    return mid;
+  return mid;
 }
 
-uint32_t sqrt32(uint64_t x)
-{
-    uint32_t hi = 0xffffffff;
-    uint32_t lo = 0;
-    uint32_t mid = ((uint64_t)hi + (uint64_t)lo) >> 1;
-    uint64_t s = 0;
+uint32_t sqrt32(uint64_t x) {
+  uint32_t hi = 0xffffffff;
+  uint32_t lo = 0;
+  uint32_t mid = ((uint64_t)hi + (uint64_t)lo) >> 1;
+  uint64_t s = 0;
 
-    while (s != x && hi - lo > 1)
-    {
-        mid = ((uint64_t)hi + (uint64_t)lo) >> 1;
-        s = (uint64_t)mid * (uint64_t)mid;
-        if (s < x)
-            lo = mid;
-        else
-            hi = mid;
-    }
+  while (s != x && hi - lo > 1) {
+    mid = ((uint64_t)hi + (uint64_t)lo) >> 1;
+    s = (uint64_t)mid * (uint64_t)mid;
+    if (s < x)
+      lo = mid;
+    else
+      hi = mid;
+  }
 
-    return mid;
+  return mid;
 }
-

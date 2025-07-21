@@ -53,8 +53,7 @@
 //
 //******************************************************************************
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 //******************************************************************************
@@ -65,10 +64,10 @@ extern "C"
 //
 //******************************************************************************
 typedef struct msp_matrix_add_q15_params {
-    //! Number of rows in the source matrices, must be a multiple of two.
-    uint16_t rows;
-    //! Number of columns in the source matrices, must be a multiple of two.
-    uint16_t cols;
+  //! Number of rows in the source matrices, must be a multiple of two.
+  uint16_t rows;
+  //! Number of columns in the source matrices, must be a multiple of two.
+  uint16_t cols;
 } msp_matrix_add_q15_params;
 
 //******************************************************************************
@@ -79,10 +78,10 @@ typedef struct msp_matrix_add_q15_params {
 //
 //******************************************************************************
 typedef struct msp_matrix_add_iq31_params {
-    //! Number of rows in the source matrices, must be a multiple of two.
-    uint16_t rows;
-    //! Number of columns in the source matrices, must be a multiple of two.
-    uint16_t cols;
+  //! Number of rows in the source matrices, must be a multiple of two.
+  uint16_t rows;
+  //! Number of columns in the source matrices, must be a multiple of two.
+  uint16_t cols;
 } msp_matrix_add_iq31_params;
 
 //******************************************************************************
@@ -93,10 +92,10 @@ typedef struct msp_matrix_add_iq31_params {
 //
 //******************************************************************************
 typedef struct msp_matrix_sub_q15_params {
-    //! Number of rows in the source matrices, must be a multiple of two.
-    uint16_t rows;
-    //! Number of columns in the source matrices, must be a multiple of two.
-    uint16_t cols;
+  //! Number of rows in the source matrices, must be a multiple of two.
+  uint16_t rows;
+  //! Number of columns in the source matrices, must be a multiple of two.
+  uint16_t cols;
 } msp_matrix_sub_q15_params;
 
 //******************************************************************************
@@ -107,10 +106,10 @@ typedef struct msp_matrix_sub_q15_params {
 //
 //******************************************************************************
 typedef struct msp_matrix_sub_iq31_params {
-    //! Number of rows in the source matrices, must be a multiple of two.
-    uint16_t rows;
-    //! Number of columns in the source matrices, must be a multiple of two.
-    uint16_t cols;
+  //! Number of rows in the source matrices, must be a multiple of two.
+  uint16_t rows;
+  //! Number of columns in the source matrices, must be a multiple of two.
+  uint16_t cols;
 } msp_matrix_sub_iq31_params;
 
 //******************************************************************************
@@ -121,10 +120,10 @@ typedef struct msp_matrix_sub_iq31_params {
 //
 //******************************************************************************
 typedef struct msp_matrix_trans_q15_params {
-    //! Number of rows in the source matrices, must be a multiple of two.
-    uint16_t rows;
-    //! Number of columns in the source matrices, must be a multiple of two.
-    uint16_t cols;
+  //! Number of rows in the source matrices, must be a multiple of two.
+  uint16_t rows;
+  //! Number of columns in the source matrices, must be a multiple of two.
+  uint16_t cols;
 } msp_matrix_trans_q15_params;
 
 //******************************************************************************
@@ -135,10 +134,10 @@ typedef struct msp_matrix_trans_q15_params {
 //
 //******************************************************************************
 typedef struct msp_matrix_trans_iq31_params {
-    //! Number of rows in the source matrices, must be a multiple of two.
-    uint16_t rows;
-    //! Number of columns in the source matrices, must be a multiple of two.
-    uint16_t cols;
+  //! Number of rows in the source matrices, must be a multiple of two.
+  uint16_t rows;
+  //! Number of columns in the source matrices, must be a multiple of two.
+  uint16_t cols;
 } msp_matrix_trans_iq31_params;
 
 //******************************************************************************
@@ -149,14 +148,14 @@ typedef struct msp_matrix_trans_iq31_params {
 //
 //******************************************************************************
 typedef struct msp_matrix_mpy_q15_params {
-    //! Number of rows in source A matrix, must be a multiple of two.
-    uint16_t srcARows;
-    //! Number of columns in source A matrix, must be a multiple of two.
-    uint16_t srcACols;
-    //! Number of rows in source B matrix, must be a multiple of two.
-    uint16_t srcBRows;
-    //! Number of columns in source B matrix, must be a multiple of two.
-    uint16_t srcBCols;
+  //! Number of rows in source A matrix, must be a multiple of two.
+  uint16_t srcARows;
+  //! Number of columns in source A matrix, must be a multiple of two.
+  uint16_t srcACols;
+  //! Number of rows in source B matrix, must be a multiple of two.
+  uint16_t srcBRows;
+  //! Number of columns in source B matrix, must be a multiple of two.
+  uint16_t srcBCols;
 } msp_matrix_mpy_q15_params;
 
 //******************************************************************************
@@ -167,14 +166,14 @@ typedef struct msp_matrix_mpy_q15_params {
 //
 //******************************************************************************
 typedef struct msp_matrix_mpy_iq31_params {
-    //! Number of rows in source A matrix, must be a multiple of two.
-    uint16_t srcARows;
-    //! Number of columns in source A matrix, must be a multiple of two.
-    uint16_t srcACols;
-    //! Number of rows in source B matrix, must be a multiple of two.
-    uint16_t srcBRows;
-    //! Number of columns in source B matrix, must be a multiple of two.
-    uint16_t srcBCols;
+  //! Number of rows in source A matrix, must be a multiple of two.
+  uint16_t srcARows;
+  //! Number of columns in source A matrix, must be a multiple of two.
+  uint16_t srcACols;
+  //! Number of rows in source B matrix, must be a multiple of two.
+  uint16_t srcBRows;
+  //! Number of columns in source B matrix, must be a multiple of two.
+  uint16_t srcBCols;
 } msp_matrix_mpy_iq31_params;
 
 //******************************************************************************
@@ -185,10 +184,10 @@ typedef struct msp_matrix_mpy_iq31_params {
 //
 //******************************************************************************
 typedef struct msp_matrix_neg_q15_params {
-    //! Number of rows in the source matrices, must be a multiple of two.
-    uint16_t rows;
-    //! Number of columns in the source matrices, must be a multiple of two.
-    uint16_t cols;
+  //! Number of rows in the source matrices, must be a multiple of two.
+  uint16_t rows;
+  //! Number of columns in the source matrices, must be a multiple of two.
+  uint16_t cols;
 } msp_matrix_neg_q15_params;
 
 //******************************************************************************
@@ -199,10 +198,10 @@ typedef struct msp_matrix_neg_q15_params {
 //
 //******************************************************************************
 typedef struct msp_matrix_neg_iq31_params {
-    //! Number of rows in the source matrices, must be a multiple of two.
-    uint16_t rows;
-    //! Number of columns in the source matrices, must be a multiple of two.
-    uint16_t cols;
+  //! Number of rows in the source matrices, must be a multiple of two.
+  uint16_t rows;
+  //! Number of columns in the source matrices, must be a multiple of two.
+  uint16_t cols;
 } msp_matrix_neg_iq31_params;
 
 //******************************************************************************
@@ -213,10 +212,10 @@ typedef struct msp_matrix_neg_iq31_params {
 //
 //******************************************************************************
 typedef struct msp_matrix_abs_q15_params {
-    //! Number of rows in the source matrices, must be a multiple of two.
-    uint16_t rows;
-    //! Number of columns in the source matrices, must be a multiple of two.
-    uint16_t cols;
+  //! Number of rows in the source matrices, must be a multiple of two.
+  uint16_t rows;
+  //! Number of columns in the source matrices, must be a multiple of two.
+  uint16_t cols;
 } msp_matrix_abs_q15_params;
 
 //******************************************************************************
@@ -227,10 +226,10 @@ typedef struct msp_matrix_abs_q15_params {
 //
 //******************************************************************************
 typedef struct msp_matrix_abs_iq31_params {
-    //! Number of rows in the source matrices, must be a multiple of two.
-    uint16_t rows;
-    //! Number of columns in the source matrices, must be a multiple of two.
-    uint16_t cols;
+  //! Number of rows in the source matrices, must be a multiple of two.
+  uint16_t rows;
+  //! Number of columns in the source matrices, must be a multiple of two.
+  uint16_t cols;
 } msp_matrix_abs_iq31_params;
 
 //******************************************************************************
@@ -241,12 +240,12 @@ typedef struct msp_matrix_abs_iq31_params {
 //
 //******************************************************************************
 typedef struct msp_matrix_offset_q15_params {
-    //! Number of rows in the source matrices, must be a multiple of two.
-    uint16_t rows;
-    //! Number of columns in the source matrices, must be a multiple of two.
-    uint16_t cols;
-    //! Q15 constant to add to the source matrix.
-    int16_t offset;
+  //! Number of rows in the source matrices, must be a multiple of two.
+  uint16_t rows;
+  //! Number of columns in the source matrices, must be a multiple of two.
+  uint16_t cols;
+  //! Q15 constant to add to the source matrix.
+  int16_t offset;
 } msp_matrix_offset_q15_params;
 
 //******************************************************************************
@@ -257,12 +256,12 @@ typedef struct msp_matrix_offset_q15_params {
 //
 //******************************************************************************
 typedef struct msp_matrix_offset_iq31_params {
-    //! Number of rows in the source matrices, must be a multiple of two.
-    uint16_t rows;
-    //! Number of columns in the source matrices, must be a multiple of two.
-    uint16_t cols;
-    //! IQ31 constant to add to the source matrix.
-    int32_t offset;
+  //! Number of rows in the source matrices, must be a multiple of two.
+  uint16_t rows;
+  //! Number of columns in the source matrices, must be a multiple of two.
+  uint16_t cols;
+  //! IQ31 constant to add to the source matrix.
+  int32_t offset;
 } msp_matrix_offset_iq31_params;
 
 //******************************************************************************
@@ -273,14 +272,14 @@ typedef struct msp_matrix_offset_iq31_params {
 //
 //******************************************************************************
 typedef struct msp_matrix_scale_q15_params {
-    //! Number of rows in the source matrices, must be a multiple of two.
-    uint16_t rows;
-    //! Number of columns in the source matrices, must be a multiple of two.
-    uint16_t cols;
-    //! Integer amount to shift result matrix by, must be positive.
-    uint8_t shift;
-    //! Q15 constant multiplied with the source matrix.
-    _q15 scale;
+  //! Number of rows in the source matrices, must be a multiple of two.
+  uint16_t rows;
+  //! Number of columns in the source matrices, must be a multiple of two.
+  uint16_t cols;
+  //! Integer amount to shift result matrix by, must be positive.
+  uint8_t shift;
+  //! Q15 constant multiplied with the source matrix.
+  _q15 scale;
 } msp_matrix_scale_q15_params;
 
 //******************************************************************************
@@ -291,14 +290,14 @@ typedef struct msp_matrix_scale_q15_params {
 //
 //******************************************************************************
 typedef struct msp_matrix_scale_iq31_params {
-    //! Number of rows in the source matrices, must be a multiple of two.
-    uint16_t rows;
-    //! Number of columns in the source matrices, must be a multiple of two.
-    uint16_t cols;
-    //! Integer amount to shift result matrix by, must be positive.
-    uint8_t shift;
-    //! IQ31 constant multiplied with the source matrix.
-    _iq31 scale;
+  //! Number of rows in the source matrices, must be a multiple of two.
+  uint16_t rows;
+  //! Number of columns in the source matrices, must be a multiple of two.
+  uint16_t cols;
+  //! Integer amount to shift result matrix by, must be positive.
+  uint8_t shift;
+  //! IQ31 constant multiplied with the source matrix.
+  _iq31 scale;
 } msp_matrix_scale_iq31_params;
 
 //******************************************************************************
@@ -309,13 +308,13 @@ typedef struct msp_matrix_scale_iq31_params {
 //
 //******************************************************************************
 typedef struct msp_matrix_shift_q15_params {
-    //! Number of rows in the source matrices, must be a multiple of two.
-    uint16_t rows;
-    //! Number of columns in the source matrices, must be a multiple of two.
-    uint16_t cols;
-    //! Integer value to shift each matrix element by. Positive values will
-    //! shift to the left and negative values will shift to the right.
-    int8_t shift;
+  //! Number of rows in the source matrices, must be a multiple of two.
+  uint16_t rows;
+  //! Number of columns in the source matrices, must be a multiple of two.
+  uint16_t cols;
+  //! Integer value to shift each matrix element by. Positive values will
+  //! shift to the left and negative values will shift to the right.
+  int8_t shift;
 } msp_matrix_shift_q15_params;
 
 //******************************************************************************
@@ -326,13 +325,13 @@ typedef struct msp_matrix_shift_q15_params {
 //
 //******************************************************************************
 typedef struct msp_matrix_shift_iq31_params {
-    //! Number of rows in the source matrices, must be a multiple of two.
-    uint16_t rows;
-    //! Number of columns in the source matrices, must be a multiple of two.
-    uint16_t cols;
-    //! Integer value to shift each matrix element by. Positive values will
-    //! shift to the left and negative values will shift to the right.
-    int8_t shift;
+  //! Number of rows in the source matrices, must be a multiple of two.
+  uint16_t rows;
+  //! Number of columns in the source matrices, must be a multiple of two.
+  uint16_t cols;
+  //! Integer value to shift each matrix element by. Positive values will
+  //! shift to the left and negative values will shift to the right.
+  int8_t shift;
 } msp_matrix_shift_iq31_params;
 
 //******************************************************************************
@@ -361,8 +360,7 @@ typedef struct msp_matrix_shift_iq31_params {
 //
 //******************************************************************************
 extern msp_status msp_matrix_add_q15(const msp_matrix_add_q15_params *params,
-                                     const _q15 *srcA,
-                                     const _q15 *srcB,
+                                     const _q15 *srcA, const _q15 *srcB,
                                      _q15 *dst);
 
 //******************************************************************************
@@ -391,8 +389,7 @@ extern msp_status msp_matrix_add_q15(const msp_matrix_add_q15_params *params,
 //
 //******************************************************************************
 extern msp_status msp_matrix_add_iq31(const msp_matrix_add_iq31_params *params,
-                                      const _iq31 *srcA,
-                                      const _iq31 *srcB,
+                                      const _iq31 *srcA, const _iq31 *srcB,
                                       _iq31 *dst);
 
 //******************************************************************************
@@ -421,8 +418,7 @@ extern msp_status msp_matrix_add_iq31(const msp_matrix_add_iq31_params *params,
 //
 //******************************************************************************
 extern msp_status msp_matrix_sub_q15(const msp_matrix_sub_q15_params *params,
-                                     const _q15 *srcA,
-                                     const _q15 *srcB,
+                                     const _q15 *srcA, const _q15 *srcB,
                                      _q15 *dst);
 
 //******************************************************************************
@@ -451,8 +447,7 @@ extern msp_status msp_matrix_sub_q15(const msp_matrix_sub_q15_params *params,
 //
 //******************************************************************************
 extern msp_status msp_matrix_sub_iq31(const msp_matrix_sub_iq31_params *params,
-                                      const _iq31 *srcA,
-                                      const _iq31 *srcB,
+                                      const _iq31 *srcA, const _iq31 *srcB,
                                       _iq31 *dst);
 
 //******************************************************************************
@@ -481,8 +476,7 @@ extern msp_status msp_matrix_sub_iq31(const msp_matrix_sub_iq31_params *params,
 //
 //******************************************************************************
 extern msp_status msp_matrix_mpy_q15(const msp_matrix_mpy_q15_params *params,
-                                     const _q15 *srcA,
-                                     const _q15 *srcB,
+                                     const _q15 *srcA, const _q15 *srcB,
                                      _q15 *dst);
 
 //******************************************************************************
@@ -510,8 +504,7 @@ extern msp_status msp_matrix_mpy_q15(const msp_matrix_mpy_q15_params *params,
 //
 //******************************************************************************
 extern msp_status msp_matrix_mpy_iq31(const msp_matrix_mpy_iq31_params *params,
-                                      const _iq31 *srcA,
-                                      const _iq31 *srcB,
+                                      const _iq31 *srcA, const _iq31 *srcB,
                                       _iq31 *dst);
 
 //******************************************************************************
@@ -539,9 +532,9 @@ extern msp_status msp_matrix_mpy_iq31(const msp_matrix_mpy_iq31_params *params,
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_matrix_trans_q15(const msp_matrix_trans_q15_params *params,
-                                       const _q15 *src,
-                                       _q15 *dst);
+extern msp_status
+msp_matrix_trans_q15(const msp_matrix_trans_q15_params *params, const _q15 *src,
+                     _q15 *dst);
 
 //******************************************************************************
 //
@@ -568,9 +561,9 @@ extern msp_status msp_matrix_trans_q15(const msp_matrix_trans_q15_params *params
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_matrix_trans_iq31(const msp_matrix_trans_iq31_params *params,
-                                        const _iq31 *src,
-                                        _iq31 *dst);
+extern msp_status
+msp_matrix_trans_iq31(const msp_matrix_trans_iq31_params *params,
+                      const _iq31 *src, _iq31 *dst);
 
 //******************************************************************************
 //
@@ -579,7 +572,7 @@ extern msp_status msp_matrix_trans_iq31(const msp_matrix_trans_iq31_params *para
 //! \brief Negation of a source matrix.
 //!
 //! \par Details
-//! Element-wise Q15 multiplication by negative one with a real source matrix. 
+//! Element-wise Q15 multiplication by negative one with a real source matrix.
 //! This function supports in-place operation.
 //!
 //! \par Pseudo code
@@ -597,8 +590,7 @@ extern msp_status msp_matrix_trans_iq31(const msp_matrix_trans_iq31_params *para
 //
 //******************************************************************************
 extern msp_status msp_matrix_neg_q15(const msp_matrix_neg_q15_params *params,
-                                     const _q15 *src,
-                                     _q15 *dst);
+                                     const _q15 *src, _q15 *dst);
 
 //******************************************************************************
 //
@@ -607,7 +599,7 @@ extern msp_status msp_matrix_neg_q15(const msp_matrix_neg_q15_params *params,
 //! \brief Negation of a source matrix.
 //!
 //! \par Details
-//! Element-wise IQ31 multiplication by negative one with a real source matrix. 
+//! Element-wise IQ31 multiplication by negative one with a real source matrix.
 //! This function supports in-place operation.
 //!
 //! \par Pseudo code
@@ -625,8 +617,7 @@ extern msp_status msp_matrix_neg_q15(const msp_matrix_neg_q15_params *params,
 //
 //******************************************************************************
 extern msp_status msp_matrix_neg_iq31(const msp_matrix_neg_iq31_params *params,
-                                      const _iq31 *src,
-                                      _iq31 *dst);
+                                      const _iq31 *src, _iq31 *dst);
 
 //******************************************************************************
 //
@@ -651,8 +642,7 @@ extern msp_status msp_matrix_neg_iq31(const msp_matrix_neg_iq31_params *params,
 //
 //******************************************************************************
 extern msp_status msp_matrix_abs_q15(const msp_matrix_abs_q15_params *params,
-                                     const _q15 *src,
-                                     _q15 *dst);
+                                     const _q15 *src, _q15 *dst);
 
 //******************************************************************************
 //
@@ -677,8 +667,7 @@ extern msp_status msp_matrix_abs_q15(const msp_matrix_abs_q15_params *params,
 //
 //******************************************************************************
 extern msp_status msp_matrix_abs_iq31(const msp_matrix_abs_iq31_params *params,
-                                      const _iq31 *src,
-                                      _iq31 *dst);
+                                      const _iq31 *src, _iq31 *dst);
 
 //******************************************************************************
 //
@@ -704,10 +693,9 @@ extern msp_status msp_matrix_abs_iq31(const msp_matrix_abs_iq31_params *params,
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_matrix_offset_q15(
-                                    const msp_matrix_offset_q15_params *params,
-                                    const _q15 *src,
-                                    _q15 *dst);
+extern msp_status
+msp_matrix_offset_q15(const msp_matrix_offset_q15_params *params,
+                      const _q15 *src, _q15 *dst);
 
 //******************************************************************************
 //
@@ -733,10 +721,9 @@ extern msp_status msp_matrix_offset_q15(
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_matrix_offset_iq31(
-                                    const msp_matrix_offset_iq31_params *params,
-                                    const _iq31 *src,
-                                    _iq31 *dst);
+extern msp_status
+msp_matrix_offset_iq31(const msp_matrix_offset_iq31_params *params,
+                       const _iq31 *src, _iq31 *dst);
 
 //******************************************************************************
 //
@@ -761,10 +748,9 @@ extern msp_status msp_matrix_offset_iq31(
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_matrix_scale_q15(
-                                    const msp_matrix_scale_q15_params *params,
-                                    const _q15 *src,
-                                    _q15 *dst);
+extern msp_status
+msp_matrix_scale_q15(const msp_matrix_scale_q15_params *params, const _q15 *src,
+                     _q15 *dst);
 
 //******************************************************************************
 //
@@ -789,10 +775,9 @@ extern msp_status msp_matrix_scale_q15(
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_matrix_scale_iq31(
-                                    const msp_matrix_scale_iq31_params *params,
-                                    const _iq31 *src,
-                                    _iq31 *dst);
+extern msp_status
+msp_matrix_scale_iq31(const msp_matrix_scale_iq31_params *params,
+                      const _iq31 *src, _iq31 *dst);
 
 //******************************************************************************
 //
@@ -819,10 +804,9 @@ extern msp_status msp_matrix_scale_iq31(
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_matrix_shift_q15(
-                                    const msp_matrix_shift_q15_params *params,
-                                    const _q15 *src,
-                                    _q15 *dst);
+extern msp_status
+msp_matrix_shift_q15(const msp_matrix_shift_q15_params *params, const _q15 *src,
+                     _q15 *dst);
 
 //******************************************************************************
 //
@@ -849,10 +833,9 @@ extern msp_status msp_matrix_shift_q15(
 //! \return Status of the operation.
 //
 //******************************************************************************
-extern msp_status msp_matrix_shift_iq31(
-                                    const msp_matrix_shift_iq31_params *params,
-                                    const _iq31 *src,
-                                    _iq31 *dst);
+extern msp_status
+msp_matrix_shift_iq31(const msp_matrix_shift_iq31_params *params,
+                      const _iq31 *src, _iq31 *dst);
 
 //*****************************************************************************
 //

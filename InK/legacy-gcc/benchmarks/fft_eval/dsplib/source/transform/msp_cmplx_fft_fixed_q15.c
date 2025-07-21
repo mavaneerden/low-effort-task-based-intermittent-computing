@@ -34,107 +34,108 @@
 
 #if defined(MSP_USE_LEA)
 
-msp_status msp_cmplx_fft_fixed_q15(const msp_cmplx_fft_q15_params *params, int16_t *src)
-{
-    uint16_t log2Size;
-    uint16_t length;
-    msp_status status;
-    MSP_LEA_FFTCOMPLEXFIXEDSCALING_PARAMS *leaParams;
-    
-    /* Save input length to local. */
-    length = params->length;
-    
-    /* Bit reverse the order of the inputs. */
-    if(params->bitReverse) {
-        /* Create and initialize a bit reversal params structure. */
-        msp_cmplx_bitrev_q15_params paramsBitRev;
-        paramsBitRev.length = params->length;
-        
-        /* Perform bit reversal on source data. */
-        status = msp_cmplx_bitrev_q15(&paramsBitRev, src);
-        
-        /* Check if the operation was not successful. */
-        if (status !=  MSP_SUCCESS) {
-            return status;
-        }
-    }
+msp_status msp_cmplx_fft_fixed_q15(const msp_cmplx_fft_q15_params *params,
+                                   int16_t *src) {
+  uint16_t log2Size;
+  uint16_t length;
+  msp_status status;
+  MSP_LEA_FFTCOMPLEXFIXEDSCALING_PARAMS *leaParams;
 
-    /* Calculate log2Size parameter. */
-    log2Size = 0;
-    while (length > 1) {
-        log2Size++;
-        length >>= 1;
+  /* Save input length to local. */
+  length = params->length;
+
+  /* Bit reverse the order of the inputs. */
+  if (params->bitReverse) {
+    /* Create and initialize a bit reversal params structure. */
+    msp_cmplx_bitrev_q15_params paramsBitRev;
+    paramsBitRev.length = params->length;
+
+    /* Perform bit reversal on source data. */
+    status = msp_cmplx_bitrev_q15(&paramsBitRev, src);
+
+    /* Check if the operation was not successful. */
+    if (status != MSP_SUCCESS) {
+      return status;
     }
-    length = params->length;
+  }
+
+  /* Calculate log2Size parameter. */
+  log2Size = 0;
+  while (length > 1) {
+    log2Size++;
+    length >>= 1;
+  }
+  length = params->length;
 
 #ifndef MSP_DISABLE_DIAGNOSTICS
-    /* Check that the length is a power of two. */
-    if ((length & (length-1))) {
-        return MSP_SIZE_ERROR;
-    }
-    
-    /* Check that the data arrays are aligned and in a valid memory segment. */
-    if (!(MSP_LEA_VALID_ADDRESS(src, length*2))) {
-        return MSP_LEA_INVALID_ADDRESS;
-    }
+  /* Check that the length is a power of two. */
+  if ((length & (length - 1))) {
+    return MSP_SIZE_ERROR;
+  }
 
-    /* Acquire lock for LEA module. */
-    if (!msp_lea_acquireLock()) {
-        return MSP_LEA_BUSY;
-    }
-#endif //MSP_DISABLE_DIAGNOSTICS
+  /* Check that the data arrays are aligned and in a valid memory segment. */
+  if (!(MSP_LEA_VALID_ADDRESS(src, length * 2))) {
+    return MSP_LEA_INVALID_ADDRESS;
+  }
 
-    /* Initialize LEA if it is not enabled. */
-    if (!(LEAPMCTL & LEACMDEN)) {
-        msp_lea_init();
-    }
-        
-    /* Allocate MSP_LEA_FFTCOMPLEXFIXEDSCALING_PARAMS structure. */
-    leaParams = (MSP_LEA_FFTCOMPLEXFIXEDSCALING_PARAMS *)msp_lea_allocMemory(sizeof(MSP_LEA_FFTCOMPLEXFIXEDSCALING_PARAMS)/sizeof(uint32_t));
+  /* Acquire lock for LEA module. */
+  if (!msp_lea_acquireLock()) {
+    return MSP_LEA_BUSY;
+  }
+#endif // MSP_DISABLE_DIAGNOSTICS
 
-    /* Set MSP_LEA_FFTCOMPLEXFIXEDSCALING_PARAMS structure. */
-    leaParams->vectorSizeBy2 = length >> 1;
-    leaParams->log2Size = log2Size;
-    
-    /* Load source arguments to LEA. */
-    LEAPMS0 = MSP_LEA_CONVERT_ADDRESS(src);
-    LEAPMS1 = MSP_LEA_CONVERT_ADDRESS(leaParams);
+  /* Initialize LEA if it is not enabled. */
+  if (!(LEAPMCTL & LEACMDEN)) {
+    msp_lea_init();
+  }
 
-    /* Invoke the LEACMD__FFTCOMPLEXFIXEDSCALING command. */
-    msp_lea_invokeCommand(LEACMD__FFTCOMPLEXFIXEDSCALING);
+  /* Allocate MSP_LEA_FFTCOMPLEXFIXEDSCALING_PARAMS structure. */
+  leaParams = (MSP_LEA_FFTCOMPLEXFIXEDSCALING_PARAMS *)msp_lea_allocMemory(
+      sizeof(MSP_LEA_FFTCOMPLEXFIXEDSCALING_PARAMS) / sizeof(uint32_t));
 
-    /* Free MSP_LEA_FFTCOMPLEXFIXEDSCALING_PARAMS structure. */
-    msp_lea_freeMemory(sizeof(MSP_LEA_FFTCOMPLEXFIXEDSCALING_PARAMS)/sizeof(uint32_t));
-    
-    /* Set status flag. */
-    status = MSP_SUCCESS;
-        
+  /* Set MSP_LEA_FFTCOMPLEXFIXEDSCALING_PARAMS structure. */
+  leaParams->vectorSizeBy2 = length >> 1;
+  leaParams->log2Size = log2Size;
+
+  /* Load source arguments to LEA. */
+  LEAPMS0 = MSP_LEA_CONVERT_ADDRESS(src);
+  LEAPMS1 = MSP_LEA_CONVERT_ADDRESS(leaParams);
+
+  /* Invoke the LEACMD__FFTCOMPLEXFIXEDSCALING command. */
+  msp_lea_invokeCommand(LEACMD__FFTCOMPLEXFIXEDSCALING);
+
+  /* Free MSP_LEA_FFTCOMPLEXFIXEDSCALING_PARAMS structure. */
+  msp_lea_freeMemory(sizeof(MSP_LEA_FFTCOMPLEXFIXEDSCALING_PARAMS) /
+                     sizeof(uint32_t));
+
+  /* Set status flag. */
+  status = MSP_SUCCESS;
+
 #ifndef MSP_DISABLE_DIAGNOSTICS
-    /* Check LEA interrupt flags for any errors. */
-    if (msp_lea_ifg & LEACOVLIFG) {
-        status = MSP_LEA_COMMAND_OVERFLOW;
-    }
-    else if (msp_lea_ifg & LEAOORIFG) {
-        status = MSP_LEA_OUT_OF_RANGE;
-    }
-    else if (msp_lea_ifg & LEASDIIFG) {
-        status = MSP_LEA_SCALAR_INCONSISTENCY;
-    }
+  /* Check LEA interrupt flags for any errors. */
+  if (msp_lea_ifg & LEACOVLIFG) {
+    status = MSP_LEA_COMMAND_OVERFLOW;
+  } else if (msp_lea_ifg & LEAOORIFG) {
+    status = MSP_LEA_OUT_OF_RANGE;
+  } else if (msp_lea_ifg & LEASDIIFG) {
+    status = MSP_LEA_SCALAR_INCONSISTENCY;
+  }
 #endif
 
-    /* Free lock for LEA module and return status. */
-    msp_lea_freeLock();
-    return status;
+  /* Free lock for LEA module and return status. */
+  msp_lea_freeLock();
+  return status;
 }
 
-#else //MSP_USE_LEA
+#else // MSP_USE_LEA
 
-#define STAGE1_STEP             (2)
-#define STAGE2_STEP             (STAGE1_STEP*2)
-#define STAGE3_STEP             (STAGE2_STEP*2)
-#define STAGE4_STEP             (STAGE3_STEP*2)
+#define STAGE1_STEP (2)
+#define STAGE2_STEP (STAGE1_STEP * 2)
+#define STAGE3_STEP (STAGE2_STEP * 2)
+#define STAGE4_STEP (STAGE3_STEP * 2)
 
-static inline void msp_cmplx_btfly_fixed_q15(int16_t *srcA, int16_t *srcB, const _q15 *coeff);
+static inline void msp_cmplx_btfly_fixed_q15(int16_t *srcA, int16_t *srcB,
+                                             const _q15 *coeff);
 static inline void msp_cmplx_btfly_c0_fixed_q15(int16_t *srcA, int16_t *srcB);
 static inline void msp_cmplx_btfly_c1_fixed_q15(int16_t *srcA, int16_t *srcB);
 
@@ -142,101 +143,102 @@ static inline void msp_cmplx_btfly_c1_fixed_q15(int16_t *srcA, int16_t *srcB);
  * Perform in-place radix-2 DFT of the input signal using an algorithm optimized
  * for MSP430 with fixed scaling by two at each stage.
  */
-msp_status msp_cmplx_fft_fixed_q15(const msp_cmplx_fft_q15_params *params, int16_t *src)
-{
-    int16_t i, j;                       // loop counters
-    uint16_t step;                      // step size
-    uint16_t length;                    // src length
-    uint16_t twiddleIndex;              // twiddle table index
-    uint16_t twiddleIncrement;          // twiddle table increment
-    int16_t *srcPtr;                    // local source pointer
-    const _q15 *twiddlePtr;             // twiddle table pointer
-    msp_status status;                  // Status of the operation
-    
-    /* Save input length to local. */
-    length = params->length;
-    
-    /* Bit reverse the order of the inputs. */
-    if(params->bitReverse) {
-        /* Create and initialize a bit reversal params structure. */
-        msp_cmplx_bitrev_q15_params paramsBitRev;
-        paramsBitRev.length = params->length;
-        
-        /* Perform bit reversal on source data. */
-        status = msp_cmplx_bitrev_q15(&paramsBitRev, src);
-        
-        /* Check if the operation was not successful. */
-        if (status !=  MSP_SUCCESS) {
-            return status;
-        }
+msp_status msp_cmplx_fft_fixed_q15(const msp_cmplx_fft_q15_params *params,
+                                   int16_t *src) {
+  int16_t i, j;              // loop counters
+  uint16_t step;             // step size
+  uint16_t length;           // src length
+  uint16_t twiddleIndex;     // twiddle table index
+  uint16_t twiddleIncrement; // twiddle table increment
+  int16_t *srcPtr;           // local source pointer
+  const _q15 *twiddlePtr;    // twiddle table pointer
+  msp_status status;         // Status of the operation
+
+  /* Save input length to local. */
+  length = params->length;
+
+  /* Bit reverse the order of the inputs. */
+  if (params->bitReverse) {
+    /* Create and initialize a bit reversal params structure. */
+    msp_cmplx_bitrev_q15_params paramsBitRev;
+    paramsBitRev.length = params->length;
+
+    /* Perform bit reversal on source data. */
+    status = msp_cmplx_bitrev_q15(&paramsBitRev, src);
+
+    /* Check if the operation was not successful. */
+    if (status != MSP_SUCCESS) {
+      return status;
     }
+  }
 
 #ifndef MSP_DISABLE_DIAGNOSTICS
-    /* Check that the length is a power of two. */
-    if ((length & (length-1))) {
-        return MSP_SIZE_ERROR;
-    }
-    
-    /* Check that the provided table is the correct length. */
-    if (*(uint16_t *)params->twiddleTable < length) {
-        return MSP_TABLE_SIZE_ERROR;
-    }
-#endif //MSP_DISABLE_DIAGNOSTICS
+  /* Check that the length is a power of two. */
+  if ((length & (length - 1))) {
+    return MSP_SIZE_ERROR;
+  }
 
-    /* Stage 1. */
-    if (STAGE1_STEP <= length) {
-        for (j = 0; j < length; j += STAGE1_STEP) {
-            srcPtr = src + j*2;
-            msp_cmplx_btfly_c0_fixed_q15(&srcPtr[0], &srcPtr[0+STAGE1_STEP]);
-        }
+  /* Check that the provided table is the correct length. */
+  if (*(uint16_t *)params->twiddleTable < length) {
+    return MSP_TABLE_SIZE_ERROR;
+  }
+#endif // MSP_DISABLE_DIAGNOSTICS
+
+  /* Stage 1. */
+  if (STAGE1_STEP <= length) {
+    for (j = 0; j < length; j += STAGE1_STEP) {
+      srcPtr = src + j * 2;
+      msp_cmplx_btfly_c0_fixed_q15(&srcPtr[0], &srcPtr[0 + STAGE1_STEP]);
     }
-    
-    /* Stage 2. */
-    if (STAGE2_STEP <= length) {
-        for (j = 0; j < length; j += STAGE2_STEP) {
-            srcPtr = src + j*2;
-            msp_cmplx_btfly_c0_fixed_q15(&srcPtr[0], &srcPtr[0+STAGE2_STEP]);
-            msp_cmplx_btfly_c1_fixed_q15(&srcPtr[2], &srcPtr[2+STAGE2_STEP]);
-        }
+  }
+
+  /* Stage 2. */
+  if (STAGE2_STEP <= length) {
+    for (j = 0; j < length; j += STAGE2_STEP) {
+      srcPtr = src + j * 2;
+      msp_cmplx_btfly_c0_fixed_q15(&srcPtr[0], &srcPtr[0 + STAGE2_STEP]);
+      msp_cmplx_btfly_c1_fixed_q15(&srcPtr[2], &srcPtr[2 + STAGE2_STEP]);
     }
-    
-    /* Initialize step size, twiddle angle increment and twiddle table pointer. */
-    step = STAGE3_STEP;
-    twiddleIncrement = 2*(*(uint16_t*)params->twiddleTable)/STAGE3_STEP;
-    twiddlePtr = &params->twiddleTable[DSPLIB_TABLE_OFFSET];
-    
-    /* If MPY32 is available save control context and set to fractional mode. */
+  }
+
+  /* Initialize step size, twiddle angle increment and twiddle table pointer. */
+  step = STAGE3_STEP;
+  twiddleIncrement = 2 * (*(uint16_t *)params->twiddleTable) / STAGE3_STEP;
+  twiddlePtr = &params->twiddleTable[DSPLIB_TABLE_OFFSET];
+
+  /* If MPY32 is available save control context and set to fractional mode. */
 #if defined(__MSP430_HAS_MPY32__)
-    uint16_t ui16MPYState = MPY32CTL0;
-    MPY32CTL0 = MPYFRAC | MPYDLYWRTEN;
+  uint16_t ui16MPYState = MPY32CTL0;
+  MPY32CTL0 = MPYFRAC | MPYDLYWRTEN;
 #endif
-    
-    /* Stage 3 -> log2(step). */
-    while (step <= length) {
-        /* Reset the twiddle angle index. */
-        twiddleIndex = 0;
-        
-        for (i = 0; i < (step/2); i++) {            
-            /* Perform butterfly operations on complex pairs. */
-            for (j = i; j < length; j += step) {
-                srcPtr = src + j*2;
-                msp_cmplx_btfly_fixed_q15(srcPtr, srcPtr + step, &twiddlePtr[twiddleIndex]);
-            }
-            
-            /* Increment twiddle table index. */
-            twiddleIndex += twiddleIncrement;
-        }
-        /* Double the step size and halve the increment factor. */
-        step *= 2;
-        twiddleIncrement = twiddleIncrement/2;
+
+  /* Stage 3 -> log2(step). */
+  while (step <= length) {
+    /* Reset the twiddle angle index. */
+    twiddleIndex = 0;
+
+    for (i = 0; i < (step / 2); i++) {
+      /* Perform butterfly operations on complex pairs. */
+      for (j = i; j < length; j += step) {
+        srcPtr = src + j * 2;
+        msp_cmplx_btfly_fixed_q15(srcPtr, srcPtr + step,
+                                  &twiddlePtr[twiddleIndex]);
+      }
+
+      /* Increment twiddle table index. */
+      twiddleIndex += twiddleIncrement;
     }
-    
-    /* Restore MPY32 control context. */
+    /* Double the step size and halve the increment factor. */
+    step *= 2;
+    twiddleIncrement = twiddleIncrement / 2;
+  }
+
+  /* Restore MPY32 control context. */
 #if defined(__MSP430_HAS_MPY32__)
-    MPY32CTL0 = ui16MPYState;
+  MPY32CTL0 = ui16MPYState;
 #endif
-    
-    return MSP_SUCCESS;
+
+  return MSP_SUCCESS;
 }
 
 /*
@@ -245,22 +247,22 @@ msp_status msp_cmplx_fft_fixed_q15(const msp_cmplx_fft_q15_params *params, int16
  *     A = (A + coeff*B)/2
  *     B = (A - coeff*B)/2
  */
-static inline void msp_cmplx_btfly_fixed_q15(int16_t *srcA, int16_t *srcB, const _q15 *coeff)
-{
-    /* Load coefficients. */
-    _q15 tempR = CMPLX_REAL(coeff);
-    _q15 tempI = CMPLX_IMAG(coeff);
-    
-    /* Calculate real and imaginary parts of coeff*B. */
-    __q15cmpy(&tempR, &tempI, &CMPLX_REAL(srcB), &CMPLX_IMAG(srcB));
+static inline void msp_cmplx_btfly_fixed_q15(int16_t *srcA, int16_t *srcB,
+                                             const _q15 *coeff) {
+  /* Load coefficients. */
+  _q15 tempR = CMPLX_REAL(coeff);
+  _q15 tempI = CMPLX_IMAG(coeff);
 
-    /* B = (A - coeff*B)/2 */
-    CMPLX_REAL(srcB) = (CMPLX_REAL(srcA) - tempR) >> 1;
-    CMPLX_IMAG(srcB) = (CMPLX_IMAG(srcA) - tempI) >> 1;
-    
-    /* A = (A + coeff*B)/2 */
-    CMPLX_REAL(srcA) = (CMPLX_REAL(srcA) + tempR) >> 1;
-    CMPLX_IMAG(srcA) = (CMPLX_IMAG(srcA) + tempI) >> 1;
+  /* Calculate real and imaginary parts of coeff*B. */
+  __q15cmpy(&tempR, &tempI, &CMPLX_REAL(srcB), &CMPLX_IMAG(srcB));
+
+  /* B = (A - coeff*B)/2 */
+  CMPLX_REAL(srcB) = (CMPLX_REAL(srcA) - tempR) >> 1;
+  CMPLX_IMAG(srcB) = (CMPLX_IMAG(srcA) - tempI) >> 1;
+
+  /* A = (A + coeff*B)/2 */
+  CMPLX_REAL(srcA) = (CMPLX_REAL(srcA) + tempR) >> 1;
+  CMPLX_IMAG(srcA) = (CMPLX_IMAG(srcA) + tempI) >> 1;
 }
 
 /*
@@ -271,18 +273,17 @@ static inline void msp_cmplx_btfly_fixed_q15(int16_t *srcA, int16_t *srcB, const
  *     A = (A + (1+0j)*B)/2
  *     B = (A - (1+0j)*B)/2
  */
-static inline void msp_cmplx_btfly_c0_fixed_q15(int16_t *srcA, int16_t *srcB)
-{
-    int16_t tempR = CMPLX_REAL(srcB);
-    int16_t tempI = CMPLX_IMAG(srcB);
-    
-    /* B = (A - (1+0j)*B)/2 */
-    CMPLX_REAL(srcB) = (CMPLX_REAL(srcA) - tempR) >> 1;
-    CMPLX_IMAG(srcB) = (CMPLX_IMAG(srcA) - tempI) >> 1;
-    
-    /* A = (A + (1+0j)*B)/2 */
-    CMPLX_REAL(srcA) = (CMPLX_REAL(srcA) + tempR) >> 1;
-    CMPLX_IMAG(srcA) = (CMPLX_IMAG(srcA) + tempI) >> 1;
+static inline void msp_cmplx_btfly_c0_fixed_q15(int16_t *srcA, int16_t *srcB) {
+  int16_t tempR = CMPLX_REAL(srcB);
+  int16_t tempI = CMPLX_IMAG(srcB);
+
+  /* B = (A - (1+0j)*B)/2 */
+  CMPLX_REAL(srcB) = (CMPLX_REAL(srcA) - tempR) >> 1;
+  CMPLX_IMAG(srcB) = (CMPLX_IMAG(srcA) - tempI) >> 1;
+
+  /* A = (A + (1+0j)*B)/2 */
+  CMPLX_REAL(srcA) = (CMPLX_REAL(srcA) + tempR) >> 1;
+  CMPLX_IMAG(srcA) = (CMPLX_IMAG(srcA) + tempI) >> 1;
 }
 
 /*
@@ -293,18 +294,17 @@ static inline void msp_cmplx_btfly_c0_fixed_q15(int16_t *srcA, int16_t *srcB)
  *     A = (A + (0-1j)*B)/2
  *     B = (A - (0-1j)*B)/2
  */
-static inline void msp_cmplx_btfly_c1_fixed_q15(int16_t *srcA, int16_t *srcB)
-{
-    int16_t tempR = CMPLX_REAL(srcB);
-    int16_t tempI = CMPLX_IMAG(srcB);
-    
-    /* B = (A - (0-1j)*B)/2 */
-    CMPLX_REAL(srcB) = (CMPLX_REAL(srcA) - tempI) >> 1;
-    CMPLX_IMAG(srcB) = (CMPLX_IMAG(srcA) + tempR) >> 1;
-    
-    /* A = (A + (0-1j)*B)/2 */
-    CMPLX_REAL(srcA) = (CMPLX_REAL(srcA) + tempI) >> 1;
-    CMPLX_IMAG(srcA) = (CMPLX_IMAG(srcA) - tempR) >> 1;
+static inline void msp_cmplx_btfly_c1_fixed_q15(int16_t *srcA, int16_t *srcB) {
+  int16_t tempR = CMPLX_REAL(srcB);
+  int16_t tempI = CMPLX_IMAG(srcB);
+
+  /* B = (A - (0-1j)*B)/2 */
+  CMPLX_REAL(srcB) = (CMPLX_REAL(srcA) - tempI) >> 1;
+  CMPLX_IMAG(srcB) = (CMPLX_IMAG(srcA) + tempR) >> 1;
+
+  /* A = (A + (0-1j)*B)/2 */
+  CMPLX_REAL(srcA) = (CMPLX_REAL(srcA) + tempI) >> 1;
+  CMPLX_IMAG(srcA) = (CMPLX_IMAG(srcA) - tempR) >> 1;
 }
 
-#endif //MSP_USE_LEA
+#endif // MSP_USE_LEA

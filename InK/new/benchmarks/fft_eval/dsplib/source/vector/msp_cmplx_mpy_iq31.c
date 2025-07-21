@@ -35,41 +35,42 @@
 /*
  * Perform element wise Q31 multiplication of two complex source vectors.
  */
-msp_status msp_cmplx_mpy_iq31(const msp_cmplx_mpy_iq31_params *params, const _iq31 *srcA, const _iq31 *srcB, _iq31 *dst)
+msp_status msp_cmplx_mpy_iq31(const msp_cmplx_mpy_iq31_params* params, const _iq31* srcA, const _iq31* srcB, _iq31* dst)
 {
     uint16_t length;
-    
+
     /* Initialize the loop counter with the vector length. */
     length = params->length;
 
 #if defined(__MSP430_HAS_MPY32__)
-    uint16_t *dstPtr = (uint16_t *)dst;
-    
+    uint16_t* dstPtr = (uint16_t*)dst;
+
     /* If MPY32 is available save control context and set to fractional mode. */
     uint16_t ui16MPYState = MPY32CTL0;
-    MPY32CTL0 = MPYFRAC | MPYDLYWRTEN;
-    
+    MPY32CTL0             = MPYFRAC | MPYDLYWRTEN;
+
     /* Loop through all vector elements. */
-     while (length--) {
+    while (length--)
+    {
         /* Complex multiply srcA and srcB and store to dst. */
-        MPYS32L = (uint16_t)CMPLX_REAL(srcA);
-        MPYS32H = (uint16_t)(CMPLX_REAL(srcA) >> 16);
-        OP2L    = (uint16_t)CMPLX_REAL(srcB);
-        OP2H    = (uint16_t)(CMPLX_REAL(srcB) >> 16);
-        MACS32L = (uint16_t)(-CMPLX_IMAG(srcA));
-        MACS32H = (uint16_t)(-CMPLX_IMAG(srcA) >> 16);
-        OP2L    = (uint16_t)CMPLX_IMAG(srcB);
-        OP2H    = (uint16_t)(CMPLX_IMAG(srcB) >> 16);
+        MPYS32L   = (uint16_t)CMPLX_REAL(srcA);
+        MPYS32H   = (uint16_t)(CMPLX_REAL(srcA) >> 16);
+        OP2L      = (uint16_t)CMPLX_REAL(srcB);
+        OP2H      = (uint16_t)(CMPLX_REAL(srcB) >> 16);
+        MACS32L   = (uint16_t)(-CMPLX_IMAG(srcA));
+        MACS32H   = (uint16_t)(-CMPLX_IMAG(srcA) >> 16);
+        OP2L      = (uint16_t)CMPLX_IMAG(srcB);
+        OP2H      = (uint16_t)(CMPLX_IMAG(srcB) >> 16);
         *dstPtr++ = RES2;
         *dstPtr++ = RES3;
-        MPYS32L = (uint16_t)CMPLX_REAL(srcA);
-        MPYS32H = (uint16_t)(CMPLX_REAL(srcA) >> 16);
-        OP2L    = (uint16_t)CMPLX_IMAG(srcB);
-        OP2H    = (uint16_t)(CMPLX_IMAG(srcB) >> 16);
-        MACS32L = (uint16_t)(CMPLX_IMAG(srcA));
-        MACS32H = (uint16_t)(CMPLX_IMAG(srcA) >> 16);
-        OP2L    = (uint16_t)CMPLX_REAL(srcB);
-        OP2H    = (uint16_t)(CMPLX_REAL(srcB) >> 16);
+        MPYS32L   = (uint16_t)CMPLX_REAL(srcA);
+        MPYS32H   = (uint16_t)(CMPLX_REAL(srcA) >> 16);
+        OP2L      = (uint16_t)CMPLX_IMAG(srcB);
+        OP2H      = (uint16_t)(CMPLX_IMAG(srcB) >> 16);
+        MACS32L   = (uint16_t)(CMPLX_IMAG(srcA));
+        MACS32H   = (uint16_t)(CMPLX_IMAG(srcA) >> 16);
+        OP2L      = (uint16_t)CMPLX_REAL(srcB);
+        OP2H      = (uint16_t)(CMPLX_REAL(srcB) >> 16);
         *dstPtr++ = RES2;
         *dstPtr++ = RES3;
 
@@ -80,18 +81,23 @@ msp_status msp_cmplx_mpy_iq31(const msp_cmplx_mpy_iq31_params *params, const _iq
 
     /* Restore MPY32 control context. */
     MPY32CTL0 = ui16MPYState;
-#else //__MSP430_HAS_MPY32__
+#else   //__MSP430_HAS_MPY32__
     /* Loop through all vector elements. */
-    while (length--) {
+    while (length--)
+    {
         /* Complex multiply srcA and srcB and store to dst. */
-        *dst++ = (((int64_t)CMPLX_REAL(srcA) * (int64_t)CMPLX_REAL(srcB)) - ((int64_t)CMPLX_IMAG(srcA) * (int64_t)CMPLX_IMAG(srcB))) >> 31;
-        *dst++ = (((int64_t)CMPLX_REAL(srcA) * (int64_t)CMPLX_IMAG(srcB)) + ((int64_t)CMPLX_IMAG(srcA) * (int64_t)CMPLX_REAL(srcB))) >> 31;
-        
+        *dst++ = (((int64_t)CMPLX_REAL(srcA) * (int64_t)CMPLX_REAL(srcB)) -
+                  ((int64_t)CMPLX_IMAG(srcA) * (int64_t)CMPLX_IMAG(srcB))) >>
+                 31;
+        *dst++ = (((int64_t)CMPLX_REAL(srcA) * (int64_t)CMPLX_IMAG(srcB)) +
+                  ((int64_t)CMPLX_IMAG(srcA) * (int64_t)CMPLX_REAL(srcB))) >>
+                 31;
+
         /* Increment pointers. */
         srcA += CMPLX_INCREMENT;
         srcB += CMPLX_INCREMENT;
     }
-#endif //__MSP430_HAS_MPY32__
+#endif  //__MSP430_HAS_MPY32__
 
     return MSP_SUCCESS;
 }

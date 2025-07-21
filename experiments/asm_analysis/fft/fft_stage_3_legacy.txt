@@ -1,0 +1,341 @@
+00009c42 <task_fft_stage_3>:
+{
+    9c42:	6a 15       	pushm	#7,	r10	;16-bit words
+
+00009c44 <.LCFI0>:
+    9c44:	31 80 14 00 	sub	#20,	r1	;#0x0014
+
+00009c48 <.LCFI1>:
+    9c48:	0a 4c       	mov	r12,	r10	;
+
+00009c4a <.Loc.257.1>:
+    overflow = __GET(fft_overflow);
+    9c4a:	d1 4c 05 00 	mov.b	5(r12),	19(r1)	; 0x0013
+    9c4e:	13 00
+
+00009c50 <.Loc.274.1>:
+    for (i = 0; i < N_SAMPLES; i++)
+    9c50:	07 4c       	mov	r12,	r7	;
+    9c52:	37 50 06 00 	add	#6,	r7	;
+    9c56:	b1 40 00 8d 	mov	#-29440,12(r1)	;#0x8d00, 0x000c
+    9c5a:	0c 00
+    9c5c:	0b 4c       	mov	r12,	r11	;
+    9c5e:	3b 50 06 01 	add	#262,	r11	;#0x0106
+    9c62:	81 4b 08 00 	mov	r11,	8(r1)	;
+
+00009c66 <.Loc.271.1>:
+    overflow = __GET(fft_overflow);
+    9c66:	3d 40 00 8d 	mov	#-29440,r13	;#0x8d00
+    9c6a:	0c 47       	mov	r7,	r12	;
+
+00009c6c <.L6>:
+        fft_array_copy[i] = __GET(fft_array[i]);
+    9c6c:	bd 4c 00 00 	mov	@r12+,	0(r13)	;
+    9c70:	2d 53       	incd	r13		;
+
+00009c72 <.Loc.274.1>:
+    for (i = 0; i < N_SAMPLES; i++)
+    9c72:	81 9c 08 00 	cmp	r12,	8(r1)	;
+    9c76:	fa 23       	jnz	$-10     	;abs 0x9c6c
+
+00009c78 <.Loc.280.1>:
+    twiddleIncrement = 2 * (*(uint16_t*)TWIDDLE_TABLE) / STAGE3_STEP;
+    9c78:	16 42 14 85 	mov	&0x8514,r6	;0x8514
+    9c7c:	56 02       	rlam	#1,	r6	;
+
+00009c7e <.Loc.281.1>:
+    9c7e:	56 0b       	rrum	#3,	r6	;
+
+00009c80 <.Loc.282.1>:
+    uint16_t ui16MPYState = MPY32CTL0;
+    9c80:	91 42 ec 04 	mov	&0x04ec,16(r1)	;0x04ec, 0x0010
+    9c84:	10 00
+
+00009c86 <.Loc.287.1>:
+    MPY32CTL0             = MPYFRAC | MPYDLYWRTEN;
+    9c86:	b2 40 04 01 	mov	#260,	&0x04ec	;#0x0104
+    9c8a:	ec 04
+
+00009c8c <.Loc.287.1>:
+    9c8c:	a1 42 02 00 	mov	#4,	2(r1)	;r2 As==10
+
+00009c90 <.Loc.280.1>:
+    step             = STAGE3_STEP;
+    9c90:	75 42       	mov.b	#8,	r5	;r2 As==11
+
+00009c92 <.L13>:
+        scale    = overflow;
+    9c92:	5b 41 13 00 	mov.b	19(r1),	r11	;0x00013
+    9c96:	81 4b 04 00 	mov	r11,	4(r1)	;
+
+00009c9a <.LVL12>:
+        overflow = false;
+    9c9a:	c1 43 13 00 	mov.b	#0,	19(r1)	;r3 As==00, 0x0013
+
+00009c9e <.Loc.299.1>:
+        __SET(fft_shift, __GET(fft_shift) + scale ? 1 : 0);
+    9c9e:	0d 4b       	mov	r11,	r13	;
+    9ca0:	1d 5a 02 00 	add	2(r10),	r13	;
+    9ca4:	0c 43       	clr	r12		;
+    9ca6:	0c 8d       	sub	r13,	r12	;
+    9ca8:	0c dd       	bis	r13,	r12	;
+    9caa:	4e 19 0c 10 	rpt #15 { rrux.w	r12		;
+    9cae:	8a 4c 02 00 	mov	r12,	2(r10)	;
+
+00009cb2 <.Loc.301.1>:
+        for (i = 0; i < (step / 2); i++)
+    9cb2:	81 45 0a 00 	mov	r5,	10(r1)	; 0x000a
+
+00009cb6 <.Loc.307.1>:
+                msp_cmplx_btfly_auto_q15(srcPtr, srcPtr + step, &twiddlePtr[twiddleIndex], &scale, &overflow);
+    9cb6:	55 02       	rlam	#1,	r5	;
+
+00009cb8 <.LVL14>:
+        for (i = 0; i < (step / 2); i++)
+    9cb8:	1b 41 0a 00 	mov	10(r1),	r11	;0x0000a
+    9cbc:	5b 03       	rrum	#1,	r11	;
+    9cbe:	81 4b 0e 00 	mov	r11,	14(r1)	; 0x000e
+
+00009cc2 <.Loc.294.1>:
+        twiddleIndex = 0;
+    9cc2:	44 43       	clr.b	r4		;
+
+00009cc4 <.Loc.301.1>:
+        for (i = 0; i < (step / 2); i++)
+    9cc4:	81 43 06 00 	mov	#0,	6(r1)	;r3 As==00
+    9cc8:	49 43       	clr.b	r9		;
+
+00009cca <.L7>:
+                srcPtr = fft_array_copy + j * 2;
+    9cca:	0e 49       	mov	r9,	r14	;
+    9ccc:	5e 06       	rlam	#2,	r14	;
+
+00009cce <.Loc.306.1>:
+    9cce:	0c 4e       	mov	r14,	r12	;
+    9cd0:	3c 50 00 8d 	add	#-29440,r12	;#0x8d00
+
+00009cd4 <.LVL16>:
+                msp_cmplx_btfly_auto_q15(srcPtr, srcPtr + step, &twiddlePtr[twiddleIndex], &scale, &overflow);
+    9cd4:	08 4c       	mov	r12,	r8	;
+    9cd6:	08 55       	add	r5,	r8	;
+
+00009cd8 <.Loc.307.1>:
+    9cd8:	0d 44       	mov	r4,	r13	;
+    9cda:	5d 02       	rlam	#1,	r13	;
+
+00009cdc <.LBB8>:
+ */
+static inline void msp_cmplx_btfly_auto_q15(
+    int16_t* srcA, int16_t* srcB, const _q15* coeff, bool* scale, bool* overflow)
+{
+    /* Load coefficients. */
+    _q15 tempR = CMPLX_REAL(coeff);
+    9cdc:	1f 4d 18 85 	mov	-31464(r13),r15	;0xffff8518
+
+00009ce0 <.LVL18>:
+    _q15 tempI = CMPLX_IMAG(coeff);
+    9ce0:	1d 4d 1a 85 	mov	-31462(r13),r13	;0xffff851a
+
+00009ce4 <.LBB10>:
+//! \return Q15 result
+//
+//******************************************************************************
+static inline void __q15cmpy(int16_t *aR, int16_t *aI, const int16_t *bR,
+                             const int16_t *bI) {
+  MPYS = *aI;
+    9ce4:	82 4d c2 04 	mov	r13,	&0x04c2	;
+
+00009ce8 <.Loc.482.2>:
+  OP2 = *bR;
+    9ce8:	a2 48 c8 04 	mov	@r8,	&0x04c8	;
+
+00009cec <.Loc.483.2>:
+  MACS = *aR;
+    9cec:	82 4f c6 04 	mov	r15,	&0x04c6	;
+
+00009cf0 <.Loc.484.2>:
+  OP2 = *bI;
+    9cf0:	92 48 02 00 	mov	2(r8),	&0x04c8	;
+    9cf4:	c8 04
+
+00009cf6 <.Loc.485.2>:
+  MPYS = -*aI;
+    9cf6:	4b 43       	clr.b	r11		;
+    9cf8:	0b 8d       	sub	r13,	r11	;
+    9cfa:	82 4b c2 04 	mov	r11,	&0x04c2	;
+
+00009cfe <.Loc.486.2>:
+  *aI = RESHI;
+    9cfe:	1d 42 cc 04 	mov	&0x04cc,r13	;0x04cc
+
+00009d02 <.Loc.487.2>:
+  OP2 = *bI;
+    9d02:	92 48 02 00 	mov	2(r8),	&0x04c8	;
+    9d06:	c8 04
+
+00009d08 <.Loc.488.2>:
+  MACS = *aR;
+    9d08:	82 4f c6 04 	mov	r15,	&0x04c6	;
+
+00009d0c <.Loc.489.2>:
+  OP2 = *bR;
+    9d0c:	a2 48 c8 04 	mov	@r8,	&0x04c8	;
+
+00009d10 <.Loc.490.2>:
+  *aR = RESHI;
+    9d10:	1f 42 cc 04 	mov	&0x04cc,r15	;0x04cc
+
+00009d14 <.LBE10>:
+
+    /* Calculate real and imaginary parts of coeff*B. */
+    __q15cmpy(&tempR, &tempI, &CMPLX_REAL(srcB), &CMPLX_IMAG(srcB));
+
+    /* Scale result if necessary. */
+    if (*scale)
+    9d14:	1b 4e 00 8d 	mov	-29440(r14),r11	;0xffff8d00
+    9d18:	0b 8f       	sub	r15,	r11	;
+
+00009d1a <.Loc.422.1>:
+    9d1a:	81 93 04 00 	cmp	#0,	4(r1)	;r3 As==00
+    9d1e:	34 24       	jz	$+106    	;abs 0x9d88
+
+00009d20 <.Loc.425.1>:
+    {
+        /* B = (A - coeff*B)/2 */
+        CMPLX_REAL(srcB) = (CMPLX_REAL(srcA) - tempR) >> 1;
+    9d20:	5b 01       	rram	#1,	r11	;
+    9d22:	88 4b 00 00 	mov	r11,	0(r8)	;
+
+00009d26 <.Loc.426.1>:
+        CMPLX_IMAG(srcB) = (CMPLX_IMAG(srcA) - tempI) >> 1;
+    9d26:	1b 4c 02 00 	mov	2(r12),	r11	;
+    9d2a:	0b 8d       	sub	r13,	r11	;
+
+00009d2c <.Loc.426.1>:
+    9d2c:	5b 01       	rram	#1,	r11	;
+    9d2e:	88 4b 02 00 	mov	r11,	2(r8)	;
+
+00009d32 <.Loc.429.1>:
+
+        /* A = (A + coeff*B)/2 */
+        CMPLX_REAL(srcA) = (CMPLX_REAL(srcA) + tempR) >> 1;
+    9d32:	1f 5e 00 8d 	add	-29440(r14),r15	;0xffff8d00
+
+00009d36 <.LVL22>:
+    9d36:	5f 01       	rram	#1,	r15	;
+    9d38:	8e 4f 00 8d 	mov	r15,	-29440(r14); 0x8d00
+
+00009d3c <.Loc.430.1>:
+        CMPLX_IMAG(srcA) = (CMPLX_IMAG(srcA) + tempI) >> 1;
+    9d3c:	1d 5c 02 00 	add	2(r12),	r13	;
+
+00009d40 <.LVL23>:
+    9d40:	5d 01       	rram	#1,	r13	;
+    9d42:	8c 4d 02 00 	mov	r13,	2(r12)	;
+
+00009d46 <.L9>:
+        CMPLX_REAL(srcA) = CMPLX_REAL(srcA) + tempR;
+        CMPLX_IMAG(srcA) = CMPLX_IMAG(srcA) + tempI;
+    }
+
+    /* Check for possibility of overflow. */
+    if (!*overflow)
+    9d46:	c1 93 13 00 	cmp.b	#0,	19(r1)	;r3 As==00, 0x0013
+    9d4a:	0e 20       	jnz	$+30     	;abs 0x9d68
+
+00009d4c <.Loc.446.1>:
+    {
+        msp_cmplx_overflow_q15(srcA, overflow);
+    9d4c:	3e 40 1a 9c 	mov	#-25574,r14	;#0x9c1a
+    9d50:	0d 41       	mov	r1,	r13	;
+    9d52:	3d 50 13 00 	add	#19,	r13	;#0x0013
+    9d56:	81 4e 00 00 	mov	r14,	0(r1)	;
+    9d5a:	8e 12       	call	r14		;
+
+00009d5c <.LVL24>:
+        msp_cmplx_overflow_q15(srcB, overflow);
+    9d5c:	0d 41       	mov	r1,	r13	;
+    9d5e:	3d 50 13 00 	add	#19,	r13	;#0x0013
+    9d62:	0c 48       	mov	r8,	r12	;
+    9d64:	2e 41       	mov	@r1,	r14	;
+    9d66:	8e 12       	call	r14		;
+
+00009d68 <.L10>:
+            for (j = i; j < length; j += step)
+    9d68:	19 51 0a 00 	add	10(r1),	r9	;0x0000a
+
+00009d6c <.Loc.304.1>:
+    9d6c:	7c 40 3f 00 	mov.b	#63,	r12	;#0x003f
+    9d70:	0c 99       	cmp	r9,	r12	;
+    9d72:	ab 2f       	jc	$-168    	;abs 0x9cca
+    9d74:	19 41 06 00 	mov	6(r1),	r9	;
+
+00009d78 <.LVL27>:
+    9d78:	19 53       	inc	r9		;
+
+00009d7a <.Loc.301.1>:
+        for (i = 0; i < (step / 2); i++)
+    9d7a:	19 91 0e 00 	cmp	14(r1),	r9	;0x0000e
+    9d7e:	10 2c       	jc	$+34     	;abs 0x9da0
+    9d80:	04 56       	add	r6,	r4	;
+
+00009d82 <.LVL29>:
+    9d82:	81 49 06 00 	mov	r9,	6(r1)	;
+    9d86:	a1 3f       	jmp	$-188    	;abs 0x9cca
+
+00009d88 <.L8>:
+        CMPLX_REAL(srcB) = CMPLX_REAL(srcA) - tempR;
+    9d88:	88 4b 00 00 	mov	r11,	0(r8)	;
+
+00009d8c <.Loc.436.1>:
+        CMPLX_IMAG(srcB) = CMPLX_IMAG(srcA) - tempI;
+    9d8c:	1b 4c 02 00 	mov	2(r12),	r11	;
+    9d90:	0b 8d       	sub	r13,	r11	;
+    9d92:	88 4b 02 00 	mov	r11,	2(r8)	;
+
+00009d96 <.Loc.439.1>:
+        CMPLX_REAL(srcA) = CMPLX_REAL(srcA) + tempR;
+    9d96:	8e 5f 00 8d 	add	r15,	-29440(r14); 0x8d00
+
+00009d9a <.Loc.440.1>:
+        CMPLX_IMAG(srcA) = CMPLX_IMAG(srcA) + tempI;
+    9d9a:	8c 5d 02 00 	add	r13,	2(r12)	;
+    9d9e:	d3 3f       	jmp	$-88     	;abs 0x9d46
+
+00009da0 <.L12>:
+        twiddleIncrement  = twiddleIncrement / 2;
+    9da0:	56 03       	rrum	#1,	r6	;
+
+00009da2 <.Loc.291.1>:
+    while (step <= length)
+    9da2:	b1 53 02 00 	add	#-1,	2(r1)	;r3 As==11
+    9da6:	81 93 02 00 	cmp	#0,	2(r1)	;r3 As==00
+    9daa:	73 23       	jnz	$-280    	;abs 0x9c92
+
+00009dac <.Loc.320.1>:
+    MPY32CTL0 = ui16MPYState;
+    9dac:	92 41 10 00 	mov	16(r1),	&0x04ec	;0x00010
+    9db0:	ec 04
+
+00009db2 <.L14>:
+        __SET(fft_array[i], fft_array_copy[i]);
+    9db2:	1b 41 0c 00 	mov	12(r1),	r11	;0x0000c
+    9db6:	a1 53 0c 00 	incd	12(r1)		;
+    9dba:	b7 4b 00 00 	mov	@r11+,	0(r7)	;
+    9dbe:	27 53       	incd	r7		;
+
+00009dc0 <.Loc.324.1>:
+    for (i = 0; i < N_SAMPLES; i++)
+    9dc0:	81 97 08 00 	cmp	r7,	8(r1)	;
+    9dc4:	f6 23       	jnz	$-18     	;abs 0x9db2
+
+00009dc6 <.LVL34>:
+}
+    9dc6:	3c 40 18 9e 	mov	#-25064,r12	;#0x9e18
+    9dca:	31 50 14 00 	add	#20,	r1	;#0x0014
+
+00009dce <.LCFI2>:
+    9dce:	64 17       	popm	#7,	r10	;16-bit words
+
+00009dd0 <.LCFI3>:
+    9dd0:	30 41       	ret

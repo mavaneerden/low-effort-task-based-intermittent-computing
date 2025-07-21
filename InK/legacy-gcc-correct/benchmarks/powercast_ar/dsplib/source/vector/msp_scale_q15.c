@@ -36,62 +36,65 @@
  * Perform element wise Q15 multiplication of a single source vector with a Q15
  * scale value and shift left by shift.
  */
-msp_status msp_scale_q15(const msp_scale_q15_params *params, const _q15 *src, _q15 *dst)
-{
-    uint16_t length;
-    uint8_t shift;
-    int32_t scale;
-    
-    /* Initialize the loop counter, scale and shift variables. */
-    length = params->length;
-    scale = params->scale;
-    shift = params->shift;
+msp_status msp_scale_q15(const msp_scale_q15_params *params, const _q15 *src,
+                         _q15 *dst) {
+  uint16_t length;
+  uint8_t shift;
+  int32_t scale;
+
+  /* Initialize the loop counter, scale and shift variables. */
+  length = params->length;
+  scale = params->scale;
+  shift = params->shift;
 
 #ifndef MSP_DISABLE_DIAGNOSTICS
-    /* Check that length parameter is a multiple of two. */
-    if (length & 1) {
-        return MSP_SIZE_ERROR;
-    }
-    
-    /* Check for invalid shift size (maximum of 15). */
-    if (shift > 15) {
-        return MSP_SHIFT_SIZE_ERROR;
-    }
-#endif //MSP_DISABLE_DIAGNOSTICS
+  /* Check that length parameter is a multiple of two. */
+  if (length & 1) {
+    return MSP_SIZE_ERROR;
+  }
+
+  /* Check for invalid shift size (maximum of 15). */
+  if (shift > 15) {
+    return MSP_SHIFT_SIZE_ERROR;
+  }
+#endif // MSP_DISABLE_DIAGNOSTICS
 
 #if defined(__MSP430_HAS_MPY32__)
-    /* If MPY32 is available save control context and set to fractional mode. */
-    uint16_t ui16MPYState = MPY32CTL0;
-    MPY32CTL0 = MPYFRAC | MPYDLYWRTEN;
-    
-    /* Combine the scale and shift parameters to a single 32-bit variable than can be reused. */
-    while (shift--) {
-        scale = scale << 1;
-    }
-    
-    /* Load MPY32 registers for the first argument with the new scale value. */
-    MPYS32L = (uint16_t)scale;
-    MPYS32H = (uint16_t)(scale >> 16);
-    
-    /* Loop through all vector elements. */
-    while (length--) {
-        /* Multiply src and the combined scale and shift value. */
-        OP2 = *src++;
-        *dst++ = RESHI;
-    }
-    
-    /* Restore MPY32 control context. */
-    MPY32CTL0 = ui16MPYState;
-#else //__MSP430_HAS_MPY32__
-    /* Recalculate shift value to be a shift right offset by the default Q15 shift by 15. */
-    shift = 15 - shift;
-    
-    /* Loop through all vector elements. */
-    while (length--) {
-        /* Multiply src by scale and shift result right by the offset shift value. */
-        *dst++ = (_q15)(((int32_t)*src++ * (int32_t)scale) >> shift);
-    }
+  /* If MPY32 is available save control context and set to fractional mode. */
+  uint16_t ui16MPYState = MPY32CTL0;
+  MPY32CTL0 = MPYFRAC | MPYDLYWRTEN;
+
+  /* Combine the scale and shift parameters to a single 32-bit variable than can
+   * be reused. */
+  while (shift--) {
+    scale = scale << 1;
+  }
+
+  /* Load MPY32 registers for the first argument with the new scale value. */
+  MPYS32L = (uint16_t)scale;
+  MPYS32H = (uint16_t)(scale >> 16);
+
+  /* Loop through all vector elements. */
+  while (length--) {
+    /* Multiply src and the combined scale and shift value. */
+    OP2 = *src++;
+    *dst++ = RESHI;
+  }
+
+  /* Restore MPY32 control context. */
+  MPY32CTL0 = ui16MPYState;
+#else  //__MSP430_HAS_MPY32__
+  /* Recalculate shift value to be a shift right offset by the default Q15 shift
+   * by 15. */
+  shift = 15 - shift;
+
+  /* Loop through all vector elements. */
+  while (length--) {
+    /* Multiply src by scale and shift result right by the offset shift value.
+     */
+    *dst++ = (_q15)(((int32_t)*src++ * (int32_t)scale) >> shift);
+  }
 #endif //__MSP430_HAS_MPY32__
 
-    return MSP_SUCCESS;
+  return MSP_SUCCESS;
 }

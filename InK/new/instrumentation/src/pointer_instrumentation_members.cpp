@@ -314,6 +314,11 @@ MemberExpr* getMemberDescendantFromOperator(const Expr *AssignmentOperator)
     return nullptr;
 }
 
+// Checks if the member access is a read. Goes up the AST from the member node, and skips all 'filler' nodes
+// such as casts, parentheses, etc.
+// If it finds a unary operator ++, -- it is a write.
+// If it finds a binary operator with the member expression on the LHS, it is a write, and RHS is a read.
+// If it finds the member expression is the index of an array subscript expression, it must be a read.
 bool isMemberRead(const clang::MemberExpr *d, const clang::ast_matchers::MatchFinder::MatchResult &Result)
 {
     clang::DynTypedNodeList NodeList = Result.Context->getParents(*d);
@@ -326,6 +331,7 @@ bool isMemberRead(const clang::MemberExpr *d, const clang::ast_matchers::MatchFi
 
         if (const ArraySubscriptExpr* ase = ParentNode.get<ArraySubscriptExpr>())
         {
+            // It is a read if it is inside an arraysubscript
             if (ase->getIdx() == prev_node)
             {
                 return true;
@@ -347,6 +353,7 @@ bool isMemberRead(const clang::MemberExpr *d, const clang::ast_matchers::MatchFi
                     binop->getOpcode() == clang::BinaryOperator::Opcode::BO_SubAssign ||
                     binop->getOpcode() == clang::BinaryOperator::Opcode::BO_XorAssign
                 ) {
+                    // If it is an assign operator and the member access is on the LHS, it is a write.
                     if (binop->getLHS() == prev_node)
                     {
                         return false;
@@ -369,6 +376,7 @@ bool isMemberRead(const clang::MemberExpr *d, const clang::ast_matchers::MatchFi
             return true;
         }
 
+        // Non-expression nodes are skipped because they do not matter
         if (const Expr* expr = ParentNode.get<Expr>())
         {
             prev_node = expr;
@@ -394,6 +402,10 @@ class MemberHandler : public MatchFinder::MatchCallback {
             const Expr *AssignmentMatcher = Result.Nodes.getNodeAs<Expr>("assignment_matcher");
             std::string macro_name = "";
 
+            // Finding out if the member is written or read is tricky. First we need to check if the member
+            // is descending from the lhs of binary operators, and subexpressions of casts, array subexprs, etc.
+            // If this is the case, then it is a write. If it is not the case, it is a read and will be processed
+            // by a different matcher.
             if (AssignmentMatcher)
             {
                 memberExpr = getMemberDescendantFromOperator(AssignmentMatcher);
@@ -405,6 +417,8 @@ class MemberHandler : public MatchFinder::MatchCallback {
 
                 macro_name = PTR_WRITE;
             }
+            // If there is no assignment matcher, i.e. just a member match, we still need to check if it is a read to
+            // avoid processing again the writes.
             else
             {
                 if (!isMemberRead(memberExpr, Result))
@@ -419,6 +433,7 @@ class MemberHandler : public MatchFinder::MatchCallback {
 
             if (ParentFunction && !isTaskFunction(ParentFunction))
             {
+                // No task function, no good.
                 return;
             }
 

@@ -34,45 +34,48 @@
 
 #if defined(MSP_USE_LEA)
 
-msp_status msp_fill_q15(const msp_fill_q15_params *params, _q15 *dst)
+msp_status msp_fill_q15(const msp_fill_q15_params* params, _q15* dst)
 {
-    uint16_t length;
-    int16_t *fillVector;
-    msp_status status;
-    MSP_LEA_ADDMATRIX_PARAMS *leaParams;
+    uint16_t                  length;
+    int16_t*                  fillVector;
+    msp_status                status;
+    MSP_LEA_ADDMATRIX_PARAMS* leaParams;
 
     /* Initialize the vector length. */
     length = params->length;
 
 #ifndef MSP_DISABLE_DIAGNOSTICS
     /* Check that the data array is aligned and in a valid memory segment. */
-    if (!MSP_LEA_VALID_ADDRESS(dst, 4)) {
+    if (!MSP_LEA_VALID_ADDRESS(dst, 4))
+    {
         return MSP_LEA_INVALID_ADDRESS;
     }
 
     /* Acquire lock for LEA module. */
-    if (!msp_lea_acquireLock()) {
+    if (!msp_lea_acquireLock())
+    {
         return MSP_LEA_BUSY;
     }
-#endif //MSP_DISABLE_DIAGNOSTICS
+#endif  // MSP_DISABLE_DIAGNOSTICS
 
     /* Initialize LEA if it is not enabled. */
-    if (!(LEAPMCTL & LEACMDEN)) {
+    if (!(LEAPMCTL & LEACMDEN))
+    {
         msp_lea_init();
     }
-        
+
     /* Allocate MSP_LEA_ADDMATRIX_PARAMS structure. */
-    leaParams = (MSP_LEA_ADDMATRIX_PARAMS *)msp_lea_allocMemory(sizeof(MSP_LEA_ADDMATRIX_PARAMS)/sizeof(uint32_t));
-        
+    leaParams = (MSP_LEA_ADDMATRIX_PARAMS*)msp_lea_allocMemory(sizeof(MSP_LEA_ADDMATRIX_PARAMS) / sizeof(uint32_t));
+
     /* Allocate fill vector of length two. */
-    fillVector = (int16_t *)msp_lea_allocMemory(2*sizeof(int16_t)/sizeof(uint32_t));
+    fillVector    = (int16_t*)msp_lea_allocMemory(2 * sizeof(int16_t) / sizeof(uint32_t));
     fillVector[0] = params->value;
     fillVector[1] = params->value;
 
     /* Set MSP_LEA_ADDMATRIX_PARAMS structure. */
-    leaParams->input2 = MSP_LEA_CONST_ZERO;
-    leaParams->output = MSP_LEA_CONVERT_ADDRESS(dst);
-    leaParams->vectorSize = length;
+    leaParams->input2       = MSP_LEA_CONST_ZERO;
+    leaParams->output       = MSP_LEA_CONVERT_ADDRESS(dst);
+    leaParams->vectorSize   = length;
     leaParams->input1Offset = 0;
     leaParams->input2Offset = 0;
     leaParams->outputOffset = 1;
@@ -85,21 +88,24 @@ msp_status msp_fill_q15(const msp_fill_q15_params *params, _q15 *dst)
     msp_lea_invokeCommand(LEACMD__ADDMATRIX);
 
     /* Free MSP_LEA_ADDMATRIX_PARAMS structure and fill vector. */
-    msp_lea_freeMemory(2*sizeof(int16_t)/sizeof(uint32_t));
-    msp_lea_freeMemory(sizeof(MSP_LEA_ADDMATRIX_PARAMS)/sizeof(uint32_t));
-    
+    msp_lea_freeMemory(2 * sizeof(int16_t) / sizeof(uint32_t));
+    msp_lea_freeMemory(sizeof(MSP_LEA_ADDMATRIX_PARAMS) / sizeof(uint32_t));
+
     /* Set status flag. */
     status = MSP_SUCCESS;
-        
+
 #ifndef MSP_DISABLE_DIAGNOSTICS
     /* Check LEA interrupt flags for any errors. */
-    if (msp_lea_ifg & LEACOVLIFG) {
+    if (msp_lea_ifg & LEACOVLIFG)
+    {
         status = MSP_LEA_COMMAND_OVERFLOW;
     }
-    else if (msp_lea_ifg & LEAOORIFG) {
+    else if (msp_lea_ifg & LEAOORIFG)
+    {
         status = MSP_LEA_OUT_OF_RANGE;
     }
-    else if (msp_lea_ifg & LEASDIIFG) {
+    else if (msp_lea_ifg & LEASDIIFG)
+    {
         status = MSP_LEA_SCALAR_INCONSISTENCY;
     }
 #endif
@@ -109,19 +115,20 @@ msp_status msp_fill_q15(const msp_fill_q15_params *params, _q15 *dst)
     return status;
 }
 
-#else //MSP_USE_LEA
+#else  // MSP_USE_LEA
 
-msp_status msp_fill_q15(const msp_fill_q15_params *params, _q15 *dst)
+msp_status msp_fill_q15(const msp_fill_q15_params* params, _q15* dst)
 {
     uint16_t length;
 
     /* Initialize the vector length. */
     length = params->length;
-    while(length--) {
+    while (length--)
+    {
         *dst++ = params->value;
     }
 
     return MSP_SUCCESS;
 }
 
-#endif //MSP_USE_LEA
+#endif  // MSP_USE_LEA

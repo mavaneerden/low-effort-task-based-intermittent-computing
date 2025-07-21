@@ -1,0 +1,17 @@
+Instrumentation:
+- The InK bot needed some help with activating the thread at boot time.
+  So the prompt has to explicitly state that it needs to make sure the thread can be selected by the scheduler.
+  The CITID bot did not have this problem.
+- The InK bot has no trouble detecting uses of variables and then using __GET and __SET.
+- The InK bot does have trouble placing the TASK and ENTRY_TASK macros correctly.
+  It often forgot to do it on either the declarations or the definitions, even though it was explicitly stated in the
+  instructional prompt that both should be instrumented.
+  This was likely because an example given in the instructional prompt only included declarations.
+  After the example was removed and more elaboration was given, it would add all TASK and ENTRY_TASK macro's to
+  the definitions and declarations, but it would not replace the entire function signature (even though this was twice explicitly stated in the instructional prompt).
+  After commanding the bot "Correct the use of TASK and ENTRY_TASK" (giving no further hints), it successfully corrected itself.
+  Probing for the mistake was more difficult. Only after one false positive and giving the hint that the mistake was in the InK API, did the bot successfully correct itself.
+  After tweaking the instructional prompt and code instrumentation prompt some more, the bot consistently got the tasks right.
+  The prompts before the tweaking are suffixed with _original.txt.
+- CITID required a small prompt change: the CITID_THREAD_ENTRY_TASK should have no arguments, this was not specified earlier.
+  The bot would occasionally insert the priority as the argument, which is incorrect.

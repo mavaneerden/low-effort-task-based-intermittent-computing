@@ -1,0 +1,52 @@
+    9cd4:	08 4c       	mov	r12,	r8	;
+    9cd6:	08 55       	add	r5,	r8	;
+    9cd8:	0d 44       	mov	r4,	r13	;
+    9cda:	5d 02       	rlam	#1,	r13	;
+    9cdc:	1f 4d 18 85 	mov	-31464(r13),r15	;0xffff8518
+    9ce0:	1d 4d 1a 85 	mov	-31462(r13),r13	;0xffff851a
+    9ce4:	82 4d c2 04 	mov	r13,	&0x04c2	;
+    9ce8:	a2 48 c8 04 	mov	@r8,	&0x04c8	;
+    9cec:	82 4f c6 04 	mov	r15,	&0x04c6	;
+    9cf0:	92 48 02 00 	mov	2(r8),	&0x04c8	;
+    9cf4:	c8 04
+    9cf6:	4b 43       	clr.b	r11		;
+    9cf8:	0b 8d       	sub	r13,	r11	;
+    9cfa:	82 4b c2 04 	mov	r11,	&0x04c2	;
+    9cfe:	1d 42 cc 04 	mov	&0x04cc,r13	;0x04cc
+    9d02:	92 48 02 00 	mov	2(r8),	&0x04c8	;
+    9d06:	c8 04
+    9d08:	82 4f c6 04 	mov	r15,	&0x04c6	;
+    9d0c:	a2 48 c8 04 	mov	@r8,	&0x04c8	;
+    9d10:	1f 42 cc 04 	mov	&0x04cc,r15	;0x04cc
+    9d14:	1b 4e 00 8d 	mov	-29440(r14),r11	;0xffff8d00
+    9d18:	0b 8f       	sub	r15,	r11	;
+    9d1a:	81 93 04 00 	cmp	#0,	4(r1)	;r3 As==00
+    9d1e:	34 24       	jz	$+106    	;abs 0x9d88
+    9d20:	5b 01       	rram	#1,	r11	;
+    9d22:	88 4b 00 00 	mov	r11,	0(r8)	;
+    9d26:	1b 4c 02 00 	mov	2(r12),	r11	;
+    9d2a:	0b 8d       	sub	r13,	r11	;
+    9d2c:	5b 01       	rram	#1,	r11	;
+    9d2e:	88 4b 02 00 	mov	r11,	2(r8)	;
+    9d32:	1f 5e 00 8d 	add	-29440(r14),r15	;0xffff8d00
+    9d36:	5f 01       	rram	#1,	r15	;
+    9d38:	8e 4f 00 8d 	mov	r15,	-29440(r14); 0x8d00
+    9d3c:	1d 5c 02 00 	add	2(r12),	r13	;
+    9d40:	5d 01       	rram	#1,	r13	;
+    9d42:	8c 4d 02 00 	mov	r13,	2(r12)	;
+    9d46:	c1 93 13 00 	cmp.b	#0,	19(r1)	;r3 As==00, 0x0013
+    9d4a:	0e 20       	jnz	$+30     	;abs 0x9d68
+    9d4c:	3e 40 1a 9c 	mov	#-25574,r14	;#0x9c1a
+    9d50:	0d 41       	mov	r1,	r13	;
+    9d52:	3d 50 13 00 	add	#19,	r13	;#0x0013
+    9d56:	81 4e 00 00 	mov	r14,	0(r1)	;
+    9d5a:	8e 12       	call	r14		;
+    9d5c:	0d 41       	mov	r1,	r13	;
+    9d5e:	3d 50 13 00 	add	#19,	r13	;#0x0013
+    9d62:	0c 48       	mov	r8,	r12	;
+    9d64:	2e 41       	mov	@r1,	r14	;
+    9d66:	8e 12       	call	r14		;
+    9d68:	19 51 0a 00 	add	10(r1),	r9	;0x0000a
+    9d6c:	7c 40 3f 00 	mov.b	#63,	r12	;#0x003f
+    9d70:	0c 99       	cmp	r9,	r12	;
+    9d72:	ab 2f       	jc	$-168

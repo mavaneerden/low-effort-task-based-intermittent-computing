@@ -35,19 +35,19 @@
 /*
  * Perform element wise complex conjugate of a single complex source vector.
  */
-msp_status msp_cmplx_conj_q15(const msp_cmplx_conj_q15_params *params, const _q15 *src, _q15 *dst)
-{
-    uint16_t length;
-    
-    /* Initialize the loop counter with the vector length. */
-    length = params->length;
-    
-    /* Loop through all vector elements. */
-    while (length--) {
-        /* Take the complex conjugate of src and store to dst. */
-        *dst++ = *src++;    // real
-        *dst++ = -*src++;   // imaginary
-    }
+msp_status msp_cmplx_conj_q15(const msp_cmplx_conj_q15_params *params,
+                              const _q15 *src, _q15 *dst) {
+  uint16_t length;
 
-    return MSP_SUCCESS;
+  /* Initialize the loop counter with the vector length. */
+  length = params->length;
+
+  /* Loop through all vector elements. */
+  while (length--) {
+    /* Take the complex conjugate of src and store to dst. */
+    *dst++ = *src++;  // real
+    *dst++ = -*src++; // imaginary
+  }
+
+  return MSP_SUCCESS;
 }

@@ -1,22 +1,23 @@
-#include <stdint.h>
 #include <msp430.h>
+#include <stdint.h>
+
 #include "gpio.h"
 #include "ink.h"
 
-#define MAX_BLINK 5
+#define MAX_BLINK       5
 #define TEST_ARRAY_SIZE 9998
 
-__shared(
-    uint8_t test_array[TEST_ARRAY_SIZE];
-    uint16_t blink_counter; // Cannot be uint8_t in InK: alignment of array elements is greater than element size
-)
+__shared(uint8_t test_array[TEST_ARRAY_SIZE]; uint16_t blink_counter;  // Cannot be uint8_t in InK: alignment of array
+                                                                       // elements is greater than element size
+         )
 
-ENTRY_TASK(t_init);
+    ENTRY_TASK(t_init);
 TASK(t_blink_on);
 TASK(t_blink_off);
 TASK(t_end);
 
-void thread3_init(){
+void thread3_init()
+{
     // create a thread with priority 15 and entry task t_init
     __CREATE(17, t_init);
     __SIGNAL(17);
@@ -57,5 +58,5 @@ TASK(t_blink_off)
 
 TASK(t_end)
 {
-    return (void *)0;
+    return (void*)0;
 }

@@ -14,9 +14,15 @@ cd devices/msp430/driverlib/
 cd ../../../
 
 # Build llvm
-# cd llvm
+cd llvm
 # ./build.sh
-# cd ../
+# Copy the binaries so they are visible in the command line
+echo "Copying llvm to /usr/local, this may take a while..."
+sudo cp -r llvm-project/install/opt/llvm/. /usr/local/
+echo "Copy done."
+cd ../
+
+
 
 # Add pip to the ancient python version
 wget https://bootstrap.pypa.io/pip/2.7/get-pip.py

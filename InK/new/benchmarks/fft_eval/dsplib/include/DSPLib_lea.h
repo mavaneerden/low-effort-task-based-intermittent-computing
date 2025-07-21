@@ -77,16 +77,16 @@ latest support package to use this version of DSPLib with LEA."
 //! remainder on the CPU.
 //
 //******************************************************************************
-#define MSP_USE_LEA                 1
+#define MSP_USE_LEA 1
 
 // LEA revision A.
-#define MSP_LEA_REVISION_A          0
+#define MSP_LEA_REVISION_A 0
 
 // LEA revision B.
-#define MSP_LEA_REVISION_B          1
+#define MSP_LEA_REVISION_B 1
 
 // Unknown revision of LEA.
-#define MSP_LEA_REVISION_UNKNOWN    255
+#define MSP_LEA_REVISION_UNKNOWN 255
 
 #if !defined(MSP_LEA_REVISION)
 
@@ -97,9 +97,9 @@ latest support package to use this version of DSPLib with LEA."
 //! \brief If a LEA revision is not specified default to revision B.
 //
 //******************************************************************************
-#define MSP_LEA_REVISION            MSP_LEA_REVISION_B
+#define MSP_LEA_REVISION MSP_LEA_REVISION_B
 
-#endif //MSP_LEA_REVISION
+#endif  // MSP_LEA_REVISION
 
 //******************************************************************************
 //
@@ -108,7 +108,7 @@ latest support package to use this version of DSPLib with LEA."
 //! \brief Convert MSP430 address to internal LEA address mapping.
 //
 //******************************************************************************
-#define MSP_LEA_CONVERT_ADDRESS(x)  ((uint16_t)(((uintptr_t)(x) >> 2) & 0xffff))
+#define MSP_LEA_CONVERT_ADDRESS(x) ((uint16_t)(((uintptr_t)(x) >> 2) & 0xffff))
 
 //******************************************************************************
 //
@@ -117,11 +117,11 @@ latest support package to use this version of DSPLib with LEA."
 //! \brief Convert LEA address to MSP430 address mapping.
 //
 //******************************************************************************
-#define MSP_LEA_REVERT_ADDRESS(x)   ((uintptr_t)(((uint32_t)(x) << 2)))
+#define MSP_LEA_REVERT_ADDRESS(x) ((uintptr_t)(((uint32_t)(x) << 2)))
 
 // Cast read-only registers to const to avoid compiler warnings.
-#define MSP_LEA_BOTTOM              (*((const uint16_t *)(&LEAMB)))
-#define MSP_LEA_TOP                 (*((const uint16_t *)(&LEAMT)))
+#define MSP_LEA_BOTTOM (*((const uint16_t*)(&LEAMB)))
+#define MSP_LEA_TOP    (*((const uint16_t*)(&LEAMT)))
 
 //******************************************************************************
 //
@@ -130,8 +130,7 @@ latest support package to use this version of DSPLib with LEA."
 //! \brief Check that the address is aligned correctly.
 //
 //******************************************************************************
-#define MSP_LEA_RANGE(x)            (((uintptr_t)(x) >= MSP_LEA_BOTTOM) \
-                                        && ((uintptr_t)(x) < MSP_LEA_TOP))
+#define MSP_LEA_RANGE(x) (((uintptr_t)(x) >= MSP_LEA_BOTTOM) && ((uintptr_t)(x) < MSP_LEA_TOP))
 
 //******************************************************************************
 //
@@ -140,7 +139,7 @@ latest support package to use this version of DSPLib with LEA."
 //! \brief Check that the address is within the LEA RAM.
 //
 //******************************************************************************
-#define MSP_LEA_ALIGNED(x,n)        (!((uint32_t)(x) & ((n)-1)))
+#define MSP_LEA_ALIGNED(x, n) (!((uint32_t)(x) & ((n) - 1)))
 
 //******************************************************************************
 //
@@ -149,7 +148,7 @@ latest support package to use this version of DSPLib with LEA."
 //! \brief Check that the address aligment is valid and within the LEA RAM.
 //
 //******************************************************************************
-#define MSP_LEA_VALID_ADDRESS(x,n)  (MSP_LEA_RANGE(x) & MSP_LEA_ALIGNED(x,n))
+#define MSP_LEA_VALID_ADDRESS(x, n) (MSP_LEA_RANGE(x) & MSP_LEA_ALIGNED(x, n))
 
 //******************************************************************************
 //
@@ -158,7 +157,7 @@ latest support package to use this version of DSPLib with LEA."
 //! \brief LEA constant memory address for 0x0000 coefficients.
 //
 //******************************************************************************
-#define MSP_LEA_CONST_ZERO          0xA000
+#define MSP_LEA_CONST_ZERO 0xA000
 
 //******************************************************************************
 //
@@ -167,7 +166,7 @@ latest support package to use this version of DSPLib with LEA."
 //! \brief LEA constant memory address for 0x7fff coefficients.
 //
 //******************************************************************************
-#define MSP_LEA_CONST_ONE           0xAC00
+#define MSP_LEA_CONST_ONE 0xAC00
 
 //******************************************************************************
 //
@@ -176,52 +175,52 @@ latest support package to use this version of DSPLib with LEA."
 //! \brief LEA constant memory address for 0x8000 coefficients.
 //
 //******************************************************************************
-#define MSP_LEA_Q15_CONST_NEG_ONE   0xB000
+#define MSP_LEA_Q15_CONST_NEG_ONE 0xB000
 
- //******************************************************************************
+//******************************************************************************
 //
 //! \ingroup dsplib_support_lea
 //!
 //! \brief LEA constant memory address for 0x80000000 coefficients.
 //
 //******************************************************************************
-#define MSP_LEA_IQ31_CONST_NEG_ONE  0xE000
+#define MSP_LEA_IQ31_CONST_NEG_ONE 0xE000
 
- //******************************************************************************
+//******************************************************************************
 //
 //! \ingroup dsplib_support_lea
 //!
 //! \brief LEA command ID for interleave even even command.
 //
 //******************************************************************************
-#define LEACMD__INTERLEAVEEVENEVEN  (0x0000f000)
+#define LEACMD__INTERLEAVEEVENEVEN (0x0000f000)
 
- //******************************************************************************
+//******************************************************************************
 //
 //! \ingroup dsplib_support_lea
 //!
 //! \brief LEA command ID for interleave even odd command.
 //
 //******************************************************************************
-#define LEACMD__INTERLEAVEEVENODD   (0x0000f001)
+#define LEACMD__INTERLEAVEEVENODD (0x0000f001)
 
- //******************************************************************************
+//******************************************************************************
 //
 //! \ingroup dsplib_support_lea
 //!
 //! \brief LEA command ID for interleave odd even command.
 //
 //******************************************************************************
-#define LEACMD__INTERLEAVEODDEVEN   (0x0000f002)
+#define LEACMD__INTERLEAVEODDEVEN (0x0000f002)
 
- //******************************************************************************
+//******************************************************************************
 //
 //! \ingroup dsplib_support_lea
 //!
 //! \brief LEA command ID for interleave odd odd command.
 //
 //******************************************************************************
-#define LEACMD__INTERLEAVEODDODD    (0x0000f003)
+#define LEACMD__INTERLEAVEODDODD (0x0000f003)
 
 //******************************************************************************
 //
@@ -230,7 +229,8 @@ latest support package to use this version of DSPLib with LEA."
 //! \brief Parameter structure for LEACMD__ADDMATRIX command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector, must be a multiple of two.
     uint16_t vectorSize;
     //! Input data vector 2.
@@ -252,7 +252,8 @@ typedef struct {
 //! \brief Parameter structure for LEAMD__ADDLONGMATRIX command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector.
     uint16_t vectorSize;
     //! Input data vector 2.
@@ -274,7 +275,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__SUBMATRIX command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector, must be a multiple of two.
     uint16_t vectorSize;
     //! Input data vector 2.
@@ -296,7 +298,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__SUBLONGMATRIX command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector.
     uint16_t vectorSize;
     //! Input data vector 2.
@@ -318,7 +321,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__MPYMATRIX command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector, must be a multiple of two.
     uint16_t vectorSize;
     //! Input data vector 2.
@@ -340,7 +344,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__MPYLONGMATRIX command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector.
     uint16_t vectorSize;
     //! Input data vector 2.
@@ -362,7 +367,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__MAC command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector, must be a multiple of two.
     uint16_t vectorSize;
     //! Input data vector 2.
@@ -380,7 +386,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__MACLONGMATRIX command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector.
     uint16_t vectorSize;
     //! Input data vector 2.
@@ -402,7 +409,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__POLYNOMIAL command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector, must be a multiple of two.
     uint16_t vectorSize;
     //! Output data vector.
@@ -422,7 +430,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__MAX command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector, must be a multiple of two.
     uint16_t vectorSize;
     //! Output data vector.
@@ -436,7 +445,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__MAXLONGMATRIX command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector.
     uint16_t vectorSize;
     //! Output data vector.
@@ -454,7 +464,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__MAXUNSIGNED command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector, must be a multiple of two.
     uint16_t vectorSize;
     //! Output data vector.
@@ -468,7 +479,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__MAXUNSIGNEDMATRIX command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector.
     uint16_t vectorSize;
     //! Output data vector.
@@ -486,7 +498,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__MIN command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector, must be a multiple of two.
     uint16_t vectorSize;
     //! Output data vector.
@@ -500,7 +513,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__MINLONGMATRIX command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector.
     uint16_t vectorSize;
     //! Output data vector.
@@ -518,7 +532,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__MINUNSIGNEDMATRIX command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector, must be a multiple of two.
     uint16_t vectorSize;
     //! Output data vector.
@@ -536,7 +551,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__MINLONGUNSIGNED command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector.
     uint16_t vectorSize;
     //! Output data vector.
@@ -554,7 +570,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__MPYCOMPLEXMATRIX command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector, must be a multiple of two.
     uint16_t vectorSize;
     //! Input data vector 2.
@@ -576,7 +593,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__MACCOMPLEXMATRIX command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector, must be a multiple of two.
     uint16_t vectorSize;
     //! Input data vector 2.
@@ -598,7 +616,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__MPYMATRIXROW command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Input row size.
     uint16_t rowSize;
     //! Input column size.
@@ -616,7 +635,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__FIR command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector, must be a multiple of two.
     uint16_t vectorSize;
     //! FIR coefficient vector.
@@ -638,7 +658,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__FIRLONG command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector.
     uint16_t vectorSize;
     //! FIR coefficient vector.
@@ -660,7 +681,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__FIRCOMPLEX command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector.
     uint16_t vectorSize;
     //! FIR coefficient vector.
@@ -682,7 +704,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__FIRLONGCOMPLEX command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector.
     uint16_t vectorSize;
     //! FIR coefficient vector.
@@ -704,7 +727,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__IIRBQ1 command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector divided by two.
     uint16_t vectorSizeBy2;
     //! Output data vector.
@@ -727,7 +751,8 @@ typedef struct {
 //! commands.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector divided by two.
     uint16_t vectorSizeBy2;
     //! Output data vector.
@@ -742,11 +767,12 @@ typedef struct {
 //
 //! \ingroup dsplib_support_lea
 //!
-//! \brief Parameter structure for LEACMD__BITREVERSECOMPLEXEVEN or 
+//! \brief Parameter structure for LEACMD__BITREVERSECOMPLEXEVEN or
 //! LEACMD__BITREVERSECOMPLEXODD commands.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Square root of data vector length.
     uint16_t sqrtVectorSize;
     //! Reserved padding.
@@ -757,11 +783,12 @@ typedef struct {
 //
 //! \ingroup dsplib_support_lea
 //!
-//! \brief Parameter structure for LEACMD__BITREVERSECOMPLEXLONGEVEN or 
+//! \brief Parameter structure for LEACMD__BITREVERSECOMPLEXLONGEVEN or
 //! LEACMD__BITREVERSECOMPLEXLONGODD commands.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Square root of data vector length.
     uint16_t sqrtVectorSize;
     //! Reserved padding.
@@ -775,7 +802,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__FFTCOMPLEXAUTOSCALING command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector divided by two, must be a power of two.
     uint16_t vectorSizeBy2;
     //! Log base 2 of 2*vectorSizeBy2 parameter.
@@ -789,7 +817,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__FFTCOMPLEXFIXEDSCALING command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector divided by two, must be a power of two.
     uint16_t vectorSizeBy2;
     //! Log base 2 of 2*vectorSizeBy2 parameter.
@@ -803,7 +832,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__FFTCOMPLEXLONG command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector, must be a power of two.
     uint16_t vectorSize;
     //! Log base 2 of vectorSize parameter.
@@ -817,7 +847,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__FFT command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector, must be a power of two.
     uint16_t vectorSize;
     //! Log base 2 of vectorSize parameter.
@@ -831,7 +862,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__FFTLONG command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector,must be a power of two.
     uint16_t vectorSize;
     //! Log base 2 of vectorSize parameter.
@@ -847,7 +879,8 @@ typedef struct {
 //! LEACMD__INTERLEAVEODDODD commands.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Output data vector.
     uint16_t output;
     //! Channel to insert vector into.
@@ -867,7 +900,8 @@ typedef struct {
 //! LEACMD__DEINTERLEAVEODDODD commands.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector, must be a multiple of two.
     uint16_t vectorSize;
     //! Depth of interleave operation.
@@ -885,7 +919,8 @@ typedef struct {
 //! \brief Parameter structure for LEACMD__DEINTERLEAVELONG command.
 //
 //******************************************************************************
-typedef struct {
+typedef struct
+{
     //! Length of data vector.
     uint16_t vectorSize;
     //! Depth of interleave operation.
@@ -1132,20 +1167,22 @@ static inline void msp_lea_invokeCommand(uint16_t cmdId)
 
     /* Clear interrupt flag and invoke the command. */
     msp_lea_ifg = 0;
-    LEAPMCB = cmdId | LEAITFLG1;
-    
+    LEAPMCB     = cmdId | LEAITFLG1;
+
 #if defined(MSP_DISABLE_LPM0)
 #warning "DSPLib: LPM0 is disabled, undefine MSP_DISABLE_LPM0 to enable LPM0."
     /* Do not enter LPM0, poll interrupt flags for command completion. */
     __bis_SR_register(GIE);
-    while(!msp_lea_ifg);
-#elif ((MSP_LEA_REVISION==MSP_LEA_REVISION_A) && !defined(MSP_ENABLE_LPM0))
+    while (!msp_lea_ifg)
+        ;
+#elif ((MSP_LEA_REVISION == MSP_LEA_REVISION_A) && !defined(MSP_ENABLE_LPM0))
     /* Do not enter LPM0, poll interrupt flags for command completion. */
     __bis_SR_register(GIE);
-    while(!msp_lea_ifg);
+    while (!msp_lea_ifg)
+        ;
 #else
     /* Enter LPM0 and wait for command complete interrupt to wake the device. */
-    __bis_SR_register(GIE+LPM0_bits);
+    __bis_SR_register(GIE + LPM0_bits);
 #endif
 
     /* Restore original interrupt state. */
@@ -1163,10 +1200,10 @@ static inline void msp_lea_invokeCommand(uint16_t cmdId)
 //! \return Pointer to allocated memory.
 //
 //******************************************************************************
-static inline void *msp_lea_allocMemory(uint16_t length)
+static inline void* msp_lea_allocMemory(uint16_t length)
 {
     LEACNF2 -= length;
-    return (void *)MSP_LEA_REVERT_ADDRESS(LEACNF2);
+    return (void*)MSP_LEA_REVERT_ADDRESS(LEACNF2);
 }
 
 //******************************************************************************
@@ -1204,18 +1241,20 @@ static inline bool msp_lea_acquireLock(void)
     __disable_interrupt();
 
     /* Check LEA-SC busy flag and DSPLib lock flags. */
-    if ((LEACNF1 & LEABUSY) || msp_lea_locked) {
+    if ((LEACNF1 & LEABUSY) || msp_lea_locked)
+    {
         status = false;
     }
-    else {
-        status = true;
+    else
+    {
+        status         = true;
         msp_lea_locked = true;
     }
 
     /* Restore interrupt state and return status. */
     __set_interrupt_state(interruptState);
     return status;
-#endif //MSP_DISABLE_DIAGNOSTICS
+#endif  // MSP_DISABLE_DIAGNOSTICS
 }
 
 //******************************************************************************
@@ -1231,7 +1270,7 @@ static inline void msp_lea_freeLock(void)
 {
 #ifndef MSP_DISABLE_DIAGNOSTICS
     msp_lea_locked = false;
-#endif //MSP_DISABLE_DIAGNOSTICS
+#endif  // MSP_DISABLE_DIAGNOSTICS
 }
 
 //******************************************************************************
@@ -1265,8 +1304,7 @@ extern uint16_t msp_lea_getRevision(void);
 //! \return LEA command ID for loaded command.
 //
 //******************************************************************************
-extern uint16_t msp_lea_loadCommand(
-                    uint16_t commandId, const void *command, uint16_t length);
+extern uint16_t msp_lea_loadCommand(uint16_t commandId, const void* command, uint16_t length);
 
 #endif
 
@@ -1279,4 +1317,4 @@ extern uint16_t msp_lea_loadCommand(
 }
 #endif
 
-#endif // __DSPLIB_LEA_H__
+#endif  // __DSPLIB_LEA_H__

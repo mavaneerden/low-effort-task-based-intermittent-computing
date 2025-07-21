@@ -1,10 +1,13 @@
+#!/bin/bash
+
 # ARGUMENTS:
 # $1 - Input file
 # $2 - Output file name
 # $3 - Extra arguments (used mostly for include directories)
+# Example: ./run.sh tests/uninstrumented/shared_variables.c out.c --extra-arg=-I/workspaces/Thesis_Repo/InK/new/kernel/install/include
 
 addr_translation_include="--extra-arg=-include --extra-arg=ink/address_translation.h"
-extra_args="--extra-arg=-w --extra-arg=-I/usr/local/lib/clang/20/include --extra-arg=-I/usr/local $3"
+extra_args="--extra-arg=-w --extra-arg=-D__delay_cycles(a) --extra-arg=-I/usr/local/lib/clang/20/include --extra-arg=-I/usr/local $3"
 input_dir=$(dirname $1)
 temp_file_function_labeling=$input_dir/ink_instrumentation_function_labeling_tmp.c
 temp_file_pointer_instrumentation_dereference=$input_dir/ink_instrumentation_pointer_instrumentation_dereference_tmp.c
@@ -12,7 +15,7 @@ temp_file_pointer_instrumentation_members=$input_dir/ink_instrumentation_pointer
 temp_file_variable_instrumentation=$input_dir/ink_instrumentation_variable_instrumentation_tmp.c
 
 pushd $input_dir
-rm $2
+rm $2 2> /dev/null
 popd
 
 # Run plugin passes

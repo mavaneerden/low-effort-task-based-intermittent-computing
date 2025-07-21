@@ -32,26 +32,26 @@
 
 #include "../../include/DSPLib.h"
 
-msp_status msp_cmplx_iq31(const msp_cmplx_iq31_params *params, const _iq31 *real, const _iq31 *imag, _iq31 *dst)
+msp_status msp_cmplx_iq31(const msp_cmplx_iq31_params* params, const _iq31* real, const _iq31* imag, _iq31* dst)
 {
-    uint16_t length;
-    msp_status status;
+    uint16_t                   length;
+    msp_status                 status;
     msp_interleave_iq31_params interleaveParams;
 
     /* Initialize the vector length. */
     length = params->length;
 
     /* Interleave IQ31 real to channel zero of the destination vector. */
-    interleaveParams.length = length;
+    interleaveParams.length      = length;
     interleaveParams.numChannels = 2;
-    interleaveParams.channel = 0;
-    status = msp_interleave_iq31(&interleaveParams, real, dst);
+    interleaveParams.channel     = 0;
+    status                       = msp_interleave_iq31(&interleaveParams, real, dst);
 
     /* Interleave IQ31 imaginary to channel one of the destination vector. */
-    interleaveParams.length = length;
+    interleaveParams.length      = length;
     interleaveParams.numChannels = 2;
-    interleaveParams.channel = 1;
-    status = msp_interleave_iq31(&interleaveParams, imag, dst);
+    interleaveParams.channel     = 1;
+    status                       = msp_interleave_iq31(&interleaveParams, imag, dst);
 
     return status;
 }

@@ -37,27 +37,27 @@
  * size N/2 and a split operation to obtain a complex output with length N/2.
  * Fixed scaling by 2 is performed at each stage.
  */
-msp_status msp_fft_fixed_q15(const msp_fft_q15_params *params, int16_t *src)
-{
-    msp_status status;                          // Status of the operations
-    msp_split_q15_params paramsSplit;           // Split operation params
-    msp_cmplx_fft_q15_params paramsCmplxFFT;    // Complex FFT params
-    
-    /* Initialize complex FFT params structure. */
-    paramsCmplxFFT.length = params->length >> 1;
-    paramsCmplxFFT.bitReverse = params->bitReverse;
-    paramsCmplxFFT.twiddleTable = params->twiddleTable;
-    
-    /* Perform N/2 complex FFT on real source with scaling. */
-    status = msp_cmplx_fft_fixed_q15(&paramsCmplxFFT, src);
-    if (status !=  MSP_SUCCESS) {
-        return status;
-    }
-    
-    /* Initialize split operation params structure. */
-    paramsSplit.length = params->length;
-    paramsSplit.twiddleTable = params->twiddleTable;
-    
-    /* Perform the last stage split operation to obtain N/2 complex FFT results. */
-    return msp_split_q15(&paramsSplit, src);
+msp_status msp_fft_fixed_q15(const msp_fft_q15_params *params, int16_t *src) {
+  msp_status status;                       // Status of the operations
+  msp_split_q15_params paramsSplit;        // Split operation params
+  msp_cmplx_fft_q15_params paramsCmplxFFT; // Complex FFT params
+
+  /* Initialize complex FFT params structure. */
+  paramsCmplxFFT.length = params->length >> 1;
+  paramsCmplxFFT.bitReverse = params->bitReverse;
+  paramsCmplxFFT.twiddleTable = params->twiddleTable;
+
+  /* Perform N/2 complex FFT on real source with scaling. */
+  status = msp_cmplx_fft_fixed_q15(&paramsCmplxFFT, src);
+  if (status != MSP_SUCCESS) {
+    return status;
+  }
+
+  /* Initialize split operation params structure. */
+  paramsSplit.length = params->length;
+  paramsSplit.twiddleTable = params->twiddleTable;
+
+  /* Perform the last stage split operation to obtain N/2 complex FFT results.
+   */
+  return msp_split_q15(&paramsSplit, src);
 }

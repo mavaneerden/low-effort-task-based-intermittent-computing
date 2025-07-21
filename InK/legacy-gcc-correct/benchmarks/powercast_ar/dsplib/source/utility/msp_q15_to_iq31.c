@@ -32,29 +32,29 @@
 
 #include "../../include/DSPLib.h"
 
-msp_status msp_q15_to_iq31(const msp_q15_to_iq31_params *params, const _q15 *src, _iq31 *dst)
-{
-    uint16_t length;
-    msp_status status;
-    msp_fill_iq31_params fillParams;
-    msp_interleave_q15_params interleaveParams;
+msp_status msp_q15_to_iq31(const msp_q15_to_iq31_params *params,
+                           const _q15 *src, _iq31 *dst) {
+  uint16_t length;
+  msp_status status;
+  msp_fill_iq31_params fillParams;
+  msp_interleave_q15_params interleaveParams;
 
-    /* Initialize the vector length. */
-    length = params->length;
-    
-    /* Fill destination with zeros. */
-    fillParams.length = length;
-    fillParams.value = 0;
-    status = msp_fill_iq31(&fillParams, dst);
-    if (status != MSP_SUCCESS) {
-        return status;
-    }
+  /* Initialize the vector length. */
+  length = params->length;
 
-    /* Interleave Q15 source to upper 16-bits of IQ31 destination. */
-    interleaveParams.length = length;
-    interleaveParams.numChannels = 2;
-    interleaveParams.channel = 1;
-    status = msp_interleave_q15(&interleaveParams, src, (_q15 *)dst);
-
+  /* Fill destination with zeros. */
+  fillParams.length = length;
+  fillParams.value = 0;
+  status = msp_fill_iq31(&fillParams, dst);
+  if (status != MSP_SUCCESS) {
     return status;
+  }
+
+  /* Interleave Q15 source to upper 16-bits of IQ31 destination. */
+  interleaveParams.length = length;
+  interleaveParams.numChannels = 2;
+  interleaveParams.channel = 1;
+  status = msp_interleave_q15(&interleaveParams, src, (_q15 *)dst);
+
+  return status;
 }

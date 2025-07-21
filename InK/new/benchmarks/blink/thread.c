@@ -1,14 +1,15 @@
-#include <stdint.h>
 #include <msp430.h>
+#include <stdint.h>
+
 #include "gpio.h"
 #include "ink/ink.h"
 
 INK_IGNORE uint16_t ignored_variable;
-uint8_t blink_counter;
+uint8_t             blink_counter;
 
-void *t_blink_on();
-void *t_blink_off();
-void *t_end();
+static void* t_blink_on();
+static void* t_blink_off();
+static void* t_end();
 
 // void* t_init(void *event)
 INK_CREATE_THREAD(1, true)
@@ -18,7 +19,7 @@ INK_CREATE_THREAD(1, true)
     return t_blink_on;
 }
 
-void *t_blink_on()
+static void* t_blink_on()
 {
     GPIO_setOutputHighOnPin(GPIO_PORT_P1, GPIO_PIN0);
     blink_counter += 1;
@@ -28,7 +29,7 @@ void *t_blink_on()
     return t_blink_off;
 }
 
-void *t_blink_off()
+static void* t_blink_off()
 {
     GPIO_setOutputLowOnPin(GPIO_PORT_P1, GPIO_PIN0);
 
@@ -42,7 +43,7 @@ void *t_blink_off()
     return t_blink_on;
 }
 
-void *t_end()
+static void* t_end()
 {
-    return (void *)0;
+    return (void*)0;
 }

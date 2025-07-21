@@ -33,14 +33,15 @@
 #include "../../include/DSPLib.h"
 
 /*
- * Perform element wise subtraction of two complex source vectors without saturation.
+ * Perform element wise subtraction of two complex source vectors without
+ * saturation.
  */
-msp_status msp_cmplx_sub_iq31(const msp_cmplx_sub_iq31_params *params, const _iq31 *srcA, const _iq31 *srcB, _iq31 *dst)
+msp_status msp_cmplx_sub_iq31(const msp_cmplx_sub_iq31_params* params, const _iq31* srcA, const _iq31* srcB, _iq31* dst)
 {
     msp_sub_iq31_params paramsTemp;
-    
+
     /* Use real vector subtraction function. */
     paramsTemp.length = params->length << 1;
-    
+
     return msp_sub_iq31(&paramsTemp, srcA, srcB, dst);
 }

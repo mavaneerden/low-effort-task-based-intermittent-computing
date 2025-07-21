@@ -32,6 +32,8 @@
 #ifndef __DSPLIB_SUPPORT_H__
 #define __DSPLIB_SUPPORT_H__
 
+#include "DSPLib_types.h"
+
 //******************************************************************************
 //
 //! \addtogroup dsplib_support Support
@@ -40,7 +42,7 @@
 //! Definitions and abstraction for MSP devices.
 //!
 //! \defgroup dsplib_support_device Common
-//! This file provides common definitions, useful conversion macros and 
+//! This file provides common definitions, useful conversion macros and
 //! abstracted functions to support the core DSPLib functions. While not all
 //! macros and functions in this file are useful outside of DSPLib the main
 //! application can use any of them as needed.
@@ -56,8 +58,7 @@
 //
 //******************************************************************************
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 //******************************************************************************
@@ -67,7 +68,7 @@ extern "C"
 //! \brief Offset used to store table size.
 //
 //******************************************************************************
-#define DSPLIB_TABLE_OFFSET     2
+#define DSPLIB_TABLE_OFFSET 2
 
 //******************************************************************************
 //
@@ -76,7 +77,7 @@ extern "C"
 //! \brief Increment size for complex data.
 //
 //******************************************************************************
-#define CMPLX_INCREMENT         (2)
+#define CMPLX_INCREMENT (2)
 
 //******************************************************************************
 //
@@ -85,7 +86,7 @@ extern "C"
 //! \brief Access the real portion of complex data.
 //
 //******************************************************************************
-#define CMPLX_REAL(ptr)         ((ptr)[0])
+#define CMPLX_REAL(ptr) ((ptr)[0])
 
 //******************************************************************************
 //
@@ -94,7 +95,7 @@ extern "C"
 //! \brief Access the imaginary portion of complex data.
 //
 //******************************************************************************
-#define CMPLX_IMAG(ptr)         ((ptr)[1])
+#define CMPLX_IMAG(ptr) ((ptr)[1])
 
 //******************************************************************************
 //
@@ -104,9 +105,9 @@ extern "C"
 //
 //******************************************************************************
 #ifndef __QMATHLIB_H__ // Define _Q15 if not defined by QmathLib header.
-#define _Q15(A)                 ((_q15)((((uint32_t)1 << 15) * \
-                                __saturate(A,-1.0,32767.0/32768.0))))
-#endif  //__QMATHLIB_H__
+#define _Q15(A)                                                                \
+  ((_q15)((((uint32_t)1 << 15) * __saturate(A, -1.0, 32767.0 / 32768.0))))
+#endif //__QMATHLIB_H__
 
 //******************************************************************************
 //
@@ -115,8 +116,9 @@ extern "C"
 //! \brief Convert number to IQ31 fixed point.
 //
 //******************************************************************************
-#define _IQ31(A)                ((_iq31)((((uint32_t)1 << 31) * \
-                                __saturate(A,-1.0,2147483647.0/2147483648.0))))
+#define _IQ31(A)                                                               \
+  ((_iq31)((((uint32_t)1 << 31) *                                              \
+            __saturate(A, -1.0, 2147483647.0 / 2147483648.0))))
 
 //******************************************************************************
 //
@@ -125,7 +127,7 @@ extern "C"
 //! \brief Convert number to IQ31 fixed point.
 //
 //******************************************************************************
-#define _Q31(A)                 (_IQ31(A))
+#define _Q31(A) (_IQ31(A))
 
 //******************************************************************************
 //
@@ -134,7 +136,8 @@ extern "C"
 //! \brief Saturate input to minimum or maximum value and return value.
 //
 //******************************************************************************
-#define __saturate(x, min, max) (((x)>(max))?(max):(((x)<(min))?(min):(x)))
+#define __saturate(x, min, max)                                                \
+  (((x) > (max)) ? (max) : (((x) < (min)) ? (min) : (x)))
 
 //******************************************************************************
 //
@@ -143,13 +146,13 @@ extern "C"
 //! \brief Add Q15 arguments with saturation.
 //
 //******************************************************************************
-#if (defined(__TI_COMPILER_VERSION__) && (__TI_COMPILER_VERSION__ >= 15012001)) || \
+#if (defined(__TI_COMPILER_VERSION__) &&                                       \
+     (__TI_COMPILER_VERSION__ >= 15012001)) ||                                 \
     (defined(__IAR_SYSTEMS_ICC__) && (__VER__ >= 650))
-#define __saturated_add_q15     __saturated_add_signed_short
+#define __saturated_add_q15 __saturated_add_signed_short
 #else
-static inline _q15 __saturated_add_q15(_q15 x, _q15 y)
-{
-    return (_q15)__saturate((int32_t)x + (int32_t)y, INT16_MIN, INT16_MAX);
+static inline _q15 __saturated_add_q15(_q15 x, _q15 y) {
+  return (_q15)__saturate((int32_t)x + (int32_t)y, INT16_MIN, INT16_MAX);
 }
 #endif
 
@@ -160,13 +163,13 @@ static inline _q15 __saturated_add_q15(_q15 x, _q15 y)
 //! \brief Subtract Q15 arguments with saturation.
 //
 //******************************************************************************
-#if (defined(__TI_COMPILER_VERSION__) && (__TI_COMPILER_VERSION__ >= 15012001)) || \
+#if (defined(__TI_COMPILER_VERSION__) &&                                       \
+     (__TI_COMPILER_VERSION__ >= 15012001)) ||                                 \
     (defined(__IAR_SYSTEMS_ICC__) && (__VER__ >= 650))
-#define __saturated_sub_q15     __saturated_sub_signed_short
+#define __saturated_sub_q15 __saturated_sub_signed_short
 #else
-static inline _q15 __saturated_sub_q15(_q15 x, _q15 y)
-{
-    return (_q15)__saturate((int32_t)x - (int32_t)y, INT16_MIN, INT16_MAX);
+static inline _q15 __saturated_sub_q15(_q15 x, _q15 y) {
+  return (_q15)__saturate((int32_t)x - (int32_t)y, INT16_MIN, INT16_MAX);
 }
 #endif
 
@@ -177,13 +180,13 @@ static inline _q15 __saturated_sub_q15(_q15 x, _q15 y)
 //! \brief Add IQ31 arguments with saturation.
 //
 //******************************************************************************
-#if (defined(__TI_COMPILER_VERSION__) && (__TI_COMPILER_VERSION__ >= 15012001)) || \
+#if (defined(__TI_COMPILER_VERSION__) &&                                       \
+     (__TI_COMPILER_VERSION__ >= 15012001)) ||                                 \
     (defined(__IAR_SYSTEMS_ICC__) && (__VER__ >= 650))
-#define __saturated_add_iq31    __saturated_add_signed_long
+#define __saturated_add_iq31 __saturated_add_signed_long
 #else
-static inline _iq31 __saturated_add_iq31(_iq31 x, _iq31 y)
-{
-    return (_iq31)__saturate((int64_t)x + (int64_t)y, INT32_MIN, INT32_MAX);
+static inline _iq31 __saturated_add_iq31(_iq31 x, _iq31 y) {
+  return (_iq31)__saturate((int64_t)x + (int64_t)y, INT32_MIN, INT32_MAX);
 }
 #endif
 
@@ -194,13 +197,13 @@ static inline _iq31 __saturated_add_iq31(_iq31 x, _iq31 y)
 //! \brief Subtract IQ31 arguments with saturation.
 //
 //******************************************************************************
-#if (defined(__TI_COMPILER_VERSION__) && (__TI_COMPILER_VERSION__ >= 15012001)) || \
+#if (defined(__TI_COMPILER_VERSION__) &&                                       \
+     (__TI_COMPILER_VERSION__ >= 15012001)) ||                                 \
     (defined(__IAR_SYSTEMS_ICC__) && (__VER__ >= 650))
-#define __saturated_sub_iq31    __saturated_sub_signed_long
+#define __saturated_sub_iq31 __saturated_sub_signed_long
 #else
-static inline _iq31 __saturated_sub_iq31(_iq31 x, _iq31 y)
-{
-    return (_iq31)__saturate((int64_t)x - (int64_t)y, INT32_MIN, INT32_MAX);
+static inline _iq31 __saturated_sub_iq31(_iq31 x, _iq31 y) {
+  return (_iq31)__saturate((int64_t)x - (int64_t)y, INT32_MIN, INT32_MAX);
 }
 #endif
 
@@ -213,9 +216,8 @@ static inline _iq31 __saturated_sub_iq31(_iq31 x, _iq31 y)
 //! \return         Pointer after applying circular buffer mask
 //
 //******************************************************************************
-static inline const void *__circular_mask(const void *ptr, uintptr_t mask)
-{
-    return (void *)((uintptr_t)ptr & ~mask);
+static inline const void *__circular_mask(const void *ptr, uintptr_t mask) {
+  return (void *)((uintptr_t)ptr & ~mask);
 }
 
 //******************************************************************************
@@ -229,16 +231,13 @@ static inline const void *__circular_mask(const void *ptr, uintptr_t mask)
 //!                 mask
 //
 //******************************************************************************
-static inline const void *__circular_increment( const void *ptr,
-                                                int16_t incr,
-                                                uintptr_t mask)
-{
-    uintptr_t base = (uintptr_t)__circular_mask(ptr, mask);
-    uintptr_t addr = base;
-    addr += (uintptr_t)__circular_mask(
-                            (const void *)((uintptr_t)ptr + (uintptr_t)incr),
-                            ~mask);
-    return (const void *)addr;
+static inline const void *__circular_increment(const void *ptr, int16_t incr,
+                                               uintptr_t mask) {
+  uintptr_t base = (uintptr_t)__circular_mask(ptr, mask);
+  uintptr_t addr = base;
+  addr += (uintptr_t)__circular_mask(
+      (const void *)((uintptr_t)ptr + (uintptr_t)incr), ~mask);
+  return (const void *)addr;
 }
 
 //******************************************************************************
@@ -250,30 +249,32 @@ static inline const void *__circular_increment( const void *ptr,
 //
 //******************************************************************************
 #if defined(__TI_COMPILER_VERSION__)
-#define _PRAGMA(x) _Pragma (#x)
+#define _PRAGMA(x) _Pragma(#x)
 #if defined(MSP_USE_LEA)
-#define DSPLIB_DATA(var,align)  _PRAGMA(DATA_SECTION(var,".leaRAM"))\
-                                _PRAGMA(DATA_ALIGN(var,(align)))
+#define DSPLIB_DATA(var, align)                                                \
+  _PRAGMA(DATA_SECTION(var, ".leaRAM"))                                        \
+  _PRAGMA(DATA_ALIGN(var, (align)))
 #else
-#define DSPLIB_DATA(var,align)  _PRAGMA(DATA_ALIGN(var,(align)))
+#define DSPLIB_DATA(var, align) _PRAGMA(DATA_ALIGN(var, (align)))
 #endif
 #elif defined(__IAR_SYSTEMS_ICC__)
-#define _PRAGMA(x) _Pragma (#x)
+#define _PRAGMA(x) _Pragma(#x)
 #if defined(MSP_USE_LEA)
-#define DSPLIB_DATA(var,align)  _PRAGMA(location="LEARAM")\
-                                _PRAGMA(data_alignment=align)
+#define DSPLIB_DATA(var, align)                                                \
+  _PRAGMA(location = "LEARAM")                                                 \
+  _PRAGMA(data_alignment = align)
 #else
-#define DSPLIB_DATA(var,align)  _PRAGMA(data_alignment=align)
+#define DSPLIB_DATA(var, align) _PRAGMA(data_alignment = align)
 #endif
 #elif defined(__GNUC__)
 #if defined(MSP_USE_LEA)
-#define DSPLIB_DATA(var,align)  __attribute__((section(".leaRAM")))\
-                                __attribute__((aligned(align)))
+#define DSPLIB_DATA(var, align)                                                \
+  __attribute__((section(".leaRAM"))) __attribute__((aligned(align)))
 #else
-#define DSPLIB_DATA(var,align)  __attribute__((aligned(align)))
+#define DSPLIB_DATA(var, align) __attribute__((aligned(align)))
 #endif
 #else
-#define DSPLIB_DATA(var,align)
+#define DSPLIB_DATA(var, align)
 #endif
 
 //******************************************************************************
@@ -287,56 +288,65 @@ static inline const void *__circular_increment( const void *ptr,
 //! \return None
 //
 //******************************************************************************
-static inline void msp_checkStatus(msp_status status)
-{
+static inline void msp_checkStatus(msp_status status) {
 #ifndef MSP_DISABLE_DIAGNOSTICS
-    switch (status) {
-    case MSP_SUCCESS:
-        break;
-    case MSP_SIZE_ERROR:
-        /* Invalid size error, loop forever. */
-         while(true) __no_operation();
-    case MSP_SHIFT_SIZE_ERROR:
-        /* Invalid shift size error, loop forever. */
-         while(true) __no_operation();
-    case MSP_TABLE_SIZE_ERROR:
-        /* Invalid table size error, loop forever. */
-         while(true) __no_operation();
-    case MSP_LEA_BUSY:
-        /* LEA is busy and cannot be invoked, loop forever. */
-         while(true) __no_operation();
-    case MSP_LEA_INVALID_ADDRESS:
-        /* Address is not within LEA RAM section, loop forever. */
-         while(true) __no_operation();
-    case MSP_LEA_OUT_OF_RANGE:
-        /* Command resulted in out of range memory access, loop forever. */
-         while(true) __no_operation();
-    case MSP_LEA_SCALAR_INCONSISTENCY:
-        /* LEA scalar data inconsistency error, loop forever. */
-         while(true) __no_operation();
-    case MSP_LEA_COMMAND_OVERFLOW:
-        /* LEA command overflow error, loop forever. */
-         while(true) __no_operation();
-    case MSP_LEA_INCORRECT_REVISION:
-        /* LEA incorrect revision, loop forever. */
-         while(true) __no_operation();
-    default:
-        /* Unknown error, loop forever. */
-        while(true) __no_operation();
-    }
-#endif //MSP_DISABLE_DIAGNOSTICS
+  switch (status) {
+  case MSP_SUCCESS:
+    break;
+  case MSP_SIZE_ERROR:
+    /* Invalid size error, loop forever. */
+    while (true)
+      __no_operation();
+  case MSP_SHIFT_SIZE_ERROR:
+    /* Invalid shift size error, loop forever. */
+    while (true)
+      __no_operation();
+  case MSP_TABLE_SIZE_ERROR:
+    /* Invalid table size error, loop forever. */
+    while (true)
+      __no_operation();
+  case MSP_LEA_BUSY:
+    /* LEA is busy and cannot be invoked, loop forever. */
+    while (true)
+      __no_operation();
+  case MSP_LEA_INVALID_ADDRESS:
+    /* Address is not within LEA RAM section, loop forever. */
+    while (true)
+      __no_operation();
+  case MSP_LEA_OUT_OF_RANGE:
+    /* Command resulted in out of range memory access, loop forever. */
+    while (true)
+      __no_operation();
+  case MSP_LEA_SCALAR_INCONSISTENCY:
+    /* LEA scalar data inconsistency error, loop forever. */
+    while (true)
+      __no_operation();
+  case MSP_LEA_COMMAND_OVERFLOW:
+    /* LEA command overflow error, loop forever. */
+    while (true)
+      __no_operation();
+  case MSP_LEA_INCORRECT_REVISION:
+    /* LEA incorrect revision, loop forever. */
+    while (true)
+      __no_operation();
+  default:
+    /* Unknown error, loop forever. */
+    while (true)
+      __no_operation();
+  }
+#endif // MSP_DISABLE_DIAGNOSTICS
 }
 
 // Benchmark register support
-#define HWREG16(x)          (*((volatile uint16_t *)((uint16_t)x)))
-#define BENCHMARK_TAxR      (0x0010)
-#define BENCHMARK_TAxEX0    (0x0020)
+#define HWREG16(x) (*((volatile uint16_t *)((uint16_t)x)))
+#define BENCHMARK_TAxR (0x0010)
+#define BENCHMARK_TAxEX0 (0x0020)
 
 // Define default benchmark timer base address for examples
 #if defined(TA0_BASE)
-#define MSP_BENCHMARK_BASE  TA0_BASE
+#define MSP_BENCHMARK_BASE TA0_BASE
 #else
-#define MSP_BENCHMARK_BASE  TIMER_A0_BASE
+#define MSP_BENCHMARK_BASE TIMER_A0_BASE
 #endif
 
 //******************************************************************************
@@ -358,14 +368,13 @@ static inline void msp_checkStatus(msp_status status)
 //! \return None
 //
 //******************************************************************************
-static inline void msp_benchmarkStart(uint16_t baseAddress, uint8_t res)
-{
-    static const uint8_t TAx_ID[8] = {
-        0x00, 0x40, 0x40, 0x80, 0x80, 0x80, 0x80, 0xC0
-    };
-    HWREG16(baseAddress) = 0x0004;
-    HWREG16(baseAddress+BENCHMARK_TAxEX0) = res < 7 ? 0 : ((0x07&(res >> 3))-1);
-    HWREG16(baseAddress) = 0x0220 + TAx_ID[res > 7 ? 7 : ((res-1)&7)];
+static inline void msp_benchmarkStart(uint16_t baseAddress, uint8_t res) {
+  static const uint8_t TAx_ID[8] = {0x00, 0x40, 0x40, 0x80,
+                                    0x80, 0x80, 0x80, 0xC0};
+  HWREG16(baseAddress) = 0x0004;
+  HWREG16(baseAddress + BENCHMARK_TAxEX0) =
+      res < 7 ? 0 : ((0x07 & (res >> 3)) - 1);
+  HWREG16(baseAddress) = 0x0220 + TAx_ID[res > 7 ? 7 : ((res - 1) & 7)];
 }
 
 //******************************************************************************
@@ -379,16 +388,14 @@ static inline void msp_benchmarkStart(uint16_t baseAddress, uint8_t res)
 //! \return Benchmark cycle counts.
 //
 //******************************************************************************
-static inline uint32_t msp_benchmarkStop(uint16_t baseAddress)
-{
-    static const uint8_t TAx_IDEX_SCALE[8] = {
-        0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
-    };
-    uint16_t cycles = HWREG16(baseAddress+BENCHMARK_TAxR);
-    uint16_t shift = (HWREG16(baseAddress) & 0x00C0) >> 6;
-    uint16_t scale = TAx_IDEX_SCALE[HWREG16(baseAddress+BENCHMARK_TAxEX0) & 7];
-    HWREG16(baseAddress) = 0;
-    return (scale*((uint32_t)cycles << shift));
+static inline uint32_t msp_benchmarkStop(uint16_t baseAddress) {
+  static const uint8_t TAx_IDEX_SCALE[8] = {0x01, 0x02, 0x03, 0x04,
+                                            0x05, 0x06, 0x07, 0x08};
+  uint16_t cycles = HWREG16(baseAddress + BENCHMARK_TAxR);
+  uint16_t shift = (HWREG16(baseAddress) & 0x00C0) >> 6;
+  uint16_t scale = TAx_IDEX_SCALE[HWREG16(baseAddress + BENCHMARK_TAxEX0) & 7];
+  HWREG16(baseAddress) = 0;
+  return (scale * ((uint32_t)cycles << shift));
 }
 
 #if defined(__MSP430_HAS_MPY32__)
@@ -405,11 +412,10 @@ static inline uint32_t msp_benchmarkStop(uint16_t baseAddress)
 //! \return Q15 result
 //
 //******************************************************************************
-static inline int16_t __q15mpy(int16_t a, int16_t b) 
-{
-    MPYS = a;
-    OP2  = b;
-    return RESHI;
+static inline int16_t __q15mpy(int16_t a, int16_t b) {
+  MPYS = a;
+  OP2 = b;
+  return RESHI;
 }
 
 //******************************************************************************
@@ -424,14 +430,13 @@ static inline int16_t __q15mpy(int16_t a, int16_t b)
 //! \return IQ31 result
 //
 //******************************************************************************
-static inline int32_t __q15mpyl(int16_t a, int16_t b)
-{
-    uint32_t result;
-    MPYS = a;
-    OP2  = b;
-    result  = RESLO;
-    result |= ((uint32_t)RESHI << 16);
-    return (int32_t)result;
+static inline int32_t __q15mpyl(int16_t a, int16_t b) {
+  uint32_t result;
+  MPYS = a;
+  OP2 = b;
+  result = RESLO;
+  result |= ((uint32_t)RESHI << 16);
+  return (int32_t)result;
 }
 
 //******************************************************************************
@@ -446,16 +451,15 @@ static inline int32_t __q15mpyl(int16_t a, int16_t b)
 //! \return Q31 result
 //
 //******************************************************************************
-static inline int32_t __q31mpy(int32_t a, int32_t b) 
-{
-    uint32_t result;
-    MPYS32L = a & 0xFFFF;
-    MPYS32H = a >> 16;
-    OP2L    = b & 0xFFFF;
-    OP2H    = b >> 16;
-    result  = RES2;
-    result |= ((uint32_t)RES3 << 16);
-    return (int32_t)result;
+static inline int32_t __q31mpy(int32_t a, int32_t b) {
+  uint32_t result;
+  MPYS32L = a & 0xFFFF;
+  MPYS32H = a >> 16;
+  OP2L = b & 0xFFFF;
+  OP2H = b >> 16;
+  result = RES2;
+  result |= ((uint32_t)RES3 << 16);
+  return (int32_t)result;
 }
 
 //******************************************************************************
@@ -472,21 +476,18 @@ static inline int32_t __q31mpy(int32_t a, int32_t b)
 //! \return Q15 result
 //
 //******************************************************************************
-static inline void __q15cmpy(int16_t *aR,
-                             int16_t *aI,
-                             const int16_t *bR,
-                             const int16_t *bI)
-{
-    MPYS = *aI;
-    OP2  = *bR;
-    MACS = *aR;
-    OP2  = *bI;
-    MPYS = -*aI;
-    *aI  = RESHI;
-    OP2  = *bI;
-    MACS = *aR;
-    OP2  = *bR;
-    *aR  = RESHI;
+static inline void __q15cmpy(int16_t *aR, int16_t *aI, const int16_t *bR,
+                             const int16_t *bI) {
+  MPYS = *aI;
+  OP2 = *bR;
+  MACS = *aR;
+  OP2 = *bI;
+  MPYS = -*aI;
+  *aI = RESHI;
+  OP2 = *bI;
+  MACS = *aR;
+  OP2 = *bR;
+  *aR = RESHI;
 }
 
 //******************************************************************************
@@ -503,27 +504,24 @@ static inline void __q15cmpy(int16_t *aR,
 //! \return IQ31 result
 //
 //******************************************************************************
-static inline void __q15iq31cmpy(int32_t *aR,
-                                 int32_t *aI,
-                                 const int32_t *bR,
-                                 const int32_t *bI)
-{
-    MPYS = *aI;
-    OP2L = (uint16_t)*bR;
-    OP2H = (uint16_t)(*bR >> 16);
-    MACS = *aR;
-    OP2L = (uint16_t)*bI;
-    OP2H = (uint16_t)(*bI >> 16);
-    MPYS = -*aI;
-    *aI  = RES1;
-    *aI |= ((uint32_t)RES2 << 16);
-    OP2L = (uint16_t)*bI;
-    OP2H = (uint16_t)(*bI >> 16);
-    MACS = *aR;
-    OP2L = (uint16_t)*bR;
-    OP2H = (uint16_t)(*bR >> 16);
-    *aR  = RES1;
-    *aR |= ((uint32_t)RES2 << 16);
+static inline void __q15iq31cmpy(int32_t *aR, int32_t *aI, const int32_t *bR,
+                                 const int32_t *bI) {
+  MPYS = *aI;
+  OP2L = (uint16_t)*bR;
+  OP2H = (uint16_t)(*bR >> 16);
+  MACS = *aR;
+  OP2L = (uint16_t)*bI;
+  OP2H = (uint16_t)(*bI >> 16);
+  MPYS = -*aI;
+  *aI = RES1;
+  *aI |= ((uint32_t)RES2 << 16);
+  OP2L = (uint16_t)*bI;
+  OP2H = (uint16_t)(*bI >> 16);
+  MACS = *aR;
+  OP2L = (uint16_t)*bR;
+  OP2H = (uint16_t)(*bR >> 16);
+  *aR = RES1;
+  *aR |= ((uint32_t)RES2 << 16);
 }
 
 #else //__MSP430_HAS_MPY32__
@@ -535,7 +533,7 @@ static inline void __q15iq31cmpy(int32_t *aR,
 //! \brief Real Q15 multiply with result returned.
 //
 //******************************************************************************
-#define __q15mpy(A, B)  ((int16_t)(((int32_t)(A) * (int32_t)(B)) >> 15))
+#define __q15mpy(A, B) ((int16_t)(((int32_t)(A) * (int32_t)(B)) >> 15))
 
 //******************************************************************************
 //
@@ -544,7 +542,7 @@ static inline void __q15iq31cmpy(int32_t *aR,
 //! \brief Real Q15 multiply with 32-bit result returned.
 //
 //******************************************************************************
-#define __q15mpyl(A, B)  ((int32_t)(((int32_t)(A) * (int32_t)(B)) << 1))
+#define __q15mpyl(A, B) ((int32_t)(((int32_t)(A) * (int32_t)(B)) << 1))
 
 //******************************************************************************
 //
@@ -553,7 +551,7 @@ static inline void __q15iq31cmpy(int32_t *aR,
 //! \brief Real IQ31 multiply with result returned.
 //
 //******************************************************************************
-#define __q31mpy(A, B)  ((int32_t)(((int64_t)(A) * (int64_t)(B)) >> 31))
+#define __q31mpy(A, B) ((int32_t)(((int64_t)(A) * (int64_t)(B)) >> 31))
 
 //******************************************************************************
 //
@@ -562,7 +560,7 @@ static inline void __q15iq31cmpy(int32_t *aR,
 //! \brief Real Q15 by IQ31 multiply with result returned
 //
 //******************************************************************************
-#define __q15iq31mpy(A, B)  ((int32_t)(((int64_t)(A) * (int64_t)(B)) >> 15))
+#define __q15iq31mpy(A, B) ((int32_t)(((int64_t)(A) * (int64_t)(B)) >> 15))
 
 //******************************************************************************
 //
@@ -578,15 +576,12 @@ static inline void __q15iq31cmpy(int32_t *aR,
 //! \return Q15 result
 //
 //******************************************************************************
-static inline void __q15cmpy(int16_t *aR,
-                             int16_t *aI,
-                             const int16_t *bR,
-                             const int16_t *bI)
-{
-    int16_t resR =  __q15mpy(*aR, *bR) - __q15mpy(*aI, *bI);
-    int16_t resI =  __q15mpy(*aR, *bI) + __q15mpy(*aI, *bR);
-    *aR = resR;
-    *aI = resI;
+static inline void __q15cmpy(int16_t *aR, int16_t *aI, const int16_t *bR,
+                             const int16_t *bI) {
+  int16_t resR = __q15mpy(*aR, *bR) - __q15mpy(*aI, *bI);
+  int16_t resI = __q15mpy(*aR, *bI) + __q15mpy(*aI, *bR);
+  *aR = resR;
+  *aI = resI;
 }
 
 //******************************************************************************
@@ -603,15 +598,12 @@ static inline void __q15cmpy(int16_t *aR,
 //! \return IQ31 result
 //
 //******************************************************************************
-static inline void __q15iq31cmpy(int32_t *aR,
-                                 int32_t *aI,
-                                 const int32_t *bR,
-                                 const int32_t *bI)
-{
-    int32_t resR =  __q15iq31mpy(*aR, *bR) - __q15iq31mpy(*aI, *bI);
-    int32_t resI =  __q15iq31mpy(*aR, *bI) + __q15iq31mpy(*aI, *bR);
-    *aR = resR;
-    *aI = resI;
+static inline void __q15iq31cmpy(int32_t *aR, int32_t *aI, const int32_t *bR,
+                                 const int32_t *bI) {
+  int32_t resR = __q15iq31mpy(*aR, *bR) - __q15iq31mpy(*aI, *bI);
+  int32_t resI = __q15iq31mpy(*aR, *bI) + __q15iq31mpy(*aI, *bR);
+  *aR = resR;
+  *aI = resI;
 }
 
 #endif //__MSP430_HAS_MPY32__

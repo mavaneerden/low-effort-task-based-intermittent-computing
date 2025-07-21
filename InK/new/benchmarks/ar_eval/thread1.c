@@ -23,22 +23,22 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#include <math.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "ink/ink.h"
 #include "benchmark_helpers.h"
-
-#include <stdint.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
 #include "msp-math.h"
 
 // Number of samples to discard before recording training set
 #define NUM_WARMUP_SAMPLES 3
 
-#define ACCEL_WINDOW_SIZE 3
-#define MODEL_SIZE 16
-#define SAMPLE_NOISE_FLOOR 10 // TODO: made up value
+#define ACCEL_WINDOW_SIZE  3
+#define MODEL_SIZE         16
+#define SAMPLE_NOISE_FLOOR 10  // TODO: made up value
 
 // Number of classifications to complete in one experiment
 #define SAMPLES_TO_COLLECT 128
@@ -67,82 +67,74 @@ typedef enum
 
 typedef enum
 {
-    MODE_IDLE = 3,
+    MODE_IDLE             = 3,
     MODE_TRAIN_STATIONARY = 2,
-    MODE_TRAIN_MOVING = 1,
-    MODE_RECOGNIZE = 0, // default
+    MODE_TRAIN_MOVING     = 1,
+    MODE_RECOGNIZE        = 0,  // default
 } run_mode_t;
 
-uint8_t pinCont;
-uint16_t _v_pinState;
-unsigned _v_count;
-unsigned _v_discardedSamplesCount;
-unsigned _v_totalCount;
-unsigned _v_movingCount;
-unsigned _v_stationaryCount;
-unsigned _v_trainingSetSize;
-unsigned _v_samplesInWindow;
+uint8_t      pinCont;
+uint16_t     _v_pinState;
+unsigned     _v_count;
+unsigned     _v_discardedSamplesCount;
+unsigned     _v_totalCount;
+unsigned     _v_movingCount;
+unsigned     _v_stationaryCount;
+unsigned     _v_trainingSetSize;
+unsigned     _v_samplesInWindow;
 accelReading _v_window[ACCEL_WINDOW_SIZE];
-features_t _v_features;
-features_t _v_model_stationary[MODEL_SIZE];
-features_t _v_model_moving[MODEL_SIZE];
-class_t _v_class;
-run_mode_t _v_mode;
+features_t   _v_features;
+features_t   _v_model_stationary[MODEL_SIZE];
+features_t   _v_model_moving[MODEL_SIZE];
+class_t      _v_class;
+run_mode_t   _v_mode;
 
-void *task_init();
-void *task_selectMode();
-void *task_resetStats();
-void *task_sample();
-void *task_transform();
-void *task_featurize();
-void *task_classify();
-void *task_stats();
-void *task_warmup();
-void *task_train();
-void *task_idle();
+static void* task_selectMode();
+static void* task_resetStats();
+static void* task_sample();
+static void* task_transform();
+static void* task_featurize();
+static void* task_classify();
+static void* task_stats();
+static void* task_warmup();
+static void* task_train();
+static void* task_idle();
 
 INK_PERSISTENT unsigned _v_seed;
-INK_PERSISTENT uint8_t full_run_started;
+INK_PERSISTENT uint8_t  full_run_started;
 
 INK_CREATE_THREAD(15, true)
 {
-    return task_init;
-}
-
-void *task_init()
-{
-
 #ifdef RAISE_PIN
     full_run_started = 1;
 #endif
 
-    pinCont = 1;
+    pinCont     = 1;
     _v_pinState = MODE_IDLE;
-    _v_count = 0;
-    _v_seed = 1;
+    _v_count    = 0;
+    _v_seed     = 1;
 
     return task_selectMode;
 }
 
 // Dummy data sampling
-void ACCEL_singleSample_(threeAxis_t_8 *result)
+void ACCEL_singleSample_(threeAxis_t_8* result)
 {
-
     unsigned seed = _v_seed;
 
     result->x = (seed * 17) % 85;
     result->y = (seed * 17 * 17) % 85;
     result->z = (seed * 17 * 17 * 17) % 85;
-    _v_seed = ++seed;
+    _v_seed   = ++seed;
 }
 
-void *task_selectMode()
+static void* task_selectMode()
 {
-    unsigned discardedSamplesCount = _v_discardedSamplesCount;
-    unsigned samplesInWindow = _v_samplesInWindow;
-    unsigned count = _v_count;
-    class_t lc_class = _v_class;
-    run_mode_t lc_mode = _v_mode;
+    unsigned   discardedSamplesCount = _v_discardedSamplesCount;
+    unsigned   samplesInWindow       = _v_samplesInWindow;
+    unsigned   count                 = _v_count;
+    class_t    lc_class              = _v_class;
+    run_mode_t lc_mode               = _v_mode;
 
     uint16_t pin_state = 1;
 
@@ -150,9 +142,13 @@ void *task_selectMode()
     _v_count = count;
 
     if (count >= 3)
+    {
         pin_state = 2;
+    }
     if (count >= 5)
+    {
         pin_state = 0;
+    }
     if (count >= 7)
     {
 #ifdef RAISE_PIN
@@ -163,7 +159,7 @@ void *task_selectMode()
             __port_off(3, 4);
         }
 #endif
-        return task_init;
+        return INK_THREAD_ENTRY_TASK;
     }
 
     // Don't re-launch training after finishing training
@@ -178,50 +174,48 @@ void *task_selectMode()
 
     switch (pin_state)
     {
-    case MODE_TRAIN_STATIONARY:
-        _v_discardedSamplesCount = 0;
-        _v_mode = MODE_TRAIN_STATIONARY;
-        _v_class = CLASS_STATIONARY;
-        _v_samplesInWindow = 0;
-        return task_warmup;
-        break;
-    case MODE_TRAIN_MOVING:
-        _v_discardedSamplesCount = 0;
-        _v_mode = MODE_TRAIN_MOVING;
-        _v_class = CLASS_MOVING;
-        _v_samplesInWindow = 0;
-        return task_warmup;
-        break;
-    case MODE_RECOGNIZE:
-        _v_mode = MODE_RECOGNIZE;
-        return task_resetStats;
-        break;
-    default:
-        return task_idle;
-        break;
+        case MODE_TRAIN_STATIONARY:
+            _v_discardedSamplesCount = 0;
+            _v_mode                  = MODE_TRAIN_STATIONARY;
+            _v_class                 = CLASS_STATIONARY;
+            _v_samplesInWindow       = 0;
+            return task_warmup;
+            break;
+        case MODE_TRAIN_MOVING:
+            _v_discardedSamplesCount = 0;
+            _v_mode                  = MODE_TRAIN_MOVING;
+            _v_class                 = CLASS_MOVING;
+            _v_samplesInWindow       = 0;
+            return task_warmup;
+            break;
+        case MODE_RECOGNIZE:
+            _v_mode = MODE_RECOGNIZE;
+            return task_resetStats;
+            break;
+        default:
+            return task_idle;
+            break;
     }
 }
 
-void *task_warmup()
+static void* task_warmup()
 {
     threeAxis_t_8 sample;
 
     if (_v_discardedSamplesCount < NUM_WARMUP_SAMPLES)
     {
-
         ACCEL_singleSample_(&sample);
         ++_v_discardedSamplesCount;
         return task_warmup;
     }
     else
     {
-
         _v_trainingSetSize = 0;
         return task_sample;
     }
 }
 
-void *task_sample()
+static void* task_sample()
 {
     unsigned samplesInWindow = _v_samplesInWindow;
 
@@ -244,10 +238,9 @@ void *task_sample()
     }
 }
 
-void *task_transform()
+static void* task_transform()
 {
-
-    int8_t ios_i;
+    int8_t       ios_i;
     accelReading window[ACCEL_WINDOW_SIZE];
 
     for (ios_i = 0; ios_i < ACCEL_WINDOW_SIZE; ++ios_i)
@@ -259,12 +252,8 @@ void *task_transform()
 
     for (i = 0; i < ACCEL_WINDOW_SIZE; i++)
     {
-
-        if (window[i].x < SAMPLE_NOISE_FLOOR ||
-            window[i].y < SAMPLE_NOISE_FLOOR ||
-            window[i].z < SAMPLE_NOISE_FLOOR)
+        if (window[i].x < SAMPLE_NOISE_FLOOR || window[i].y < SAMPLE_NOISE_FLOOR || window[i].z < SAMPLE_NOISE_FLOOR)
         {
-
             if (window[i].x > SAMPLE_NOISE_FLOOR)
             {
                 _v_window[i].x = window[i].x;
@@ -297,9 +286,9 @@ void *task_transform()
     return task_featurize;
 }
 
-void *task_featurize()
+static void* task_featurize()
 {
-    run_mode_t mode = _v_mode;
+    run_mode_t mode     = _v_mode;
     features_t features = _v_features;
 
     accelReading mean, stddev;
@@ -351,51 +340,49 @@ void *task_featurize()
     stddev.y >>= 2;
     stddev.z >>= 2;
 
-    unsigned meanmag = mean.x * mean.x + mean.y * mean.y + mean.z * mean.z;
+    unsigned meanmag   = mean.x * mean.x + mean.y * mean.y + mean.z * mean.z;
     unsigned stddevmag = stddev.x * stddev.x + stddev.y * stddev.y + stddev.z * stddev.z;
-    features.meanmag = sqrt16(meanmag);
+    features.meanmag   = sqrt16(meanmag);
     features.stddevmag = sqrt16(stddevmag);
 
     switch (mode)
     {
-    case MODE_TRAIN_STATIONARY:
-    case MODE_TRAIN_MOVING:
-        _v_features.meanmag = features.meanmag;
-        _v_features.stddevmag = features.stddevmag;
-        return task_train;
-        break;
-    case MODE_RECOGNIZE:
-        _v_features.meanmag = features.meanmag;
-        _v_features.stddevmag = features.stddevmag;
-        return task_classify;
-        break;
-    default:
-        // TODO: abort
-        __delay_cycles(1);
-        break;
+        case MODE_TRAIN_STATIONARY:
+        case MODE_TRAIN_MOVING:
+            _v_features.meanmag   = features.meanmag;
+            _v_features.stddevmag = features.stddevmag;
+            return task_train;
+            break;
+        case MODE_RECOGNIZE:
+            _v_features.meanmag   = features.meanmag;
+            _v_features.stddevmag = features.stddevmag;
+            return task_classify;
+            break;
+        default:
+            // TODO: abort
+            __delay_cycles(1);
+            break;
     }
 }
 
-void *task_classify()
+static void* task_classify()
 {
-
     unsigned int move_less_error = 0;
     unsigned int stat_less_error = 0;
-    int i;
+    int          i;
 
     unsigned int meanmag;
     unsigned int stddevmag;
-    meanmag = _v_features.meanmag;
+    meanmag   = _v_features.meanmag;
     stddevmag = _v_features.stddevmag;
 
     unsigned int stat_mean_err = 0;
-    unsigned int stat_sd_err = 0;
+    unsigned int stat_sd_err   = 0;
     unsigned int move_mean_err = 0;
-    unsigned int move_sd_err = 0;
+    unsigned int move_sd_err   = 0;
 
     for (i = 0; i < MODEL_SIZE; ++i)
     {
-
         if (_v_model_stationary[i].meanmag > meanmag)
         {
             stat_mean_err = _v_model_stationary[i].meanmag - meanmag;
@@ -466,21 +453,21 @@ void *task_classify()
     return task_stats;
 }
 
-void *task_stats()
+static void* task_stats()
 {
     unsigned movingCount = 0, stationaryCount = 0;
     ++_v_totalCount;
 
     switch (_v_class)
     {
-    case CLASS_MOVING:
+        case CLASS_MOVING:
 
-        ++_v_movingCount;
-        break;
-    case CLASS_STATIONARY:
+            ++_v_movingCount;
+            break;
+        case CLASS_STATIONARY:
 
-        ++_v_stationaryCount;
-        break;
+            ++_v_stationaryCount;
+            break;
     }
 
     if (_v_totalCount == SAMPLES_TO_COLLECT)
@@ -493,36 +480,36 @@ void *task_stats()
     }
 }
 
-void *task_idle()
+static void* task_idle()
 {
     return task_selectMode;
 }
 
-void *task_resetStats()
+static void* task_resetStats()
 {
-    _v_movingCount = 0;
+    _v_movingCount     = 0;
     _v_stationaryCount = 0;
-    _v_totalCount = 0;
+    _v_totalCount      = 0;
 
     _v_samplesInWindow = 0;
 
     return task_sample;
 }
 
-void *task_train()
+static void* task_train()
 {
     unsigned trainingSetSize = _v_trainingSetSize;
 
     switch (_v_class)
     {
-    case CLASS_STATIONARY:
-        _v_model_stationary[trainingSetSize].meanmag = _v_features.meanmag;
-        _v_model_stationary[trainingSetSize].stddevmag = _v_features.stddevmag;
-        break;
-    case CLASS_MOVING:
-        _v_model_moving[trainingSetSize].meanmag = _v_features.meanmag;
-        _v_model_moving[trainingSetSize].stddevmag = _v_features.stddevmag;
-        break;
+        case CLASS_STATIONARY:
+            _v_model_stationary[trainingSetSize].meanmag   = _v_features.meanmag;
+            _v_model_stationary[trainingSetSize].stddevmag = _v_features.stddevmag;
+            break;
+        case CLASS_MOVING:
+            _v_model_moving[trainingSetSize].meanmag   = _v_features.meanmag;
+            _v_model_moving[trainingSetSize].stddevmag = _v_features.stddevmag;
+            break;
     }
 
     ++trainingSetSize;
@@ -534,7 +521,6 @@ void *task_train()
     }
     else
     {
-
         return task_idle;
     }
 }

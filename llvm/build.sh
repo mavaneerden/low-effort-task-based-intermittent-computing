@@ -31,7 +31,3 @@ cd build
 make DESTDIR=$BASE_DIR/install install
 cd ..
 
-# Copy the binaries so they are visible in the command line
-echo "Copying llvm to /usr/local, this may take a while..."
-sudo cp -r install/opt/llvm/. /usr/local/
-echo "Copy done."

@@ -34,103 +34,101 @@
 
 #if defined(MSP_USE_LEA)
 
-msp_status msp_neg_q15(const msp_neg_q15_params *params, const _q15 *src, _q15 *dst)
-{
-    uint16_t length;
-    msp_status status;
-    MSP_LEA_MPYMATRIX_PARAMS *leaParams;
-    
-    /* Initialize the loop counter with the vector length. */
-    length = params->length;
+msp_status msp_neg_q15(const msp_neg_q15_params *params, const _q15 *src,
+                       _q15 *dst) {
+  uint16_t length;
+  msp_status status;
+  MSP_LEA_MPYMATRIX_PARAMS *leaParams;
+
+  /* Initialize the loop counter with the vector length. */
+  length = params->length;
 
 #ifndef MSP_DISABLE_DIAGNOSTICS
-    /* Check that length parameter is a multiple of two. */
-    if (length & 1) {
-        return MSP_SIZE_ERROR;
-    }
+  /* Check that length parameter is a multiple of two. */
+  if (length & 1) {
+    return MSP_SIZE_ERROR;
+  }
 
-    /* Check that the data arrays are aligned and in a valid memory segment. */
-    if (!(MSP_LEA_VALID_ADDRESS(src, 4) &
-          MSP_LEA_VALID_ADDRESS(dst, 4))) {
-        return MSP_LEA_INVALID_ADDRESS;
-    }
+  /* Check that the data arrays are aligned and in a valid memory segment. */
+  if (!(MSP_LEA_VALID_ADDRESS(src, 4) & MSP_LEA_VALID_ADDRESS(dst, 4))) {
+    return MSP_LEA_INVALID_ADDRESS;
+  }
 
-    /* Acquire lock for LEA module. */
-    if (!msp_lea_acquireLock()) {
-        return MSP_LEA_BUSY;
-    }
-#endif //MSP_DISABLE_DIAGNOSTICS
+  /* Acquire lock for LEA module. */
+  if (!msp_lea_acquireLock()) {
+    return MSP_LEA_BUSY;
+  }
+#endif // MSP_DISABLE_DIAGNOSTICS
 
-    /* Initialize LEA if it is not enabled. */
-    if (!(LEAPMCTL & LEACMDEN)) {
-        msp_lea_init();
-    }
-        
-    /* Allocate MSP_LEA_MPYMATRIX_PARAMS structure. */
-    leaParams = (MSP_LEA_MPYMATRIX_PARAMS *)msp_lea_allocMemory(sizeof(MSP_LEA_MPYMATRIX_PARAMS)/sizeof(uint32_t));
+  /* Initialize LEA if it is not enabled. */
+  if (!(LEAPMCTL & LEACMDEN)) {
+    msp_lea_init();
+  }
 
-    /* Set MSP_LEA_MPYMATRIX_PARAMS structure. */
-    leaParams->input2 = MSP_LEA_Q15_CONST_NEG_ONE;
-    leaParams->output = MSP_LEA_CONVERT_ADDRESS(dst);
-    leaParams->vectorSize = length;
-    leaParams->input1Offset = 1;
-    leaParams->input2Offset = 0;
-    leaParams->outputOffset = 1;
+  /* Allocate MSP_LEA_MPYMATRIX_PARAMS structure. */
+  leaParams = (MSP_LEA_MPYMATRIX_PARAMS *)msp_lea_allocMemory(
+      sizeof(MSP_LEA_MPYMATRIX_PARAMS) / sizeof(uint32_t));
 
-    /* Load source arguments to LEA. */
-    LEAPMS0 = MSP_LEA_CONVERT_ADDRESS(src);
-    LEAPMS1 = MSP_LEA_CONVERT_ADDRESS(leaParams);
+  /* Set MSP_LEA_MPYMATRIX_PARAMS structure. */
+  leaParams->input2 = MSP_LEA_Q15_CONST_NEG_ONE;
+  leaParams->output = MSP_LEA_CONVERT_ADDRESS(dst);
+  leaParams->vectorSize = length;
+  leaParams->input1Offset = 1;
+  leaParams->input2Offset = 0;
+  leaParams->outputOffset = 1;
 
-    /* Invoke the LEACMD__MPYMATRIX command. */
-    msp_lea_invokeCommand(LEACMD__MPYMATRIX);
+  /* Load source arguments to LEA. */
+  LEAPMS0 = MSP_LEA_CONVERT_ADDRESS(src);
+  LEAPMS1 = MSP_LEA_CONVERT_ADDRESS(leaParams);
 
-    /* Free MSP_LEA_MPYMATRIX_PARAMS structure. */
-    msp_lea_freeMemory(sizeof(MSP_LEA_MPYMATRIX_PARAMS)/sizeof(uint32_t));
-    
-    /* Set status flag. */
-    status = MSP_SUCCESS;
-        
+  /* Invoke the LEACMD__MPYMATRIX command. */
+  msp_lea_invokeCommand(LEACMD__MPYMATRIX);
+
+  /* Free MSP_LEA_MPYMATRIX_PARAMS structure. */
+  msp_lea_freeMemory(sizeof(MSP_LEA_MPYMATRIX_PARAMS) / sizeof(uint32_t));
+
+  /* Set status flag. */
+  status = MSP_SUCCESS;
+
 #ifndef MSP_DISABLE_DIAGNOSTICS
-    /* Check LEA interrupt flags for any errors. */
-    if (msp_lea_ifg & LEACOVLIFG) {
-        status = MSP_LEA_COMMAND_OVERFLOW;
-    }
-    else if (msp_lea_ifg & LEAOORIFG) {
-        status = MSP_LEA_OUT_OF_RANGE;
-    }
-    else if (msp_lea_ifg & LEASDIIFG) {
-        status = MSP_LEA_SCALAR_INCONSISTENCY;
-    }
+  /* Check LEA interrupt flags for any errors. */
+  if (msp_lea_ifg & LEACOVLIFG) {
+    status = MSP_LEA_COMMAND_OVERFLOW;
+  } else if (msp_lea_ifg & LEAOORIFG) {
+    status = MSP_LEA_OUT_OF_RANGE;
+  } else if (msp_lea_ifg & LEASDIIFG) {
+    status = MSP_LEA_SCALAR_INCONSISTENCY;
+  }
 #endif
 
-    /* Free lock for LEA module and return status. */
-    msp_lea_freeLock();
-    return status;
+  /* Free lock for LEA module and return status. */
+  msp_lea_freeLock();
+  return status;
 }
 
-#else //MSP_USE_LEA
+#else // MSP_USE_LEA
 
-msp_status msp_neg_q15(const msp_neg_q15_params *params, const _q15 *src, _q15 *dst)
-{
-    uint16_t length;
-    
-    /* Initialize the loop counter with the vector length. */
-    length = params->length;
+msp_status msp_neg_q15(const msp_neg_q15_params *params, const _q15 *src,
+                       _q15 *dst) {
+  uint16_t length;
+
+  /* Initialize the loop counter with the vector length. */
+  length = params->length;
 
 #ifndef MSP_DISABLE_DIAGNOSTICS
-    /* Check that length parameter is a multiple of two. */
-    if (length & 1) {
-        return MSP_SIZE_ERROR;
-    }
-#endif //MSP_DISABLE_DIAGNOSTICS
+  /* Check that length parameter is a multiple of two. */
+  if (length & 1) {
+    return MSP_SIZE_ERROR;
+  }
+#endif // MSP_DISABLE_DIAGNOSTICS
 
-    /* Loop through all vector elements. */
-    while (length--) {
-        /* Negate src and store to dst. */
-        *dst++ = -*src++;
-    }
+  /* Loop through all vector elements. */
+  while (length--) {
+    /* Negate src and store to dst. */
+    *dst++ = -*src++;
+  }
 
-    return MSP_SUCCESS;
+  return MSP_SUCCESS;
 }
 
-#endif //MSP_USE_LEA
+#endif // MSP_USE_LEA

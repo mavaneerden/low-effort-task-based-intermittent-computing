@@ -50,8 +50,7 @@
 //
 //******************************************************************************
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 //******************************************************************************
@@ -64,7 +63,7 @@ extern "C"
 //******************************************************************************
 #ifndef __QMATHLIB_H__ // Define _q15 if not defined by QmathLib header.
 typedef int16_t _q15;
-#endif  //__QMATHLIB_H__
+#endif //__QMATHLIB_H__
 
 //******************************************************************************
 //
@@ -104,26 +103,26 @@ typedef uint32_t _uq31;
 //
 //******************************************************************************
 typedef enum {
-    //! Successful operation.
-    MSP_SUCCESS = 0,
-    //! Invalid size, see API for restrictions.
-    MSP_SIZE_ERROR = 1,
-    //! Invalid shift size, see API for restrictions.
-    MSP_SHIFT_SIZE_ERROR = 2,
-    //! Invalid table size, see API for restrictions.
-    MSP_TABLE_SIZE_ERROR = 3,
-    //! LEA is busy and cannot be invoked.
-    MSP_LEA_BUSY = 4,
-    //! Address is not within LEA RAM section.
-    MSP_LEA_INVALID_ADDRESS = 5,
-    //! Command resulted in out of range memory access.
-    MSP_LEA_OUT_OF_RANGE = 6,
-    //! LEA scalar data inconsistency error.
-    MSP_LEA_SCALAR_INCONSISTENCY = 7,
-    //! LEA command overflow error.
-    MSP_LEA_COMMAND_OVERFLOW = 8,
-    //! LEA incorrect revision.
-    MSP_LEA_INCORRECT_REVISION = 9
+  //! Successful operation.
+  MSP_SUCCESS = 0,
+  //! Invalid size, see API for restrictions.
+  MSP_SIZE_ERROR = 1,
+  //! Invalid shift size, see API for restrictions.
+  MSP_SHIFT_SIZE_ERROR = 2,
+  //! Invalid table size, see API for restrictions.
+  MSP_TABLE_SIZE_ERROR = 3,
+  //! LEA is busy and cannot be invoked.
+  MSP_LEA_BUSY = 4,
+  //! Address is not within LEA RAM section.
+  MSP_LEA_INVALID_ADDRESS = 5,
+  //! Command resulted in out of range memory access.
+  MSP_LEA_OUT_OF_RANGE = 6,
+  //! LEA scalar data inconsistency error.
+  MSP_LEA_SCALAR_INCONSISTENCY = 7,
+  //! LEA command overflow error.
+  MSP_LEA_COMMAND_OVERFLOW = 8,
+  //! LEA incorrect revision.
+  MSP_LEA_INCORRECT_REVISION = 9
 } msp_status;
 
 //*****************************************************************************

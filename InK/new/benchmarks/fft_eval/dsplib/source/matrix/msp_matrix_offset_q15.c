@@ -35,16 +35,13 @@
 /*
  * Perform matrix offset of a source matrix.
  */
-msp_status msp_matrix_offset_q15(const msp_matrix_offset_q15_params *params, const _q15 *src, _q15 *dst)
+msp_status msp_matrix_offset_q15(const msp_matrix_offset_q15_params* params, const _q15* src, _q15* dst)
 {
     msp_offset_q15_params paramsTemp;
-    
+
     /* Use real vector offset function. */
     paramsTemp.offset = params->offset;
     paramsTemp.length = params->rows * params->cols;
-    
+
     return msp_offset_q15(&paramsTemp, src, dst);
-   
 }
-
-

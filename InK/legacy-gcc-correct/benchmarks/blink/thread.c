@@ -1,27 +1,30 @@
-#include <stdint.h>
 #include <msp430.h>
+#include <stdint.h>
+
 #include "gpio.h"
 #include "ink.h"
 
 #define MAX_BLINK 10
 
-__shared(
-    uint16_t blink_counter; // Cannot be uint8_t in InK: alignment of array elements is greater than element size
-)
+__shared(uint16_t blink_counter;  // Cannot be uint8_t in InK: alignment of array
+                                  // elements is greater than element size
+         )
 
-ENTRY_TASK(t_init);
+    ENTRY_TASK(t_init);
 TASK(t_blink_on);
 TASK(t_blink_off);
 TASK(t_end);
 
 // called at the very first boot
-void thread1_init(){
+void __app_init()
+{
     // create a thread with priority 15 and entry task t_init
-    __CREATE(15,t_init);
+    __CREATE(15, t_init);
     __SIGNAL(15);
 }
 
-__app_reboot(){
+__app_reboot()
+{
 #ifdef RAISE_PIN
     __port_init(3, 4);
 #else
@@ -63,5 +66,5 @@ TASK(t_blink_off)
 
 TASK(t_end)
 {
-    return (void *)0;
+    return (void*)0;
 }

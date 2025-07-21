@@ -34,112 +34,110 @@
 
 #if defined(MSP_USE_LEA)
 
-msp_status msp_interleave_iq31(const msp_interleave_iq31_params *params, const _iq31 *src, _iq31 *dst)
-{
-    uint16_t length;
-    uint16_t channel;
-    uint16_t numChannels;
-    msp_status status;
-    MSP_LEA_ADDLONGMATRIX_PARAMS *leaParams;
+msp_status msp_interleave_iq31(const msp_interleave_iq31_params *params,
+                               const _iq31 *src, _iq31 *dst) {
+  uint16_t length;
+  uint16_t channel;
+  uint16_t numChannels;
+  msp_status status;
+  MSP_LEA_ADDLONGMATRIX_PARAMS *leaParams;
 
-    /* Initialize the vector length. */
-    length = params->length;
-    channel = params->channel;
-    numChannels = params->numChannels;
+  /* Initialize the vector length. */
+  length = params->length;
+  channel = params->channel;
+  numChannels = params->numChannels;
 
 #ifndef MSP_DISABLE_DIAGNOSTICS
-    /* Check that the channel is less than the total number of channels. */
-    if (channel > numChannels) {
-        return MSP_SIZE_ERROR;
-    }
-    
-    /* Check that the data arrays are aligned and in a valid memory segment. */
-    if (!(MSP_LEA_VALID_ADDRESS(src, 4) &
-          MSP_LEA_VALID_ADDRESS(dst, 4))) {
-        return MSP_LEA_INVALID_ADDRESS;
-    }
+  /* Check that the channel is less than the total number of channels. */
+  if (channel > numChannels) {
+    return MSP_SIZE_ERROR;
+  }
 
-    /* Acquire lock for LEA module. */
-    if (!msp_lea_acquireLock()) {
-        return MSP_LEA_BUSY;
-    }
-#endif //MSP_DISABLE_DIAGNOSTICS
+  /* Check that the data arrays are aligned and in a valid memory segment. */
+  if (!(MSP_LEA_VALID_ADDRESS(src, 4) & MSP_LEA_VALID_ADDRESS(dst, 4))) {
+    return MSP_LEA_INVALID_ADDRESS;
+  }
 
-    /* Initialize LEA if it is not enabled. */
-    if (!(LEAPMCTL & LEACMDEN)) {
-        msp_lea_init();
-    }
-        
-    /* Allocate MSP_LEA_ADDLONGMATRIX_PARAMS structure. */
-    leaParams = (MSP_LEA_ADDLONGMATRIX_PARAMS *)msp_lea_allocMemory(sizeof(MSP_LEA_ADDLONGMATRIX_PARAMS)/sizeof(uint32_t));
+  /* Acquire lock for LEA module. */
+  if (!msp_lea_acquireLock()) {
+    return MSP_LEA_BUSY;
+  }
+#endif // MSP_DISABLE_DIAGNOSTICS
 
-    /* Set MSP_LEA_ADDLONGMATRIX_PARAMS structure. */
-    leaParams->input2 = MSP_LEA_CONST_ZERO;
-    leaParams->output = MSP_LEA_CONVERT_ADDRESS(&dst[channel]);
-    leaParams->vectorSize = length;
-    leaParams->input1Offset = 1;
-    leaParams->input2Offset = 0;
-    leaParams->outputOffset = numChannels;
+  /* Initialize LEA if it is not enabled. */
+  if (!(LEAPMCTL & LEACMDEN)) {
+    msp_lea_init();
+  }
 
-    /* Load source arguments to LEA. */
-    LEAPMS0 = MSP_LEA_CONVERT_ADDRESS(src);
-    LEAPMS1 = MSP_LEA_CONVERT_ADDRESS(leaParams);
+  /* Allocate MSP_LEA_ADDLONGMATRIX_PARAMS structure. */
+  leaParams = (MSP_LEA_ADDLONGMATRIX_PARAMS *)msp_lea_allocMemory(
+      sizeof(MSP_LEA_ADDLONGMATRIX_PARAMS) / sizeof(uint32_t));
 
-    /* Invoke the LEACMD__ADDLONGMATRIX command. */
-    msp_lea_invokeCommand(LEACMD__ADDLONGMATRIX);
+  /* Set MSP_LEA_ADDLONGMATRIX_PARAMS structure. */
+  leaParams->input2 = MSP_LEA_CONST_ZERO;
+  leaParams->output = MSP_LEA_CONVERT_ADDRESS(&dst[channel]);
+  leaParams->vectorSize = length;
+  leaParams->input1Offset = 1;
+  leaParams->input2Offset = 0;
+  leaParams->outputOffset = numChannels;
 
-    /* Free MSP_LEA_ADDLONGMATRIX_PARAMS structure. */
-    msp_lea_freeMemory(sizeof(MSP_LEA_ADDLONGMATRIX_PARAMS)/sizeof(uint32_t));
-    
-    /* Set status flag. */
-    status = MSP_SUCCESS;
-        
+  /* Load source arguments to LEA. */
+  LEAPMS0 = MSP_LEA_CONVERT_ADDRESS(src);
+  LEAPMS1 = MSP_LEA_CONVERT_ADDRESS(leaParams);
+
+  /* Invoke the LEACMD__ADDLONGMATRIX command. */
+  msp_lea_invokeCommand(LEACMD__ADDLONGMATRIX);
+
+  /* Free MSP_LEA_ADDLONGMATRIX_PARAMS structure. */
+  msp_lea_freeMemory(sizeof(MSP_LEA_ADDLONGMATRIX_PARAMS) / sizeof(uint32_t));
+
+  /* Set status flag. */
+  status = MSP_SUCCESS;
+
 #ifndef MSP_DISABLE_DIAGNOSTICS
-    /* Check LEA interrupt flags for any errors. */
-    if (msp_lea_ifg & LEACOVLIFG) {
-        status = MSP_LEA_COMMAND_OVERFLOW;
-    }
-    else if (msp_lea_ifg & LEAOORIFG) {
-        status = MSP_LEA_OUT_OF_RANGE;
-    }
-    else if (msp_lea_ifg & LEASDIIFG) {
-        status = MSP_LEA_SCALAR_INCONSISTENCY;
-    }
+  /* Check LEA interrupt flags for any errors. */
+  if (msp_lea_ifg & LEACOVLIFG) {
+    status = MSP_LEA_COMMAND_OVERFLOW;
+  } else if (msp_lea_ifg & LEAOORIFG) {
+    status = MSP_LEA_OUT_OF_RANGE;
+  } else if (msp_lea_ifg & LEASDIIFG) {
+    status = MSP_LEA_SCALAR_INCONSISTENCY;
+  }
 #endif
 
-    /* Free lock for LEA module and return status. */
-    msp_lea_freeLock();
-    return status;
+  /* Free lock for LEA module and return status. */
+  msp_lea_freeLock();
+  return status;
 }
 
-#else //MSP_USE_LEA
+#else // MSP_USE_LEA
 
-msp_status msp_interleave_iq31(const msp_interleave_iq31_params *params, const _iq31 *src, _iq31 *dst)
-{
-    uint16_t length;
-    uint16_t channel;
-    uint16_t numChannels;
+msp_status msp_interleave_iq31(const msp_interleave_iq31_params *params,
+                               const _iq31 *src, _iq31 *dst) {
+  uint16_t length;
+  uint16_t channel;
+  uint16_t numChannels;
 
-    /* Initialize local variables from parameters. */
-    length = params->length;
-    channel = params->channel;
-    numChannels = params->numChannels;
+  /* Initialize local variables from parameters. */
+  length = params->length;
+  channel = params->channel;
+  numChannels = params->numChannels;
 
 #ifndef MSP_DISABLE_DIAGNOSTICS
-    /* Check that the channel is less than the total number of channels. */
-    if (channel > numChannels) {
-        return MSP_SIZE_ERROR;
-    }
-#endif //MSP_DISABLE_DIAGNOSTICS
+  /* Check that the channel is less than the total number of channels. */
+  if (channel > numChannels) {
+    return MSP_SIZE_ERROR;
+  }
+#endif // MSP_DISABLE_DIAGNOSTICS
 
-    /* Insert the requested channel into the destination data. */
-    dst += channel;
-    while (length--) {
-        *dst = *src++;
-        dst += numChannels;
-    }
+  /* Insert the requested channel into the destination data. */
+  dst += channel;
+  while (length--) {
+    *dst = *src++;
+    dst += numChannels;
+  }
 
-    return MSP_SUCCESS;
+  return MSP_SUCCESS;
 }
 
-#endif //MSP_USE_LEA
+#endif // MSP_USE_LEA

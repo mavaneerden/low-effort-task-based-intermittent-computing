@@ -13,6 +13,7 @@ set(ARCHITECTURE_SPECIFIC_INCLUDES
 set(CMAKE_EXE_LINKER_FLAGS "${INK_LINKER_FLAGS} ${CMAKE_EXE_LINKER_FLAGS}")
 set(CMAKE_C_FLAGS "${INK_C_FLAGS} ${CMAKE_C_FLAGS}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin)
+set(DRIVERLIB ${CMAKE_CURRENT_LIST_DIR}/../../../devices/msp430/driverlib/build/MSP430FR5xx_6xx/libdriverlib.a)
 
 add_subdirectory(ar_eval)
 add_subdirectory(bitcount_eval)
@@ -22,4 +23,5 @@ add_subdirectory(cuckoo_eval)
 add_subdirectory(dijkstra_eval)
 add_subdirectory(fft_eval)
 add_subdirectory(rsa_eval)
+add_subdirectory(sort_eval)
 add_subdirectory(thread_backup_test)

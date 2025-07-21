@@ -35,30 +35,29 @@
 /*
  * Perform element wise absolute value of a single source vector.
  */
-msp_status msp_abs_q15(const msp_abs_q15_params *params, const _q15 *src, _q15 *dst)
-{
-    uint16_t length;
-    
-    /* Initialize the loop counter with the vector length. */
-    length = params->length;
+msp_status msp_abs_q15(const msp_abs_q15_params *params, const _q15 *src,
+                       _q15 *dst) {
+  uint16_t length;
+
+  /* Initialize the loop counter with the vector length. */
+  length = params->length;
 
 #ifndef MSP_DISABLE_DIAGNOSTICS
-    /* Check that length parameter is a multiple of two. */
-    if (length & 1) {
-        return MSP_SIZE_ERROR;
-    }
-#endif //MSP_DISABLE_DIAGNOSTICS
-    
-    /* Loop through all vector elements. */
-    while (length--) {
-        /* Compute the absolute value of src and store to dst. */
-        if (*src < 0) {
-            *dst++ = -*src++;
-        }
-        else {
-            *dst++ = *src++;
-        }
-    }
+  /* Check that length parameter is a multiple of two. */
+  if (length & 1) {
+    return MSP_SIZE_ERROR;
+  }
+#endif // MSP_DISABLE_DIAGNOSTICS
 
-    return MSP_SUCCESS;
+  /* Loop through all vector elements. */
+  while (length--) {
+    /* Compute the absolute value of src and store to dst. */
+    if (*src < 0) {
+      *dst++ = -*src++;
+    } else {
+      *dst++ = *src++;
+    }
+  }
+
+  return MSP_SUCCESS;
 }

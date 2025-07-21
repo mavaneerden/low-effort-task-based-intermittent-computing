@@ -36,7 +36,7 @@
 
 #if defined(MSP_DISABLE_LPM0)
 #warning "DSPLib: LPM0 is disabled, undefine MSP_DISABLE_LPM0 to enable LPM0.
-#elif ((MSP_LEA_REVISION==MSP_LEA_REVISION_A) && !defined(MSP_ENABLE_LPM0))
+#elif ((MSP_LEA_REVISION == MSP_LEA_REVISION_A) && !defined(MSP_ENABLE_LPM0))
 #warning "DSPLib: Building for revision A of LEA, LPM0 is disabled to work \
 around LEA1 errata. See the LEA chapter of API User's Guide and device errata \
 sheet for more details."
@@ -48,15 +48,15 @@ void msp_lea_init(void)
     msp_lea_ifg = 0;
 
     /* Initialize LEA registers. */
-    LEACNF0 = LEALPR | LEAILPM;
-    LEACNF1 = 0;
-    LEACNF2 = LEAMT >> 2;
-    LEAPMS1 = 0;
-    LEAPMS0 = 0;
-    LEAPMDST = 0;
+    LEACNF0   = LEALPR | LEAILPM;
+    LEACNF1   = 0;
+    LEACNF2   = LEAMT >> 2;
+    LEAPMS1   = 0;
+    LEAPMS0   = 0;
+    LEAPMDST  = 0;
     LEAPMCTL |= LEACMDEN;
-    LEAIE |= LEAPMCMDIE;
-    LEACMCTL = 0;
+    LEAIE    |= LEAPMCMDIE;
+    LEACMCTL  = 0;
 
 #if (MSP_LEA_REVISION == MSP_LEA_REVISION_A)
     msp_lea_initCommandTable();

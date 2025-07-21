@@ -32,20 +32,20 @@
 
 #include "../../include/DSPLib.h"
 
-msp_status msp_iq31_to_q15(const msp_iq31_to_q15_params *params, const _iq31 *src, _q15 *dst)
+msp_status msp_iq31_to_q15(const msp_iq31_to_q15_params* params, const _iq31* src, _q15* dst)
 {
-    uint16_t length;
-    msp_status status;
+    uint16_t                    length;
+    msp_status                  status;
     msp_deinterleave_q15_params deinterleaveParams;
 
     /* Initialize the vector length. */
     length = params->length;
 
     /* Extract upper 16-bits of IQ31 source to Q15 destination. */
-    deinterleaveParams.length = length;
+    deinterleaveParams.length      = length;
     deinterleaveParams.numChannels = 2;
-    deinterleaveParams.channel = 1;
-    status = msp_deinterleave_q15(&deinterleaveParams, (const _q15 *)src, dst);
+    deinterleaveParams.channel     = 1;
+    status                         = msp_deinterleave_q15(&deinterleaveParams, (const _q15*)src, dst);
 
     return status;
 }

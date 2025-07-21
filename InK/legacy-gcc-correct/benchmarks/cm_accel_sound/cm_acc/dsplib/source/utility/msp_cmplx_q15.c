@@ -32,26 +32,26 @@
 
 #include "../../include/DSPLib.h"
 
-msp_status msp_cmplx_q15(const msp_cmplx_q15_params *params, const _q15 *real, const _q15 *imag, _q15 *dst)
-{
-    uint16_t length;
-    msp_status status;
-    msp_interleave_q15_params interleaveParams;
+msp_status msp_cmplx_q15(const msp_cmplx_q15_params *params, const _q15 *real,
+                         const _q15 *imag, _q15 *dst) {
+  uint16_t length;
+  msp_status status;
+  msp_interleave_q15_params interleaveParams;
 
-    /* Initialize the vector length. */
-    length = params->length;
+  /* Initialize the vector length. */
+  length = params->length;
 
-    /* Interleave Q15 real to channel zero of the destination vector. */
-    interleaveParams.length = length;
-    interleaveParams.numChannels = 2;
-    interleaveParams.channel = 0;
-    status = msp_interleave_q15(&interleaveParams, real, dst);
+  /* Interleave Q15 real to channel zero of the destination vector. */
+  interleaveParams.length = length;
+  interleaveParams.numChannels = 2;
+  interleaveParams.channel = 0;
+  status = msp_interleave_q15(&interleaveParams, real, dst);
 
-    /* Interleave Q15 imaginary to channel one of the destination vector. */
-    interleaveParams.length = length;
-    interleaveParams.numChannels = 2;
-    interleaveParams.channel = 1;
-    status = msp_interleave_q15(&interleaveParams, imag, dst);
+  /* Interleave Q15 imaginary to channel one of the destination vector. */
+  interleaveParams.length = length;
+  interleaveParams.numChannels = 2;
+  interleaveParams.channel = 1;
+  status = msp_interleave_q15(&interleaveParams, imag, dst);
 
-    return status;
+  return status;
 }

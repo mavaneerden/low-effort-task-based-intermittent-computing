@@ -32,18 +32,17 @@
 #ifndef __DSPLIB_H__
 #define __DSPLIB_H__
 
+#include <stdbool.h>
+#include <stdint.h>
+
+#include "DSPLib_filter.h"     // Include DSPLib filter functions
+#include "DSPLib_lea.h"        // Include DSPLib LEA definitions
+#include "DSPLib_matrix.h"     // Include DSPLib matrix functions
+#include "DSPLib_support.h"    // Include DSPLib support functions
+#include "DSPLib_transform.h"  // Include DSPLib transform functions
+#include "DSPLib_types.h"      // Include DSPLib type definitions
+#include "DSPLib_utility.h"    // Include DSPLib utility functions
+#include "DSPLib_vector.h"     // Include DSPLib vector functions
 #include "msp430.h"
 
-#include <stdint.h>
-#include <stdbool.h>
-
-#include "DSPLib_types.h"               // Include DSPLib type definitions
-#include "DSPLib_lea.h"                 // Include DSPLib LEA definitions
-#include "DSPLib_support.h"             // Include DSPLib support functions
-#include "DSPLib_vector.h"              // Include DSPLib vector functions
-#include "DSPLib_matrix.h"              // Include DSPLib matrix functions
-#include "DSPLib_filter.h"              // Include DSPLib filter functions
-#include "DSPLib_transform.h"           // Include DSPLib transform functions
-#include "DSPLib_utility.h"             // Include DSPLib utility functions
-
-#endif //__DSPLIB_H__
+#endif  //__DSPLIB_H__

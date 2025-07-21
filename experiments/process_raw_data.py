@@ -7,6 +7,7 @@ import os
 import matplotlib
 import matplotlib.pyplot as plt
 import glob
+from copy import deepcopy
 
 STATE_START = 1
 STATE_FIND_LAST_SCHEDULING = 2
@@ -55,7 +56,7 @@ parser = argparse.ArgumentParser(
     prog="Raw data processor"
 )
 
-parser.add_argument("plot_type")
+parser.add_argument("benchmark_or_powerfailure")
 
 args = parser.parse_args()
 
@@ -74,20 +75,47 @@ def get_raw_measurements(f):
     return raw_measurements
 
 def get_raw_measurements_in_range(raw_measurements):
-    # Find starting point of measurement
-    first_index = None
-    for i, r in enumerate(raw_measurements):
-        if r.benchmark == 1:
-            first_index = i
-            break
+    if args.benchmark_or_powerfailure == "benchmark":
+        # Find starting point of measurement
+        first_index = None
+        for i, r in enumerate(raw_measurements):
+            if r.benchmark == 1:
+                first_index = i
+                break
 
-    # Find ending point of measurement
-    last_index = None
-    for i, r in enumerate(raw_measurements):
-        if r.benchmark == 1:
-            last_index = i
+        # Find ending point of measurement
+        last_index = None
+        for i, r in enumerate(raw_measurements):
+            if r.benchmark == 1:
+                last_index = i + 1
+        return raw_measurements[first_index:last_index + 1]
+    else:
+        # If power failure, use all measurements in time range [0, 90]
+        first_index = None
+        for i, r in enumerate(raw_measurements):
+            if r.time >= 0:
+                first_index = i
+                break
+        last_index = None
+        last_row = None
+        prev_row = None
+        for i, r in enumerate(raw_measurements):
+            if r.time > 90:
+                last_index = i
+                last_row = prev_row
+                break
+            prev_row = r
+        if last_index is None:
+            last_index = len(raw_measurements)
+            last_row = raw_measurements[-1]
 
-    return raw_measurements[first_index:last_index + 1]
+        list_to_return = raw_measurements[first_index:last_index]
+        real_last_row = deepcopy(last_row)
+        real_last_row.time = 90
+        list_to_return.append(real_last_row)
+
+        return list_to_return
+
 
 @dataclass
 class TimeMeasurements():
@@ -98,6 +126,8 @@ class TimeMeasurements():
     task_commit: List[float]
     task_activation: List[float]
     task_full: List[float]
+    power_failure: List[float]
+    reset: List[float]
 
 def get_time_measurements(file_path):
     @dataclass
@@ -108,29 +138,60 @@ def get_time_measurements(file_path):
         task_execution: float = None
         task_commit: float = None
         task_activation: float = None
+        reset: float = None
+        power_failure: float = None
 
     measuring_benchmark = False
+    last_time_real_benchmark = None
     measuring_scheduling = False
     measuring_task_init = False
     measuring_task_execution = False
     measuring_task_commit = False
     measuring_task_activation = False
+    measuring_reset = False
+    measuring_power_failure = False
+    potential_benchmark = False
 
     raw_measurements = get_raw_measurements_in_range(get_raw_measurements(file_path))
-    measurements = TimeMeasurements([], [], [], [], [], [], [])
+    measurements = TimeMeasurements([], [], [], [], [], [], [], [], [])
     last_times = LastTimeHigh()
     task_commit_to_activation = False
 
+    prev_i = 0
+    prev_r = None
+
     for i, r in enumerate(raw_measurements):
 
-        # Benchmark measurements, this is a pulse, not a 1 to 0
-        if r.benchmark == 1:
-            if not measuring_benchmark and last_times.benchmark is not None:
+        # Benchmark measurements
+        if r.benchmark == 1 and (prev_r is None or prev_r.benchmark == 0) and not potential_benchmark:
+            # If transitioning from 0 to 1, potential benchmark measurement.
+            potential_benchmark = True
+        elif r.benchmark == 1 and potential_benchmark and (prev_r.benchmark == 1):
+            # If the immediately previous benchmark measurement was 1, and the current measurement is 1, we are in power failure.
+            potential_benchmark = False
+            measuring_power_failure = True
+            last_times.power_failure = prev_r.time
+        elif r.benchmark == 0 and potential_benchmark and (prev_r.benchmark == 1):
+            # If the immediately previous benchmark measurement was 1, and the current is 0, we measure a benchmark.
+            if measuring_benchmark:
                 measurements.benchmark.append(r.time - last_times.benchmark)
+            potential_benchmark = False
             measuring_benchmark = True
-        if r.benchmark == 0 and measuring_benchmark:
             last_times.benchmark = r.time
-            measuring_benchmark = False
+        elif r.benchmark == 0 and not potential_benchmark and prev_r is not None and (prev_r.benchmark == 1):
+            # Transition from 1 to 0 from power failure, we are now out of power failure.
+            measurements.power_failure.append(r.time - last_times.power_failure)
+            measuring_power_failure = False
+
+        # Reset measurements
+        if r.reset == 0 and not measuring_reset:
+            # start reset meas
+            measuring_reset = True
+            last_times.reset = r.time
+        if r.reset == 1 and measuring_reset:
+            # Reset meas done
+            measuring_reset = False
+            measurements.reset.append(r.time - last_times.reset)
 
         # Scheduling measurements
         if r.scheduling == 1 and not measuring_scheduling:
@@ -174,6 +235,15 @@ def get_time_measurements(file_path):
             measuring_task_activation = False
             task_commit_to_activation = False
 
+        prev_i = i
+        prev_r = r
+
+    last_row = raw_measurements[-1]
+    if measuring_reset:
+        measurements.reset.append(last_row.time - last_times.reset)
+    if measuring_power_failure:
+        measurements.power_failure.append(last_row.time - last_times.power_failure)
+
     return measurements
 
 def process_time_measurements(measurements: TimeMeasurements):
@@ -193,6 +263,7 @@ def process_time_measurements(measurements: TimeMeasurements):
     average_task_full        = get_average_us(measurements.task_full, num_pin_toggles=5)
     average_task_other       = average_task_full - average_scheduling - average_task_init - average_task_execution - average_task_commit - average_task_activation
     average_all_wo_execution = average_scheduling + average_task_init + average_task_commit + average_task_activation + average_task_other
+    average_power_failure    = get_average_us(measurements.power_failure) if len(measurements.power_failure) > 0 else 0
 
     # Overhead
     average_scheduling_overhead       = average_scheduling       / average_task_full
@@ -205,7 +276,7 @@ def process_time_measurements(measurements: TimeMeasurements):
     average_execution_fraction        = average_task_execution   / average_task_full
 
     return [
-        [average_benchmark, average_scheduling, average_task_init, average_task_execution, average_task_commit, average_task_activation, average_task_full, average_task_other, average_all_wo_execution],
+        [average_benchmark, average_scheduling, average_task_init, average_task_execution, average_task_commit, average_task_activation, average_task_full, average_task_other, average_all_wo_execution, average_power_failure],
         [average_scheduling_overhead, average_task_init_overhead, average_task_execution_overhead, average_task_commit_overhead, average_task_activation_overhead, average_task_other_overhead, average_total_overhead, average_execution_fraction]
     ]
 
@@ -216,33 +287,43 @@ def print_measurements(benchmark_name, measurements: TimeMeasurements, averages)
     print("Number of task executions (total):             %d" % len(measurements.task_execution))
     print("Number of task executions (avg per benchmark): %d" % (len(measurements.task_execution) / len(measurements.benchmark)))
 
-    print("\n--- TIME MEASUREMENTS PER TASK ---          ")
-    print("Average benchmark time:       %d ms" % int(round(averages[0][0] / 1e3)))
-    print("Average scheduling time:      %d us" % int(round(averages[0][1])))
-    print("Average task init time:       %d us" % int(round(averages[0][2])))
-    print("Average task execution time:  %d us" % int(round(averages[0][3])))
-    print("Average task commit time:     %d us" % int(round(averages[0][4])))
-    print("Average task activation time: %d us" % int(round(averages[0][5])))
-    print("Average task full time:       %d us" % int(round(averages[0][6])))
-    print("Average task other time:      %d us" % int(round(averages[0][7])))
+    if args.benchmark_or_powerfailure == "powerfailure":
+        print("Number of power failures (total):              %d" % len(measurements.power_failure))
+        print("Number of power failures (avg per benchmark):  %f" % (len(measurements.power_failure) / len(measurements.benchmark)))
+        print("Total power failure time:                      %d ms" % (sum(measurements.power_failure) * 1000))
+        print("Total execution time:                          %d ms" % (90000 - sum(measurements.power_failure) * 1000))
+        print("Total reset low time:                          %d ms" % (sum(measurements.reset) * 1000))
+        print("Total reset latency:                           %d ms" % (sum(measurements.power_failure) * 1000 - sum(measurements.reset) * 1000))
 
-    print("\n--- OVERHEAD MEASUREMENTS PER TASK ---          ")
-    print("Average scheduling overhead:      %.2f %%" % (averages[1][0] * 100.))
-    print("Average task init overhead:       %.2f %%" % (averages[1][1] * 100.))
-    print("Average task execution overhead:  %.2f %%" % (averages[1][2] * 100.))
-    print("Average task commit overhead:     %.2f %%" % (averages[1][3] * 100.))
-    print("Average task activation overhead: %.2f %%" % (averages[1][4] * 100.))
-    print("Average other overhead:           %.2f %%" % (averages[1][5] * 100.))
-    print()
-    print("Average total overhead:           %.2f %%" % (averages[1][6] * 100.))
-    print("Average execution fraction:       %.2f %%" % (averages[1][7] * 100.))
+    print("\n--- TIME MEASUREMENTS PER TASK ---          ")
+    print("Average benchmark time:       %d ms" % round(averages[0][0] / 1e3))
+    if args.benchmark_or_powerfailure == "benchmark":
+        print("Average scheduling time:      %d us" % round(averages[0][1]))
+        print("Average task init time:       %d us" % round(averages[0][2]))
+        print("Average task execution time:  %d us" % round(averages[0][3]))
+        print("Average task commit time:     %d us" % round(averages[0][4]))
+        print("Average task activation time: %d us" % round(averages[0][5]))
+        print("Average task full time:       %d us" % round(averages[0][6]))
+        print("Average task other time:      %d us" % round(averages[0][7]))
+        print("Average power failure recov:  %d us" % round(averages[0][9]))
+
+        print("\n--- OVERHEAD MEASUREMENTS PER TASK ---          ")
+        print("Average scheduling overhead:      %.2f %%" % (averages[1][0] * 100.))
+        print("Average task init overhead:       %.2f %%" % (averages[1][1] * 100.))
+        print("Average task execution overhead:  %.2f %%" % (averages[1][2] * 100.))
+        print("Average task commit overhead:     %.2f %%" % (averages[1][3] * 100.))
+        print("Average task activation overhead: %.2f %%" % (averages[1][4] * 100.))
+        print("Average other overhead:           %.2f %%" % (averages[1][5] * 100.))
+        print()
+        print("Average total overhead:           %.2f %%" % (averages[1][6] * 100.))
+        print("Average execution fraction:       %.2f %%" % (averages[1][7] * 100.))
 
 def get_benchmark_name(file_path):
     return os.path.splitext(os.path.basename(file_path))[0][:-5]
 
 def get_results():
-    LEGACY_PATH_RAW_DATA = "raw_data/legacy-gcc-correct/"
-    NEW_PATH_RAW_DATA = "raw_data/new/"
+    LEGACY_PATH_RAW_DATA = "raw_data/legacy-gcc-correct/Release"
+    NEW_PATH_RAW_DATA = "raw_data/new/Release"
 
     results_map = {
         "benchmark": {
@@ -307,6 +388,18 @@ def get_results():
         print()
         print_measurements(benchmark_name, time_measurements, averages)
 
+    # for d in results_map[plot_type]["legacy"]:
+    #     if plot_type == "benchmark":
+    #         print(int(round(d / 1000.)))
+    #     else:
+    #         print(int(round(d)))
+    # print("---------------------------")
+    # for d in results_map[plot_type]["new"]:
+    #     if plot_type == "benchmark":
+    #         print(int(round(d / 1000.)))
+    #     else:
+    #         print(int(round(d)))
+
     return (results_map, results_labels)
 
 (results_map, benchmarks) = get_results()
@@ -339,9 +432,9 @@ def plotting(plot_type):
 
     plt.savefig(f"plots/{plot_type}.pdf")
 
-plotting("benchmark")
-plotting("task_init")
-plotting("task_execution")
-plotting("task_full")
-plotting("total_overhead")
-plotting("execution_fraction")
+# plotting("benchmark")
+# plotting("task_init")
+# plotting("task_execution")
+# plotting("task_full")
+# plotting("total_overhead")
+# plotting("execution_fraction")

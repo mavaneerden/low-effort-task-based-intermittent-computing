@@ -32,65 +32,65 @@
 
 #include "../../include/DSPLib.h"
 
-msp_status msp_sinusoid_q15(const msp_sinusoid_q15_params *params, _q15 *dst)
-{
-    msp_status status;
-    msp_biquad_df1_q15_params df1Params;
+msp_status msp_sinusoid_q15(const msp_sinusoid_q15_params *params, _q15 *dst) {
+  msp_status status;
+  msp_biquad_df1_q15_params df1Params;
 
 #if defined(MSP_USE_LEA)
-    /* Initialize LEA if it is not enabled. */
-    if (!(LEAPMCTL & LEACMDEN)) {
-        msp_lea_init();
-    }
+  /* Initialize LEA if it is not enabled. */
+  if (!(LEAPMCTL & LEACMDEN)) {
+    msp_lea_init();
+  }
 
-    /* Allocate coefficients in LEA memory and set parameters */
-    df1Params.length = params->length;
-    df1Params.coeffs = (msp_biquad_df1_q15_coeffs *)msp_lea_allocMemory(sizeof(msp_biquad_df1_q15_coeffs)/sizeof(uint32_t));
-    df1Params.states = (msp_biquad_df1_q15_states *)msp_lea_allocMemory(sizeof(msp_biquad_df1_q15_coeffs)/sizeof(uint32_t));
-#else //MSP_USE_LEA
-    /* Allocate coefficients on stack */
-    msp_biquad_df1_q15_coeffs coeffs;
-    msp_biquad_df1_q15_states states;
+  /* Allocate coefficients in LEA memory and set parameters */
+  df1Params.length = params->length;
+  df1Params.coeffs = (msp_biquad_df1_q15_coeffs *)msp_lea_allocMemory(
+      sizeof(msp_biquad_df1_q15_coeffs) / sizeof(uint32_t));
+  df1Params.states = (msp_biquad_df1_q15_states *)msp_lea_allocMemory(
+      sizeof(msp_biquad_df1_q15_coeffs) / sizeof(uint32_t));
+#else  // MSP_USE_LEA
+  /* Allocate coefficients on stack */
+  msp_biquad_df1_q15_coeffs coeffs;
+  msp_biquad_df1_q15_states states;
 
-    /* Set parameters */
-    df1Params.coeffs = &coeffs;
-    df1Params.states = &states;
-    df1Params.length = params->length;
-#endif //MSP_USE_LEA
-    
+  /* Set parameters */
+  df1Params.coeffs = &coeffs;
+  df1Params.states = &states;
+  df1Params.length = params->length;
+#endif // MSP_USE_LEA
+
 #if defined(__MSP430_HAS_MPY32__)
-    /* If MPY32 is available save control context and set to fractional mode. */
-    uint16_t ui16MPYState = MPY32CTL0;
-    MPY32CTL0 = MPYFRAC | MPYDLYWRTEN;
+  /* If MPY32 is available save control context and set to fractional mode. */
+  uint16_t ui16MPYState = MPY32CTL0;
+  MPY32CTL0 = MPYFRAC | MPYDLYWRTEN;
 #endif //__MSP430_HAS_MPY32__
 
-    /* Initialize coefficients */
-    ((msp_biquad_df1_q15_coeffs *)df1Params.coeffs)->a1By2  = params->cosOmega;
-    ((msp_biquad_df1_q15_coeffs *)df1Params.coeffs)->a2     = _Q15(-1.0);
-    ((msp_biquad_df1_q15_coeffs *)df1Params.coeffs)->b0     = _Q15(0.0);
-    ((msp_biquad_df1_q15_coeffs *)df1Params.coeffs)->b1By2  = _Q15(0.0);
-    ((msp_biquad_df1_q15_coeffs *)df1Params.coeffs)->b2     = _Q15(0.0);
+  /* Initialize coefficients */
+  ((msp_biquad_df1_q15_coeffs *)df1Params.coeffs)->a1By2 = params->cosOmega;
+  ((msp_biquad_df1_q15_coeffs *)df1Params.coeffs)->a2 = _Q15(-1.0);
+  ((msp_biquad_df1_q15_coeffs *)df1Params.coeffs)->b0 = _Q15(0.0);
+  ((msp_biquad_df1_q15_coeffs *)df1Params.coeffs)->b1By2 = _Q15(0.0);
+  ((msp_biquad_df1_q15_coeffs *)df1Params.coeffs)->b2 = _Q15(0.0);
 
-    /* Initialize states */
-    df1Params.states->x1 = _Q15(0.0);
-    df1Params.states->x2 = _Q15(0.0);
-    df1Params.states->y1 = -__q15mpy(params->amplitude, params->sinOmega);
-    df1Params.states->y2 =  __q15mpy(df1Params.states->y1, params->cosOmega) << 1;
-    
+  /* Initialize states */
+  df1Params.states->x1 = _Q15(0.0);
+  df1Params.states->x2 = _Q15(0.0);
+  df1Params.states->y1 = -__q15mpy(params->amplitude, params->sinOmega);
+  df1Params.states->y2 = __q15mpy(df1Params.states->y1, params->cosOmega) << 1;
+
 #if defined(__MSP430_HAS_MPY32__)
-    /* Restore MPY32 control context. */
-    MPY32CTL0 = ui16MPYState;
+  /* Restore MPY32 control context. */
+  MPY32CTL0 = ui16MPYState;
 #endif //__MSP430_HAS_MPY32__
 
-    /* Call DF1 biquad to generate sinusoid */
-    status = msp_biquad_df1_q15(&df1Params, dst, dst);
-    
+  /* Call DF1 biquad to generate sinusoid */
+  status = msp_biquad_df1_q15(&df1Params, dst, dst);
+
 #if defined(MSP_USE_LEA)
-    /* Free coefficients and states from LEA memory */
-    msp_lea_freeMemory(sizeof(msp_biquad_df1_q15_coeffs)/sizeof(uint32_t));
-    msp_lea_freeMemory(sizeof(msp_biquad_df1_q15_states)/sizeof(uint32_t));
-#endif //MSP_USE_LEA
+  /* Free coefficients and states from LEA memory */
+  msp_lea_freeMemory(sizeof(msp_biquad_df1_q15_coeffs) / sizeof(uint32_t));
+  msp_lea_freeMemory(sizeof(msp_biquad_df1_q15_states) / sizeof(uint32_t));
+#endif // MSP_USE_LEA
 
-    return status;
+  return status;
 }
-

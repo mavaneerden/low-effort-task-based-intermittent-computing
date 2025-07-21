@@ -32,6 +32,8 @@
 #ifndef __DSPLIB_TYPES_H__
 #define __DSPLIB_TYPES_H__
 
+#include "DSPLib_types.h"
+
 //******************************************************************************
 //
 //! \addtogroup dsplib_types Types
@@ -62,7 +64,7 @@ extern "C"
 //!        bits.
 //
 //******************************************************************************
-#ifndef __QMATHLIB_H__ // Define _q15 if not defined by QmathLib header.
+#ifndef __QMATHLIB_H__  // Define _q15 if not defined by QmathLib header.
 typedef int16_t _q15;
 #endif  //__QMATHLIB_H__
 
@@ -103,7 +105,8 @@ typedef uint32_t _uq31;
 //! \brief Enumerated type to return the status of an operation.
 //
 //******************************************************************************
-typedef enum {
+typedef enum
+{
     //! Successful operation.
     MSP_SUCCESS = 0,
     //! Invalid size, see API for restrictions.
@@ -135,4 +138,4 @@ typedef enum {
 }
 #endif
 
-#endif //__DSPLIB_TYPES_H__
+#endif  //__DSPLIB_TYPES_H__

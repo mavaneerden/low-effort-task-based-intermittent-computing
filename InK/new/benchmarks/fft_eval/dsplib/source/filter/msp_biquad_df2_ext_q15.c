@@ -34,60 +34,63 @@
 
 #if defined(MSP_USE_LEA)
 
-msp_status msp_biquad_df2_ext_q15(const msp_biquad_df2_ext_q15_params *params, const _q15 *src, _q15 *dst)
+msp_status msp_biquad_df2_ext_q15(const msp_biquad_df2_ext_q15_params* params, const _q15* src, _q15* dst)
 {
-    uint16_t cmdId;
-    uint16_t length;
-    msp_status status;
-    MSP_LEA_IIRBQ2_PARAMS *leaParams;
+    uint16_t               cmdId;
+    uint16_t               length;
+    msp_status             status;
+    MSP_LEA_IIRBQ2_PARAMS* leaParams;
 
     /* Initialize local length variable. */
     length = params->length;
 
 #ifndef MSP_DISABLE_DIAGNOSTICS
     /* Check that length parameter is a multiple of two. */
-    if (length & 1) {
+    if (length & 1)
+    {
         return MSP_SIZE_ERROR;
     }
-    
+
     /* Check that the data arrays are aligned and in a valid memory segment. */
-    if (!(MSP_LEA_VALID_ADDRESS(src, 4) &
-          MSP_LEA_VALID_ADDRESS(dst, 4) &
-          MSP_LEA_VALID_ADDRESS(params->states, 4) &
-          MSP_LEA_VALID_ADDRESS(params->coeffs, 4))) {
+    if (!(MSP_LEA_VALID_ADDRESS(src, 4) & MSP_LEA_VALID_ADDRESS(dst, 4) & MSP_LEA_VALID_ADDRESS(params->states, 4) &
+          MSP_LEA_VALID_ADDRESS(params->coeffs, 4)))
+    {
         return MSP_LEA_INVALID_ADDRESS;
     }
 
     /* Check that the correct revision is defined. */
-    if (MSP_LEA_REVISION != msp_lea_getRevision()) {
+    if (MSP_LEA_REVISION != msp_lea_getRevision())
+    {
         return MSP_LEA_INCORRECT_REVISION;
     }
 
     /* Acquire lock for LEA module. */
-    if (!msp_lea_acquireLock()) {
+    if (!msp_lea_acquireLock())
+    {
         return MSP_LEA_BUSY;
     }
-#endif //MSP_DISABLE_DIAGNOSTICS
+#endif  // MSP_DISABLE_DIAGNOSTICS
 
     /* Initialize LEA if it is not enabled. */
-    if (!(LEAPMCTL & LEACMDEN)) {
+    if (!(LEAPMCTL & LEACMDEN))
+    {
         msp_lea_init();
     }
 
     /* Initialize min/max states */
     params->states->minEven = 0;
-    params->states->minOdd = 0;
+    params->states->minOdd  = 0;
     params->states->maxEven = 0;
-    params->states->maxOdd = 0;
+    params->states->maxOdd  = 0;
 
     /* Allocate MSP_LEA_IIRBQ2_PARAMS structure on LEA stack. */
-    leaParams = (MSP_LEA_IIRBQ2_PARAMS *)msp_lea_allocMemory(sizeof(MSP_LEA_IIRBQ2_PARAMS)/sizeof(uint32_t));
+    leaParams = (MSP_LEA_IIRBQ2_PARAMS*)msp_lea_allocMemory(sizeof(MSP_LEA_IIRBQ2_PARAMS) / sizeof(uint32_t));
 
     /* Set MSP_LEA_IIRBQ2_PARAMS structure. */
     leaParams->vectorSizeBy2 = length >> 1;
-    leaParams->output = MSP_LEA_CONVERT_ADDRESS(dst);
-    leaParams->state = MSP_LEA_CONVERT_ADDRESS(params->states);
-    leaParams->coeffs = MSP_LEA_CONVERT_ADDRESS(params->coeffs);
+    leaParams->output        = MSP_LEA_CONVERT_ADDRESS(dst);
+    leaParams->state         = MSP_LEA_CONVERT_ADDRESS(params->states);
+    leaParams->coeffs        = MSP_LEA_CONVERT_ADDRESS(params->coeffs);
 
     /* Load source arguments to LEA. */
     LEAPMS0 = MSP_LEA_CONVERT_ADDRESS(src);
@@ -95,29 +98,36 @@ msp_status msp_biquad_df2_ext_q15(const msp_biquad_df2_ext_q15_params *params, c
 
 #if (MSP_LEA_REVISION < MSP_LEA_REVISION_B)
     /* Load function into code memory */
-    cmdId = msp_lea_loadCommand(LEACMD__IIRBQ2EXTENDED, MSP_LEA_IIRBQ2EXTENDED,
-            sizeof(MSP_LEA_IIRBQ2EXTENDED)/sizeof(MSP_LEA_IIRBQ2EXTENDED[0]));
-#else //MSP_LEA_REVISION
+    cmdId = msp_lea_loadCommand(
+        LEACMD__IIRBQ2EXTENDED,
+        MSP_LEA_IIRBQ2EXTENDED,
+        sizeof(MSP_LEA_IIRBQ2EXTENDED) / sizeof(MSP_LEA_IIRBQ2EXTENDED[0]));
+#else   // MSP_LEA_REVISION
     /* Invoke the LEACMD__IIRBQ2EXTENDED command. */
     cmdId = LEACMD__IIRBQ2EXTENDED;
-#endif //MSP_LEA_REVISION
-    
+#endif  // MSP_LEA_REVISION
+
     /* Invoke the command. */
     msp_lea_invokeCommand(cmdId);
 
     /* Free MSP_LEA_IIRBQ2_PARAMS structure. */
-    msp_lea_freeMemory(sizeof(MSP_LEA_IIRBQ2_PARAMS)/sizeof(uint32_t));
+    msp_lea_freeMemory(sizeof(MSP_LEA_IIRBQ2_PARAMS) / sizeof(uint32_t));
 
     /* Set status flag. */
     status = MSP_SUCCESS;
 
 #ifndef MSP_DISABLE_DIAGNOSTICS
     /* Check LEA interrupt flags for any errors. */
-    if (msp_lea_ifg & LEACOVLIFG) {
+    if (msp_lea_ifg & LEACOVLIFG)
+    {
         status = MSP_LEA_COMMAND_OVERFLOW;
-    } else if (msp_lea_ifg & LEAOORIFG) {
+    }
+    else if (msp_lea_ifg & LEAOORIFG)
+    {
         status = MSP_LEA_OUT_OF_RANGE;
-    } else if (msp_lea_ifg & LEASDIIFG) {
+    }
+    else if (msp_lea_ifg & LEASDIIFG)
+    {
         status = MSP_LEA_SCALAR_INCONSISTENCY;
     }
 #endif
@@ -127,62 +137,76 @@ msp_status msp_biquad_df2_ext_q15(const msp_biquad_df2_ext_q15_params *params, c
     return status;
 }
 
-#else //MSP_USE_LEA
+#else  // MSP_USE_LEA
 
-msp_status msp_biquad_df2_ext_q15(const msp_biquad_df2_ext_q15_params *params, const _q15 *src, _q15 *dst)
+msp_status msp_biquad_df2_ext_q15(const msp_biquad_df2_ext_q15_params* params, const _q15* src, _q15* dst)
 {
-    _q15 w0;
-    _q15 w1;
-    _q15 w2;
-    _q15 min;
-    _q15 max;
-    uint16_t i;
-    uint16_t length;
-    const msp_biquad_df2_ext_q15_coeffs *coeffs;
+    _q15                                 w0;
+    _q15                                 w1;
+    _q15                                 w2;
+    _q15                                 min;
+    _q15                                 max;
+    uint16_t                             i;
+    uint16_t                             length;
+    const msp_biquad_df2_ext_q15_coeffs* coeffs;
 
     /* Initialize local variables and pointers. */
     length = params->length;
     coeffs = params->coeffs;
-    w1 = params->states->q1;
-    w2 = params->states->q2;
-    min = INT16_MAX;
-    max = INT16_MIN;
+    w1     = params->states->q1;
+    w2     = params->states->q2;
+    min    = INT16_MAX;
+    max    = INT16_MIN;
 
 #ifndef MSP_DISABLE_DIAGNOSTICS
     /* Check that length parameter is a multiple of two. */
-    if (length & 1) {
+    if (length & 1)
+    {
         return MSP_SIZE_ERROR;
     }
-#endif //MSP_DISABLE_DIAGNOSTICS
+#endif  // MSP_DISABLE_DIAGNOSTICS
 
 #if defined(__MSP430_HAS_MPY32__)
     /* If MPY32 is available save control context and set to fractional mode. */
     uint16_t ui16MPYState = MPY32CTL0;
 
     /* Calculate filtered output using direct form 2. */
-    for (i = 0; i < length; i++) {
+    for (i = 0; i < length; i++)
+    {
         /* Calculate intermediate state. */
         MPY32CTL0 = MPYFRAC | MPYDLYWRTEN | MPYSAT;
-        RESLO = (uint32_t)coeffs->bias & 0xFFFF;
-        RESHI = (uint32_t)coeffs->bias >> 16;
-        MACS = *src++;      OP2  = coeffs->a0;
-        MACS = w1;          OP2  = coeffs->a1By2;
-                            OP2  = coeffs->a1By2;
-        MACS = w2;          OP2  = coeffs->a2;
-        w0 = RESHI;
+        RESLO     = (uint32_t)coeffs->bias & 0xFFFF;
+        RESHI     = (uint32_t)coeffs->bias >> 16;
+        MACS      = *src++;
+        OP2       = coeffs->a0;
+        MACS      = w1;
+        OP2       = coeffs->a1By2;
+        OP2       = coeffs->a1By2;
+        MACS      = w2;
+        OP2       = coeffs->a2;
+        w0        = RESHI;
 
         /* Calculate output. */
-        MPYS = w0;          OP2  = coeffs->b0;
-        MACS = w1;          OP2  = coeffs->b1By2;
-                            OP2  = coeffs->b1By2;
-        MACS = w2;          OP2  = coeffs->b2;
+        MPYS   = w0;
+        OP2    = coeffs->b0;
+        MACS   = w1;
+        OP2    = coeffs->b1By2;
+        OP2    = coeffs->b1By2;
+        MACS   = w2;
+        OP2    = coeffs->b2;
         *dst++ = RESHI;
 
         /* Update states and minimum and maximum values. */
         w2 = w1;
         w1 = w0;
-        if (w0 < min)       min = w0;
-        else if (w0 > max)  max = w0;
+        if (w0 < min)
+        {
+            min = w0;
+        }
+        else if (w0 > max)
+        {
+            max = w0;
+        }
     }
 
     /* Restore MPY32 control context. */
@@ -192,27 +216,36 @@ msp_status msp_biquad_df2_ext_q15(const msp_biquad_df2_ext_q15_params *params, c
     int32_t result;
 
     /* Calculate filtered output using direct form 2. */
-    for (i = 0; i < length; i++) {
+    for (i = 0; i < length; i++)
+    {
         /* Calculate intermediate state. */
         result  = (_q15)(coeffs->bias >> 16);
         result += __q15mpy(*src++, coeffs->a0);
         temp    = __q15mpy(w1, coeffs->a1By2);
-        result += temp;    result += temp;
+        result += temp;
+        result += temp;
         result += __q15mpy(w2, coeffs->a2);
         w0      = (_q15)__saturate(result, INT16_MIN, INT16_MAX);
 
         /* Calculate output. */
         result  = __q15mpy(w0, coeffs->b0);
         temp    = __q15mpy(w1, coeffs->b1By2);
-        result += temp;    result += temp;
+        result += temp;
+        result += temp;
         result += __q15mpy(w2, coeffs->b2);
         *dst++  = (_q15)__saturate(result, INT16_MIN, INT16_MAX);
 
         /* Update states and minimum and maximum values. */
         w2 = w1;
         w1 = w0;
-        if (w0 < min)         min = w0;
-        else if (w0 > max)     max = w0;
+        if (w0 < min)
+        {
+            min = w0;
+        }
+        else if (w0 > max)
+        {
+            max = w0;
+        }
     }
 #endif
 
@@ -223,4 +256,4 @@ msp_status msp_biquad_df2_ext_q15(const msp_biquad_df2_ext_q15_params *params, c
     return MSP_SUCCESS;
 }
 
-#endif //MSP_USE_LEA
+#endif  // MSP_USE_LEA

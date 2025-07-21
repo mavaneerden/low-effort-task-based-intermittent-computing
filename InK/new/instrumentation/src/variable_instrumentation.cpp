@@ -65,6 +65,10 @@ std::map<const VarDecl*, std::string> VarsInstrumented;
 // std::map<const VarDecl*, const SourceLocation> StaticVars;
 std::set<const VarDecl*> VarsUsedOutsideTasks;
 std::map<const VarDecl*, const DeclRefExpr *> VarsUsedInGlobalScope;
+std::set<const VarDecl*> VarsReadOnly;
+std::map<const VarDecl*, const VarDecl*> VariableInGlobalScopeMap;
+
+int TaskPriority = 0;
 // std::map<const VarDecl*, std::map<const FunctionDecl*, std::vector<var_info_t>>> FunctionVarRelation;
 // std::set<const FunctionDecl*> ProcessFunctionsForWrite;
 
@@ -89,6 +93,10 @@ string getVarDeclAsString(const VarDecl* var)
 
 void instrumentGlobalScopeUses(Rewriter &Rewrite)
 {
+    // TODO: the current way this works is suboptimal: all variables in global uses are instrumented if the top level
+    // variable is instrumented, which does not have to be the case. Some variables can be const or read-only, so they
+    // do not need to be added.
+
     std::vector<const VarDecl*> mark_for_deletion;
 
     do
@@ -98,20 +106,23 @@ void instrumentGlobalScopeUses(Rewriter &Rewrite)
         for (auto &[var, var_ref] : VarsUsedInGlobalScope)
         {
             /* Ignore if already instrumented. */
-            if (VarsInstrumented.find(var) != VarsInstrumented.end())
+            if (VariableMap.find(var) != VariableMap.end() || VariableInGlobalScopeMap.find(var) != VariableInGlobalScopeMap.end())
             {
                 mark_for_deletion.push_back(var);
                 continue;
             }
 
+            /* Get variable declaration that the variable is used in. */
             const VarDecl* TopLevelDecl = getParentNode<VarDecl>(var_ref, &var->getASTContext());
 
-            if (VarsInstrumented.find(TopLevelDecl) != VarsInstrumented.end())
+            /* Ensure propagation: if the top level decl is to be instrumented, instrument also the variable inside its
+             * initialisation expression.
+             * Also, if the top level variable is read-only, it does not make sense to propagate since no underlying
+             * value can be changed.
+             */
+            if ((VariableMap.find(TopLevelDecl) != VariableMap.end() || VariableInGlobalScopeMap.find(TopLevelDecl) != VariableInGlobalScopeMap.end()) && VarsReadOnly.find(TopLevelDecl) == VarsReadOnly.end())
             {
-                const std::string section_value = VarsInstrumented[TopLevelDecl];
-                VarsInstrumented[var] = section_value;
-                Rewrite.InsertTextBefore(Rewrite.getSourceMgr().getExpansionLoc(var->getLocation()), "__attribute__((section(\"" + section_value + "\")))");
-                LogInstrumentation("Shared Variable Declaration", var->getNameAsString(), "", var->getLocation().printToString(Rewrite.getSourceMgr()));
+                VariableInGlobalScopeMap[var] = TopLevelDecl;
                 mark_for_deletion.push_back(var);
             }
         }
@@ -123,10 +134,8 @@ void instrumentGlobalScopeUses(Rewriter &Rewrite)
     } while (mark_for_deletion.size() > 0);
 }
 
-void removeReadOnlyVars()
+void populateReadOnlyVars()
 {
-    std::set<const VarDecl*> ToRemove;
-
     for (auto &[var, func_map] : VariableMap)
     {
         /* Using a task-shared variable outside of a task function is not allowed for correctness reasons. */
@@ -136,7 +145,7 @@ void removeReadOnlyVars()
             exit(1);
         }
 
-        bool remove_var = true;
+        bool is_read_only = true;
 
         for (auto &[func, decl_map] : func_map)
         {
@@ -144,18 +153,21 @@ void removeReadOnlyVars()
             {
                 if (is_write)
                 {
-                    remove_var = false;
+                    is_read_only = false;
                 }
             }
         }
 
-        if (remove_var)
+        if (is_read_only)
         {
-            ToRemove.insert(var);
+            VarsReadOnly.insert(var);
         }
     }
+}
 
-    for (auto var : ToRemove)
+void removeReadOnlyVars()
+{
+    for (auto var : VarsReadOnly)
     {
         VariableMap.erase(var);
     }
@@ -163,10 +175,13 @@ void removeReadOnlyVars()
 
 void instrumentDecls(Rewriter &Rewrite)
 {
+    /* Set the task priority, used in subsequent instrumentations. */
+    TaskPriority = getTaskPriority(VariableMap.begin()->second.begin()->first);
+
     for (auto &[var, func_map] : VariableMap)
     {
         /* Get the task priority of the variable. */
-        const int task_priority = getTaskPriority(func_map.begin()->first);
+        const int task_priority = TaskPriority;
 
         /* Variable is only used in single thread. */
         const std::string section_value = ".ink.task_shared." + std::to_string(task_priority);
@@ -187,6 +202,41 @@ void instrumentDecls(Rewriter &Rewrite)
             Rewrite.InsertTextAfterToken(Rewrite.getSourceMgr().getExpansionLoc(StaticLocalVariableMap[var].decl_loc.end_loc), "\n__INK_SET_BUFFER_POINTERS_STATIC" + array_str + "(" + static_var_name + ", " + static_var_num + ");");
         }
     }
+
+    /* Instrument vars only used in global scope. */
+    std::vector<const VarDecl*> mark_for_deletion;
+
+    do
+    {
+        mark_for_deletion.clear();
+
+        for (auto &[var, toplevelvar] : VariableInGlobalScopeMap)
+        {
+            /* For instrumenting global scope uses. */
+            const auto section_value = VarsInstrumented[toplevelvar];
+
+            if (section_value == "")
+            {
+                continue;
+            }
+
+
+            /* Instrument the variable with the section. */
+            Rewrite.InsertTextBefore(Rewrite.getSourceMgr().getExpansionLoc(var->getLocation()), "__attribute__((section(\"" + section_value + "\")))");
+            LogInstrumentation("Shared Variable Declaration", var->getNameAsString(), "", var->getLocation().printToString(Rewrite.getSourceMgr()));
+
+            VarsInstrumented[var] = section_value;
+            mark_for_deletion.push_back(var);
+
+            /* Add variable to the map, required for further instrumentation. */
+            VariableMap[var] = {};
+        }
+
+        for (auto var : mark_for_deletion)
+        {
+            VariableInGlobalScopeMap.erase(var);
+        }
+    } while (mark_for_deletion.size() > 0);
 }
 
 void instrumentVarUses(Rewriter &Rewrite)
@@ -194,6 +244,11 @@ void instrumentVarUses(Rewriter &Rewrite)
     for (auto &[var, func_map] : VariableMap)
     {
         const std::string var_name = var->getName().str();
+
+        if (func_map.size() == 0)
+        {
+            continue;
+        }
 
         for (auto &[func, decl_map] : func_map)
         {
@@ -231,6 +286,11 @@ void instrumentFunctions(Rewriter &Rewrite)
 
     for (auto &[var, func_map] : VariableMap)
     {
+        if (func_map.size() == 0)
+        {
+            continue;
+        }
+
         for (auto &[func, _] : func_map)
         {
             if (processed_functions.find(func) == processed_functions.end())
@@ -311,7 +371,7 @@ std::string getStructDefinition(Rewriter &Rewrite)
 
 std::string getInitializerConstructorFunction()
 {
-    std::string task_priority = std::to_string(getTaskPriority(VariableMap.begin()->second.begin()->first));
+    std::string task_priority = std::to_string(TaskPriority);
     std::string func_definition_begin = "__INK_INITIALIZE_SHARED_VARS_FUNC(" + task_priority + "){\n";
     std::string func_definition_end = "}";
 
@@ -361,6 +421,8 @@ void instrumentEOF(Rewriter &Rewrite)
 
 void instrumentVariables(Rewriter &Rewrite)
 {
+    populateReadOnlyVars();
+    instrumentGlobalScopeUses(Rewrite);
     removeReadOnlyVars();
 
     if (VariableMap.size() > 0)
@@ -372,7 +434,7 @@ void instrumentVariables(Rewriter &Rewrite)
 
     /* Add include statement and struct definition.
      * Putting the struct definition here has the constraint that all
-     * shared-variable declarations must come before the definition of the
+     * type definitions used in shared variables must come before the definition of the
      * first task function.
      */
     if (first_task_function)
@@ -383,7 +445,6 @@ void instrumentVariables(Rewriter &Rewrite)
     if (VariableMap.size() > 0)
     {
         instrumentEOF(Rewrite);
-        instrumentGlobalScopeUses(Rewrite);
     }
 }
 
@@ -396,7 +457,9 @@ bool isVariableRead(const clang::DeclRefExpr *d, const clang::ast_matchers::Matc
     while (!NodeList.empty()) {
         // Get the first parent.
         clang::DynTypedNode ParentNode = NodeList[0];
+        bool is_deref = false;
 
+        /* If we are in the index of a subscript, it is a read. */
         if (const ArraySubscriptExpr* ase = ParentNode.get<ArraySubscriptExpr>())
         {
             if (ase->getIdx() == prev_node)
@@ -405,6 +468,7 @@ bool isVariableRead(const clang::DeclRefExpr *d, const clang::ast_matchers::Matc
             }
         }
 
+        /* If we write to a pointer, it is not a read. */
         if (const CallExpr* ce = ParentNode.get<CallExpr>())
         {
             if (const FunctionDecl* fd = ce->getDirectCallee())
@@ -416,9 +480,29 @@ bool isVariableRead(const clang::DeclRefExpr *d, const clang::ast_matchers::Matc
             }
         }
 
-        if (!ParentNode.get<ArraySubscriptExpr>() && !ParentNode.get<CStyleCastExpr>() && !ParentNode.get<ParenExpr>() && !ParentNode.get<ImplicitCastExpr>() && !ParentNode.get<MemberExpr>() && ParentNode.get<Expr>()) {
+        /* If it is a dereference, use the underlying pointer data to determine if it is a read or write.
+         * So we just continue to the next iteration.
+         */
+        if (const UnaryOperator* unop = ParentNode.get<UnaryOperator>())
+        {
+            if (unop->getOpcode() == UnaryOperator::Opcode::UO_Deref)
+            {
+                is_deref = true;
+            }
+        }
+
+        /* Array subscripts, casts, parentheses, member exprs and dereferences are ignored. */
+        if (!ParentNode.get<ArraySubscriptExpr>() &&
+            !ParentNode.get<CStyleCastExpr>() &&
+            !ParentNode.get<ParenExpr>() &&
+            !ParentNode.get<ImplicitCastExpr>() &&
+            !ParentNode.get<MemberExpr>() &&
+            ParentNode.get<Expr>() &&
+            !is_deref
+        ) {
             if (const BinaryOperator* binop = ParentNode.get<BinaryOperator>())
             {
+                /* If on the LHS of an assign, it is a write, else, it is a read. */
                 if (binop->getOpcode() == clang::BinaryOperator::Opcode::BO_Assign ||
                     binop->getOpcode() == clang::BinaryOperator::Opcode::BO_OrAssign ||
                     binop->getOpcode() == clang::BinaryOperator::Opcode::BO_AddAssign ||
@@ -441,6 +525,7 @@ bool isVariableRead(const clang::DeclRefExpr *d, const clang::ast_matchers::Matc
             }
             else if (const UnaryOperator* unop = ParentNode.get<UnaryOperator>())
             {
+                /* If incremented or decremeted it is a write, else it is a read. */
                 if (unop->getOpcode() == UnaryOperator::Opcode::UO_PostDec ||
                     unop->getOpcode() == UnaryOperator::Opcode::UO_PostInc ||
                     unop->getOpcode() == UnaryOperator::Opcode::UO_PreDec ||
@@ -477,21 +562,6 @@ class GlobalVarHandler : public MatchFinder::MatchCallback {
                 return;
             }
 
-            /* Ignore const variables (these cannot be written). */
-            if (GlobalVar->getType().isConstant(GlobalVar->getASTContext()))
-            {
-                return;
-            }
-
-            /* Volatile variables are assumed to be hardware-related.
-             * Intermittent hardware register operations are not supported by InK,
-             * but the programmer is allowed to use them.
-             */
-            if (GlobalVar->getType().isVolatileQualified())
-            {
-                return;
-            }
-
             /* Only instrument variables inside tasks. */
             const FunctionDecl* parent_function = getParentFunction(GlobalVarRef, Result);
             if (!parent_function)
@@ -500,6 +570,26 @@ class GlobalVarHandler : public MatchFinder::MatchCallback {
                 VarsUsedInGlobalScope.insert(std::make_pair(GlobalVar, GlobalVarRef));
                 return;
             }
+
+            /* Ignore const variables (these cannot be written).
+             * An exception to this is pointers; const pointers can point to potentially-shared data, so they need
+             * to be instrumented in order for instrumentGlobalScopeUses to work correctly.
+             */
+            if (GlobalVar->getType().isConstant(GlobalVar->getASTContext()) && !GlobalVar->getType().getTypePtr()->isPointerType())
+            {
+                return;
+            }
+
+            /* Volatile variables are assumed to be hardware or peripheral-related.
+             * Intermittent hardware register operations are not supported by InK,
+             * but the programmer is allowed to use them.
+             */
+            if (GlobalVar->getType().isVolatileQualified())
+            {
+                return;
+            }
+
+            /* Do not instrument variables outside of tasks. */
             if (!isTaskFunction(parent_function))
             {
                 VarsUsedOutsideTasks.insert(GlobalVar);

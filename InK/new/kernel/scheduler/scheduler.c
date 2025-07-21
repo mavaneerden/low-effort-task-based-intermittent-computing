@@ -159,10 +159,8 @@ void __scheduler_run()
     __events_commit();
 
 #ifdef RAISE_PIN
-    __port_off(3, 5);
-    __port_off(3, 6);
+    __port_on(1, 3);
     __port_off(1, 3);
-    __port_off(1, 4);
 #endif
 
     // always finalize the latest task before enabling interrupts since

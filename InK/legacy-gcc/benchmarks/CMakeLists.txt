@@ -14,6 +14,7 @@ set(ARCHITECTURE_SPECIFIC_INCLUDES
 
 set(INK_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/../kernel)
 set(INK_LIB ${CMAKE_CURRENT_LIST_DIR}/../kernel/install/lib/libInKLegacy.a)
+set(DRIVERLIB ${CMAKE_CURRENT_LIST_DIR}/../../../devices/msp430/driverlib/build/MSP430FR5xx_6xx/libdriverlib.a)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin)
 
