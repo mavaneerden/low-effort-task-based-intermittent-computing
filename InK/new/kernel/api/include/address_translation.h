@@ -53,20 +53,7 @@ static const uintptr_t buffer_offset = (uintptr_t)&__ink_buffers_offset;
 #define __INK_INITIALIZE_SHARED_VARS_FUNC(priority) \
     void __attribute__((constructor(__INK_CONSTRUCTOR_VALUE_TRANSLATION(priority)))) __ink_initialize_shared_vars_##priority(void)
 
-// void* __ink_translate_variable_address(void* variable_address);
 void* __ink_translate_pointer_address(void* pointer_address, const bool is_write, uint8_t priority);
-// void __ink_set_backup_task_shared_buffer(uint8_t priority, bool enable);
-
-// /**
-//  * Translates the shared variable address to the correct one, depending on the buffer used.
-//  * Then dereferences that address.
-//  *
-//  * Can be used for reads AND writes.
-//  * Must be used for ONLY thread-shared or task-shared variables.
-//  *
-//  * This macro is meant for InK-internal use ONLY!
-//  */
-// #define __INK_GET_VARIABLE_ADDRESS(variable) (__ink_translate_variable_address((void*) &(variable)))
 
 /**
  * Translates the pointer address to the correct one, depending on the buffer used.

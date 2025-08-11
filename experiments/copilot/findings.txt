@@ -11,7 +11,46 @@ Instrumentation:
   the definitions and declarations, but it would not replace the entire function signature (even though this was twice explicitly stated in the instructional prompt).
   After commanding the bot "Correct the use of TASK and ENTRY_TASK" (giving no further hints), it successfully corrected itself.
   Probing for the mistake was more difficult. Only after one false positive and giving the hint that the mistake was in the InK API, did the bot successfully correct itself.
-  After tweaking the instructional prompt and code instrumentation prompt some more, the bot consistently got the tasks right.
+  After tweaking the instructional prompt and code instrumentation prompt some more, the bot got the tasks right much more frequently.
   The prompts before the tweaking are suffixed with _original.txt.
 - CITID required a small prompt change: the CITID_THREAD_ENTRY_TASK should have no arguments, this was not specified earlier.
   The bot would occasionally insert the priority as the argument, which is incorrect.
+
+Instrumentation results
+- For 0_trivial, InK did the best, with 4/5 correct compared to 3/5.
+  Mistakes for both systems were subtle bugs. The InK bug would compile OK, but the task would not run.
+  The CITID bug is caught by the instrumentation compiler, which reports an error that an illegal expression was
+  used in the return statement.
+- For 1_recursive, InK performed the same as 0_trivial.
+  CITID was incorrect every time, for the same reason as before. Though these bugs would be caught
+  by the compiler, it seems to be an easy mistake to make.
+- For 2_data_type, CITID performed the same as 1_recursive.
+  InK had 0 out of 5 cases correct. For every case, the singe byte was not caught.
+  Though, to be fair, this would have resulted in a linker error.
+- For 3_extra_var, CITID performed the worst with 0/5 correct compared to InK 2/5.
+  The only time CITID bot instrumented the new variable was with CITID_IGNORE, which had no effect so that was wrong.
+- For 4_init, CITID peformed the same as 3_extra_var.
+  InK had 0/5 cases correct, and failed to preserve program behaviour by accounting for the initialisation of the task-shared variables.
+
+Self-correction
+- For 0_trivial, CITID bot was able to correct in 1 try after being notified there was a mistake.
+  The InK bot in one case, needed more hints an was unable to find the mistake without user interference.
+  Both were able to correct when the mistake was identified.
+- For 2_data_type, InK was able to be corrected in 1 try in all cases.
+- For 3_extra_var, InK was able to be corrected in 1 try in all cases.
+  CITID needed 3 tries to correctly identify the mistake and correct the code in 1 case.
+  In other cases, it only needed 1 try.
+- For 4_init, InK 2/3 cases took 2 tries to identify the mistake and correct the code.
+  For 1 case, it took 3 tries to identify the mistake, but was unable to correct.
+  It corrected itself fine when notified about why its previous correction was erroneous.
+
+Program creation
+- Both had difficulty including the forward declarations for tasks.
+  For InK, it failed to include them in all cases. For CITID, in 2 cases.
+- CITID bot had trouble recognizing the entry task, and 2 times illegally accessed the event outside the entry task.
+  InK bot had no trouble with this.
+- In one case, CITID forgot to add the main function, so the program could not function.
+  InK bot never added any code to __app_init to initialize the ADC, while CITID bot did in main.
+  However, it was never instructed to do this.
+- CITID bot had more correct programs, but when mistakes were made they were more numerous.
+  This could indicate that even though CITID has fewer keywords, they may be more complicated to use.

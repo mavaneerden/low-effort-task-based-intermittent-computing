@@ -1,1 +1,1 @@
-Instrument the following code to make it InK-compliant. Make sure the instrumented code has the same behaviour as the original. Make sure the thread runs after the program is flashed onto the microcontroller.
+Instrument the following code to make it InK-compliant. Make sure the instrumented code has the same behaviour as the original. Make sure the thread runs after the program is flashed onto the microcontroller. Only show the resulting code and say nothing else.

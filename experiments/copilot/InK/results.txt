@@ -1,0 +1,92 @@
+RESULTS INK
+
+INSTRUMENTATION
+0_TRIVIAL
+4/5 cases were 100% correct
+1/5 cases were incorrect
+mistake:
+void __app_init() {
+    __CREATE(1, t_init);
+                        <-- Forgot to add __SIGNAL call
+}
+
+2_DATA_TYPE
+0/5 cases were 100% correct
+3/5 cases were incorrect
+mistake:
+void __app_init() {
+    __CREATE(1, t_init);
+                        <-- Forgot to add __SIGNAL call
+}
+5/5 cases had an incremental failure
+mistake:
+__shared(uint8_t blink_counter;) <-- size must be > 1 byte
+
+3_EXTRA_VAR
+0/5 cases were 100% correct
+5/5 cases were incorrect
+mistake:
+void __app_init() {
+    __CREATE(1, t_init);
+                        <-- Forgot to add __SIGNAL call
+}
+3/5 cases had an incremental failure
+mistake:
+void increment_other_variable() {
+    __SET(other_variable, __GET(other_variable) + 1); <-- illegal use of macro's in non-task function
+}
+
+4_INIT
+0/5 cases were 100% correct
+5/5 cases were incorrect
+mistake (1/5):
+void __app_init() {
+    __CREATE(1, t_init);
+                        <-- Forgot to add __SIGNAL call
+}
+mistake (4/5):
+void increment_other_variable() {
+    __SET(other_variable, __GET(other_variable) + 1); <-- illegal use of macro's in non-task function
+}
+5/5 cases had an incremental failure
+mistake:
+uint8_t blink_counter; <--- Not initialized on first boot
+
+
+
+
+SELF-CORRECTION
+0_TRIVIAL
+1/3 cases incorrect
+In the incorrect case, the AI incorrectly identified the mistake 3 times without a hint.
+After hinting that it is in the InK API calls, it incorrectly identified the mistake again.
+Only after the mistake was told to it, was it able to correct.
+
+2_DATA_TYPE
+3/3 cases incorrect
+In all incorrect cases, was able to correct without any hints in 1 try.
+
+3_EXTRA_VAR
+1/3 cases incorrect
+In all incorrect cases, was able to correct without any hints in 1 try.
+
+4_INIT
+3/3 cases incorrect
+In 1/3 cases, took 3 tries to identify the mistake without hints, but incorrectly corrected it.
+Was able to correct correctly after being told why its correction was incorrect.
+In 2/3 cases, took 2 tries to identify the mistake without hints, and then correct.
+
+
+
+CREATION
+The following mistakes were made:
+5/5 cases: forgot to add task forward declarations
+0/5 cases: illegially accessed event outside entry task
+1/5 cases: added TASK() macro to return task pointers
+0/5 cases: did not add task-shared variable for event data
+5/5 cases: did not add initialization code in __app_reboot() (although it was not specifically directed to)
+
+correctness:
+0/5 programs were 100% correct
+4/5 programs had 1 mistake
+1/5 programs had 2 mistakes

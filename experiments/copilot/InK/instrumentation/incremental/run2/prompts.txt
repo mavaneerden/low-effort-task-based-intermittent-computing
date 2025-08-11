@@ -1,0 +1,45 @@
+<InK decription>
+
+<instrument 0_trivial>
+
+There is a mistake in the code you wrote. Find and correct it.
+
+COPILOT:
+__shared(uint32_t blink_counter;) ==> __shared(uint32_t blink_counter)
+
+You incorrectly identified the mistake. Try again.
+
+COPILOT:
+__CREATE(1, t_init) ==> __CREATE(1, &t_init)
+
+You incorrectly identified the mistake. Try again.
+
+COPILOT:
+Add __SET(blink_counter, 0) to __app_init()
+
+You incorrectly identified the mistake again. The mistake is in the InK API calls, not the plain C code. Try again.
+
+COPILOT:
+Change all task functions from
+TASK(name) { }
+to
+TASK(name)
+{ }
+
+You incorrectly identified the mistake again. The mistake is that in your code, the thread does not run after flashing the code. Correct this.
+
+Great.
+
+<instrument 1_recursive>
+
+<instrument 2_data_type>
+
+There is a mistake in the code you wrote. Find and correct it.
+
+Great. <instrument 3_extra_var>
+
+Great. <instrument 4_init>
+
+There is a mistake in the code you wrote. Find and correct it.
+
+That is not the mistake. Try to find the real mistake, and make sure to preserve the original program behaviour.

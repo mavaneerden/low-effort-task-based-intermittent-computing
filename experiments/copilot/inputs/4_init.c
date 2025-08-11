@@ -6,22 +6,13 @@
 uint16_t other_variable = 10;
 uint8_t  blink_counter = 5;
 
-void* t_init();
 void* t_blink_on();
 void* t_blink_off();
 void* t_end();
-int a;
-int a;
-double a;
 
 void increment_other_variable()
 {
     other_variable++;
-}
-
-void* t_init()
-{
-    return t_blink_on;
 }
 
 void* t_blink_on()
@@ -44,7 +35,7 @@ void* t_blink_off()
 
     if (blink_counter == 10)
     {
-        return t_init;
+        return t_end;
     }
 
     return t_blink_on;
@@ -54,5 +45,5 @@ void* t_end()
 {
     blink_counter = 0;
 
-    return t_init();
+    return t_blink_on;
 }

@@ -1,0 +1,17 @@
+<InK decription>
+
+<instrument 0_trivial>
+
+<instrument 1_recursive>
+
+<instrument 2_data_type>
+
+There is a mistake in the code you wrote. Find and correct it.
+
+Great. <instrument 3_extra_var>
+
+Great. <instrument 4_init>
+
+There is a mistake in the code you wrote. Find and correct it.
+
+That is not the mistake. Try to find the real mistake, and make sure to preserve the original program behaviour.

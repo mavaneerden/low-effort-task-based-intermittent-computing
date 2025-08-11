@@ -1,0 +1,58 @@
+RESULTS CITID
+
+INSTRUMENTATION
+0_TRIVIAL
+3/5 cases were 100% correct
+2/5 cases were incorrect
+mistake:
+CITID_CREATE_THREAD(1, true) {
+    return t_init(); <--- supposed to be t_init without brackets
+}
+
+1_RECURSIVE
+0/5 cases were 100% correct
+5/5 cases were incorrect
+mistake:
+CITID_CREATE_THREAD(1, true) {
+    return t_init(); <--- supposed to be t_init without brackets
+}
+5/5 cases had no incremental failures
+
+3_EXTRA_VAR
+0/5 cases were 100% correct
+5/5 cases were incorrect
+mistake:
+CITID_CREATE_THREAD(1, true) {
+    return t_init(); <--- supposed to be t_init without brackets
+}
+5/5 cases had an incremental failure
+mistake:
+uint16_t other_variable; <--- does not preserve behaviour across power failure
+
+
+
+SELF-CORRECTION
+0_TRIVIAL
+2/3 cases incorrect
+In all incorrect cases, was able to correct without any hints in 1 try.
+
+3_EXTRA_VAR
+3/3 cases incorrect
+In 2/3 incorrect cases, was able to correct without any hints in 1 try.
+In 1/3 cases, was able to correct without any hints in 3 tries.
+
+
+
+CREATION
+The following mistakes were made:
+2/5 cases: forgot to add task forward declarations
+2/5 cases: illegially accessed event outside entry task
+1/5 cases: added brackets to next task return pointer in entry task
+1/5 cases: did not add task-shared variable for event data
+1/5 cases: forgot to add main function
+
+correctness:
+2/5 programs were 100% correct
+1/5 programs had 1 mistake
+1/5 programs had 2 mistakes
+1/5 programs had 4 mistakes

@@ -1,0 +1,23 @@
+<InK decription>
+
+<instrument 0_trivial>
+
+<instrument 1_recursive>
+
+<instrument 2_data_type>
+
+There is a mistake in the code you wrote. Find and correct it.
+
+Great. <instrument 3_extra_var>
+
+There is a mistake in the code you wrote. Find and correct it.
+
+Great. <instrument 4_init>
+
+There is a mistake in the code you wrote. Find and correct it.
+
+That is not the mistake. Try to find the real mistake, and make sure to preserve the original program behaviour.
+
+That is not the mistake. Try to find the real mistake, and make sure to preserve the original program behaviour.
+
+You correctly identified the mistake. However, using __SET inside a non-task function such as __app_init() is not legal. Find a different, InK-compliant way to correct the mistake. Make sure the program has the same behaviour as the original C file.

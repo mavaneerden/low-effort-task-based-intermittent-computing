@@ -1,0 +1,54 @@
+The following is an example application of how to use InK. Remember this example for use in instrumenting code later.
+In this example, there is a thread with priority 42, which is activated on first boot.
+There is also an event, which is triggered by a hardware timer. The data in this event is a counter, which is incremented every time the interrupt triggers.
+task1 takes the event data and stores it in the task-shared variable counter.
+task2 then calls an external function with the counter value as its argument.
+The thread then waits again for the next event.
+When the microcontroller reboots, it is necessary to set up the hardware again. In this example, it is done using the hardware_setup() function.
+```
+#include "example.h"
+#include "ink.h"
+
+#define THREAD_PRIORITY 42
+
+__nv int counter_isr = 0; // Persistent non task-shared event data variable
+isr_event_t counter_isr_event = { .data = &counter_isr, .size = sizeof(int), .timestamp = 0 }; // Event struct
+
+__shared(
+    int counter; // Task-shared variable, int is 4 bytes, this satisfies the 'at least 2 bytes' rule
+)
+
+// Forward task declarations
+ENTRY_TASK(task1)
+TASK(task2)
+
+// Entry task
+ENTRY_TASK(task1) {
+    __SET(counter, *(int*)(__event->data)); // Get data from event and store into task-shared variable
+
+    return task2; // The next task is task2
+}
+
+TASK(task2) {
+    do_something_with_counter(__GET(counter));
+
+    return NULL; // This is the last task to execute in the thread: the thread lays dormant until awoken by an event.
+}
+
+void __app_init(void) {
+    __CREATE(THREAD_PRIORITY, task1); // Create thread with priority 42
+    __SIGNAL(THREAD_PRIORITY);        // Activate thread on first boot
+}
+
+void __app_reboot(void) {
+    hardware_setup(); // Included from "example.h"
+}
+
+void __attribute__ ((interrupt(TIMER0_A0_VECTOR))) TIMER0_A0_ISR(void) {
+    counter_isr++;
+
+    if (!__EVENT_BUFFER_FULL(THREAD_PRIORITY)) {
+        __SIGNAL_EVENT(THREAD_PRIORITY, &counter_isr_event);
+    }
+}
+```

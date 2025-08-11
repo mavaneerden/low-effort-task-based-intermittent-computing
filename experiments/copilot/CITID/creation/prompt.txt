@@ -1,0 +1,8 @@
+Create a small CITID application for MSP430 that reacts to an interrupt from an ADC.
+The application should consist of three tasks.
+The first task reads the ADC data from the event that is passed to the thread.
+The second task performs some computation on the ADC value using a helper function called `sensor_compute`.
+The third task transmits the computed data using the helper function `sensor_transmit`.
+After executing the third task, the thread waits for an interrupt again.
+Assume the helper functions can be found in the header file 'sensor.h'.
+Only show the code and say nothing else.
