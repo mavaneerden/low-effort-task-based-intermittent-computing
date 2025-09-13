@@ -1,7 +1,7 @@
 #include <stddef.h>
 #include "ink/ink.h"
 
-int shared_var;
+static int shared_var;
 
 #define SHARED_VAR_MACRO shared_var
 

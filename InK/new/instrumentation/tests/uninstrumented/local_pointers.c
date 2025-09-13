@@ -3,9 +3,9 @@
 
 #define ARRAY_SIZE 5
 
-void* t_assign();
-void* t_assign_self();
-void* t_nested();
+static void* t_assign();
+static void* t_assign_self();
+static void* t_nested();
 
 INK_CREATE_THREAD(1, false)
 {

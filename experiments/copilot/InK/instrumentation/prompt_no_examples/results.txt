@@ -1,0 +1,90 @@
+RESULTS INK
+
+INSTRUMENTATION: NO EXAMPLES
+
+0_TRIVIAL
+TOTAL FAILED:
+    10/10
+MISTAKES MADE:
+    - Not signaling thread                                  (7/10)
+    - Did not add Macro's to function definition signature  (3/10)
+    - Wrongly added Macro's to function signatures          (7/10)
+NUMBER OF MISTAKES
+    0 mistakes:     0
+    1 mistake:      3
+    2 mistakes:     7
+
+1_RECURSIVE
+TOTAL FAILED:
+    10/10
+TOTAL FAILED (NO REPEATED FAILURES):
+    0/10
+MISTAKES MADE:
+    - Not signaling thread                                  (6/10)
+    - Did not add Macro's to function definition signature  (2/10)
+    - Did not add Macro's to function declaration signature (1/10)
+    - Wrongly added Macro's to function signatures          (7/10)
+NUMBER OF MISTAKES
+    0 mistakes:     0
+    1 mistake:      4
+    2 mistakes:     6
+
+2_DATA_TYPE
+TOTAL FAILED:
+    10/10
+TOTAL FAILED (NO REPEATED FAILURES):
+    10/10
+MISTAKES MADE:
+    - Not signaling thread                                  (7/10)
+    - Did not add Macro's to function definition signature  (5/10)
+    - Did not add Macro's to function declaration signature (1/10)
+    - Wrongly added Macro's to function signatures          (4/10)
+    - Did not take into account minimum shared size         (10/10)
+    - Wrongly added Macro's to return function pointers     (1/10)
+NUMBER OF MISTAKES
+    0 mistakes:     0
+    1 mistake:      0
+    2 mistakes:     3
+    3 mistakes:     6
+    4 mistakes:     1
+
+3_EXTRA_VAR
+TOTAL FAILED:
+    10/10
+TOTAL FAILED (NO REPEATED FAILURES):
+    4/10
+MISTAKES MADE:
+    - Not signaling thread                                  (6/10)
+    - Did not add Macro's to function definition signature  (5/10)
+    - Did not add Macro's to function declaration signature (2/10)
+    - Wrongly added Macro's to function signatures          (3/10)
+    - Did not take into account minimum shared size         (3/10)
+    - Used __SET and/or __GET in non-task-shared function   (4/10)
+    - Conflicting forward declarations                      (1/10)
+NUMBER OF MISTAKES
+    0 mistakes:     0
+    1 mistake:      1
+    2 mistakes:     2
+    3 mistakes:     6
+    4 mistakes:     1
+
+4_INIT
+TOTAL FAILED:
+    10/10
+TOTAL FAILED (NO REPEATED FAILURES):
+    10/10
+MISTAKES MADE:
+    - Not signaling thread                                  (6/10)
+    - Did not add Macro's to function definition signature  (1/10)
+    - Did not add Macro's to function declaration signature (2/10)
+    - Wrongly added Macro's to function signatures          (7/10)
+    - Did not take into account minimum shared size         (6/10)
+    - Used __SET and/or __GET in non-task-shared function   (3/10)
+    - Conflicting forward declarations                      (0/10)
+    - Did not initialise shared variable(s)                 (10/10)
+NUMBER OF MISTAKES
+    0 mistakes:     0
+    1 mistake:      0
+    2 mistakes:     1
+    3 mistakes:     3
+    4 mistakes:     6

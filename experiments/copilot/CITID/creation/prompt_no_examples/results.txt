@@ -1,0 +1,15 @@
+RESULTS CITID
+
+CREATION: NO EXAMPLES
+
+TOTAL FAILED:
+    10/10
+MISTAKES MADE:
+    - Wrongly placed CITID_CREATE_THREAD            (10/10)
+    - Non-persistent event data                     (3/10)
+    - Wrongly declared shared variables             (6/10)
+NUMBER OF MISTAKES
+    0 mistakes:     0
+    1 mistake:      2
+    2 mistakes:     7
+    3 mistakes:     1

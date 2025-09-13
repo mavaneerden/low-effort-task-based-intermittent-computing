@@ -1,7 +1,7 @@
 #include <stddef.h>
 #include "ink/ink.h"
 
-int shared_int;
+static int shared_int;
 
 INK_CREATE_THREAD(1, false)
 {
@@ -12,4 +12,4 @@ INK_CREATE_THREAD(1, false)
     return NULL;
 }
 
-int shared_int = 1;
+static int shared_int = 1;

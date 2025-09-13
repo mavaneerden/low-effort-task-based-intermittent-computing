@@ -1,4 +1,4 @@
-int func()
+static int func()
 {
     return 1;
 }

@@ -3,6 +3,8 @@
 cmake_minimum_required(VERSION 3.12)
 project(instrumentation)
 
+option(COMPILE_TICS "Compile TICS instrumentation for comparison" OFF)
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/")
 list(APPEND CMAKE_MODULE_PATH "${LLVM_DIR}")
 
@@ -176,3 +178,37 @@ target_link_libraries(${GLOBAL_INSTRUMENTATION_TARGET}
     clangFormat
     ${llvm_libs}
 )
+
+if(COMPILE_TICS)
+
+set(TICS_TARGET tics)
+add_executable("${TICS_TARGET}" tics/memlog.cpp)
+set_property(TARGET ${TICS_TARGET} APPEND PROPERTY COMPILE_FLAGS "-std=c++11 ${compile_flags}")
+target_link_libraries(${TICS_TARGET}
+    clangAST
+    clangASTMatchers
+    clangAnalysis
+    clangBasic
+    clangDriver
+    clangEdit
+    clangFrontend
+    clangFrontendTool
+    clangLex
+    clangParse
+    clangSema
+    clangEdit
+    clangRewrite
+    clangRewriteFrontend
+    clangStaticAnalyzerFrontend
+    clangStaticAnalyzerCheckers
+    clangStaticAnalyzerCore
+    clangCrossTU
+    clangIndex
+    clangSerialization
+    clangToolingCore
+    clangTooling
+    clangFormat
+    ${llvm_libs}
+)
+
+endif()

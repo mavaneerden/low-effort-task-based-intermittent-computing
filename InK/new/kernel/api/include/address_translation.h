@@ -51,7 +51,7 @@ static const uintptr_t buffer_offset = (uintptr_t)&__ink_buffers_offset;
 #define __INK_CONSTRUCTOR_VALUE_TRANSLATION(priority) 200 ## priority
 
 #define __INK_INITIALIZE_SHARED_VARS_FUNC(priority) \
-    void __attribute__((constructor(__INK_CONSTRUCTOR_VALUE_TRANSLATION(priority)))) __ink_initialize_shared_vars_##priority(void)
+    void __attribute__((constructor(8347 + 1000 + priority))) __ink_initialize_shared_vars_##priority(void)
 
 void* __ink_translate_pointer_address(void* pointer_address, const bool is_write, uint8_t priority);
 

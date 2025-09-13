@@ -1,0 +1,18 @@
+RESULTS INK
+
+CREATION: NO EXAMPLES
+
+TOTAL FAILED:
+    10/10
+MISTAKES MADE:
+    - No forward task declarations              (10/10)
+    - Nullpointer dereference                   (2/10)
+    - Missing ';' at end of __shared            (1/10)
+    - Wrong use of macro's for task return      (6/10)
+    - Missing interrupt                         (1/10)
+NUMBER OF MISTAKES
+    0 mistakes:     0
+    1 mistake:      3
+    2 mistakes:     4
+    3 mistakes:     1
+    4 mistakes:     1

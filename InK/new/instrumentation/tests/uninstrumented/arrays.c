@@ -5,20 +5,20 @@
 #include <stddef.h>
 #include "ink/ink.h"
 
-int shared_array[5];
-int shared_array_2d[5][5];
-int shared_array_3d[5][5][5];
+static int shared_array[5];
+static int shared_array_2d[5][5];
+static int shared_array_3d[5][5][5];
 
-void* t_read();
-void* t_write();
-void* t_nested();
+static void* t_read();
+static void* t_write();
+static void* t_nested();
 
 INK_CREATE_THREAD(1, false)
 {
     return t_read;
 }
 
-void* t_read()
+static void* t_read()
 {
     int local_var;
 
@@ -30,7 +30,7 @@ void* t_read()
     return t_write;
 }
 
-void* t_write()
+static void* t_write()
 {
     int local_var = 0;
 
@@ -54,7 +54,7 @@ void* t_write()
     return t_nested;
 }
 
-void* t_nested()
+static void* t_nested()
 {
     int local_var;
 

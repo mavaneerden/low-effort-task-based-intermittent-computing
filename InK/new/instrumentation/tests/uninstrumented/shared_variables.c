@@ -3,16 +3,16 @@
 
 int shared_var;
 
-void* t_read();
-void* t_write();
-void* t_static();
+static void* t_read();
+static void* t_write();
+static void* t_static();
 
 INK_CREATE_THREAD(1, false)
 {
     return t_read;
 }
 
-void* t_read()
+static void* t_read()
 {
     int local_var;
 
@@ -22,7 +22,7 @@ void* t_read()
     return t_write;
 }
 
-void* t_write()
+static void* t_write()
 {
     int local_var = 0;
 
@@ -36,7 +36,7 @@ void* t_write()
     return t_static;
 }
 
-void* t_static()
+static void* t_static()
 {
     int local_var = 0;
 

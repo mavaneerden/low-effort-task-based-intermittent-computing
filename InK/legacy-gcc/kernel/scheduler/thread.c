@@ -74,11 +74,12 @@ void __tick(thread_t *thread)
         }
         else{
             thread->next = (void *)(((task_t)thread->next)(buf));
+            //!> If power failure here, task is not properly finished
             thread->state = TASK_FINISHED;
 #ifdef RAISE_PIN
             __port_off(1, 4);
 #endif
-            break;
+            break; //!> If higher-priority task signaled, task is not properly finished
         }
 #ifdef RAISE_PIN
         __port_off(1, 4);

@@ -1,7 +1,7 @@
 #include <stddef.h>
 #include "ink/ink.h"
 
-int shared_var;
+static int shared_var;
 
 INK_CREATE_THREAD(1, false)
 {

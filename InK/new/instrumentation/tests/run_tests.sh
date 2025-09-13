@@ -47,3 +47,37 @@
 #   - Array subscript
 #   - Member access
 #   - Nested expressions
+
+# ARGUMENTS:
+# $1 - Extra arguments (used mostly for include directories)
+# Example: ./run_tests.sh --extra-arg=-I/workspaces/Thesis_Repo/InK/new/kernel/install/include
+
+extra_args="--extra-arg=-w --extra-arg=-D__delay_cycles(a) --extra-arg=-I/usr/local/lib/clang/20/include --extra-arg=-I/usr/local $1"
+
+
+temp_file_function_labeling=ink_instrumentation_function_labeling_tmp.c
+temp_file_pointer_instrumentation_dereference=ink_instrumentation_pointer_instrumentation_dereference_tmp.c
+temp_file_pointer_instrumentation_members=ink_instrumentation_pointer_instrumentation_members_tmp.c
+
+citid_output_dir=tests/instrumented_citid/
+tics_output_dir=tests/instrumented_tics/
+
+echo "Removing previous output"
+rm $citid_output_dir/*.c
+rm $tics_output_dir/*.c
+
+# Run plugin passes
+echo "Instrumenting with CITID..."
+for f in tests/uninstrumented/*.c; do
+    build/bin/function_labeling $f $extra_args -- > $temp_file_function_labeling
+    build/bin/pointer_instrumentation_members $temp_file_function_labeling $extra_args -- > $temp_file_pointer_instrumentation_members
+    build/bin/pointer_instrumentation_dereference $temp_file_pointer_instrumentation_members $extra_args -- > $temp_file_pointer_instrumentation_dereference
+    build/bin/variable_instrumentation $temp_file_pointer_instrumentation_dereference $extra_args -- > $citid_output_dir/$(basename "${f}")
+
+    rm $temp_file_function_labeling $temp_file_pointer_instrumentation_dereference $temp_file_pointer_instrumentation_members
+done
+
+echo "Instrumenting with TICS..."
+for f in tests/uninstrumented/*.c; do
+    build/bin/tics $f $extra_args > $tics_output_dir/$(basename "${f}")
+done

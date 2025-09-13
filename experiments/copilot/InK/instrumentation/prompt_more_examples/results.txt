@@ -1,0 +1,58 @@
+RESULTS INK
+
+INSTRUMENTATION: WITH EXAMPLES
+
+0_TRIVIAL
+TOTAL FAILED:
+    0/10
+MISTAKES MADE:
+    None
+NUMBER OF MISTAKES
+    0 mistakes:     10
+
+1_RECURSIVE
+TOTAL FAILED:
+    0/10
+TOTAL FAILED (NO REPEATED FAILURES):
+    0/10
+MISTAKES MADE:
+    None
+NUMBER OF MISTAKES
+    0 mistakes:     10
+
+2_DATA_TYPE
+TOTAL FAILED:
+    7/10
+TOTAL FAILED (NO REPEATED FAILURES):
+    7/10
+MISTAKES MADE:
+    - Did not take into account minimum shared size         (7/10)
+NUMBER OF MISTAKES
+    0 mistakes:     3
+    1 mistake:      7
+
+3_EXTRA_VAR
+TOTAL FAILED:
+    9/10
+TOTAL FAILED (NO REPEATED FAILURES):
+    0/10
+MISTAKES MADE:
+    - Did not take into account minimum shared size         (9/10)
+NUMBER OF MISTAKES
+    0 mistakes:     1
+    1 mistake:      9
+
+4_INIT
+TOTAL FAILED:
+    10/10
+TOTAL FAILED (NO REPEATED FAILURES):
+    10/10
+MISTAKES MADE:
+    - Did not take into account minimum shared size         (9/10)
+    - Did not initialise shared variable(s)                 (10/10)
+    - Did not add Macro's to function declaration signature (2/10)
+NUMBER OF MISTAKES
+    0 mistakes:     0
+    1 mistake:      1
+    2 mistakes:     7
+    3 mistakes:     2

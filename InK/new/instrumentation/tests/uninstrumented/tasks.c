@@ -1,10 +1,10 @@
 #include <stddef.h>
 #include "ink/ink.h"
 
-void* t_init();
-void* t_recurse();
-void* t_branch_fwd();
-void* t_branch_bwd();
+static void* t_init();
+static void* t_recurse();
+static void* t_branch_fwd();
+static void* t_branch_bwd();
 
 INK_CREATE_THREAD(1, false)
 {
@@ -12,13 +12,13 @@ INK_CREATE_THREAD(1, false)
 }
 
 /* Simple task, returns next task. */
-void* t_init()
+static void* t_init()
 {
     return t_branch_fwd;
 }
 
 /* Branches to tasks that were not before this task. */
-void* t_branch_fwd()
+static void* t_branch_fwd()
 {
     int x = 1;
 
@@ -29,7 +29,7 @@ void* t_branch_fwd()
 }
 
 /* Branches to a task that was before this task (t_init). */
-void* t_branch_bwd()
+static void* t_branch_bwd()
 {
     int x = 1;
 
@@ -40,7 +40,7 @@ void* t_branch_bwd()
 }
 
 /* Branches to a task recursively. */
-void* t_branch_recurse()
+static void* t_branch_recurse()
 {
     int x = 1;
 
@@ -51,7 +51,7 @@ void* t_branch_recurse()
 }
 
 /* Returns recursively. */
-void* t_recurse()
+static void* t_recurse()
 {
     return t_recurse;
 }

@@ -1,0 +1,62 @@
+RESULTS CITID
+
+INSTRUMENTATION: NO EXAMPLES
+
+0_TRIVIAL
+TOTAL FAILED:
+    10/10
+MISTAKES MADE:
+    - Wrongly placed CITID_CREATE_THREAD            (10/10)
+NUMBER OF MISTAKES
+    0 mistakes:     0
+    1 mistake:      10
+
+1_RECURSIVE
+TOTAL FAILED:
+    10/10
+TOTAL FAILED (NO REPEATED FAILURES):
+    1/10
+MISTAKES MADE:
+    - Wrongly placed CITID_CREATE_THREAD            (10/10)
+    - Made blink_counter CITID_PERSISTENT           (1/10)
+NUMBER OF MISTAKES
+    0 mistakes:     0
+    1 mistake:      9
+    2 mistakes:     1
+
+2_DATA_TYPE
+TOTAL FAILED:
+    10/10
+TOTAL FAILED (NO REPEATED FAILURES):
+    0/10
+MISTAKES MADE:
+    - Wrongly placed CITID_CREATE_THREAD            (10/10)
+NUMBER OF MISTAKES
+    0 mistakes:     0
+    1 mistake:      10
+
+3_EXTRA_VAR
+TOTAL FAILED:
+    10/10
+TOTAL FAILED (NO REPEATED FAILURES):
+    10/10
+MISTAKES MADE:
+    - Wrongly placed CITID_CREATE_THREAD            (10/10)
+    - Did not make other_variable CITID_PERSISTENT  (10/10)
+NUMBER OF MISTAKES
+    0 mistakes:     0
+    1 mistake:      0
+    2 mistakes:     10
+
+4_INIT
+TOTAL FAILED:
+    10/10
+TOTAL FAILED (NO REPEATED FAILURES):
+    0/10
+MISTAKES MADE:
+    - Wrongly placed CITID_CREATE_THREAD            (10/10)
+    - Did not make other_variable CITID_PERSISTENT  (10/10)
+NUMBER OF MISTAKES
+    0 mistakes:     0
+    1 mistake:      0
+    2 mistakes:     10

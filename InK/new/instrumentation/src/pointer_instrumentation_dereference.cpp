@@ -270,14 +270,10 @@ public:
      ***************************************************************/
     const auto pointerDerefMatch = unaryOperator(hasOperatorName("*"));
     const std::string pointerDerefBinding = "pointer_ref";
-    /* Pointer dereference READ
-     * *(expr)
+    /* Pointer dereference matcher.
      *
-     * This matcher does not match dereferences on the LHS of a binary assignment,
-     * since these are writes.
-     *
-     * Does NOT match:
-     * *x = *(expr) ------> Matched in other matcher
+     * Examples:
+     * x = *(expr)
      * *(expr) = x
      * ++*(expr)
      * --*(expr)
@@ -320,7 +316,7 @@ public:
         arraySubscriptMatchInner
     );
     const std::string arraySubscriptBinding = "array_subscript_expr";
-    /* Pointer subscript (not struct/union member) READ
+    /* Pointer subscript (not struct/union member)
      * (expr)[i]
      */
     Matcher.addMatcher(

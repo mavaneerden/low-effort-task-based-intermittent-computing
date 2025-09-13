@@ -6,13 +6,13 @@
 #include <stddef.h>
 #include "ink/ink.h"
 
-struct s {
+static struct s {
     int a;
     int b[5];
     int c[5][5];
 } shared_struct;
 
-struct
+static struct
 {
     struct
     {
@@ -26,7 +26,7 @@ struct
     int c;
 } shared_anonymous_struct;
 
-struct
+static struct
 {
     int a;
 } anonymous_struct_array[5][5];
@@ -36,18 +36,18 @@ typedef struct
 {
     int a;
 } t_s;
-t_s typedef_anonymous_struct;
+static t_s typedef_anonymous_struct;
 
 
-void* t_read();
-void* t_write();
+static void* t_read();
+static void* t_write();
 
 INK_CREATE_THREAD(1, false)
 {
     return t_read;
 }
 
-void* t_read()
+static void* t_read()
 {
     int local_var;
 
@@ -67,7 +67,7 @@ void* t_read()
     return t_write;
 }
 
-void* t_write()
+static void* t_write()
 {
     int local_var = 0;
 

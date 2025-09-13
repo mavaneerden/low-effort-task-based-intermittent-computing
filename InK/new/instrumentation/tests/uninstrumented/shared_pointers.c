@@ -3,20 +3,20 @@
 
 #define ARRAY_SIZE 5
 
-int shared_array[ARRAY_SIZE];
-int shared_array_2d[ARRAY_SIZE][ARRAY_SIZE];
-int* shared_ptr;
+static int shared_array[ARRAY_SIZE];
+static int shared_array_2d[ARRAY_SIZE][ARRAY_SIZE];
+static int* shared_ptr;
 
-struct s
+static struct s
 {
     int* p2[ARRAY_SIZE][ARRAY_SIZE];
     int* p[ARRAY_SIZE];
     int* i;
 } s;
 
-void* t_assign();
-void* t_assign_self();
-void* t_nested();
+static void* t_assign();
+static void* t_assign_self();
+static void* t_nested();
 
 INK_CREATE_THREAD(1, false)
 {
@@ -52,7 +52,7 @@ INK_CREATE_THREAD(1, false)
     return t_assign;
 }
 
-void* t_assign()
+static void* t_assign()
 {
     int x;
     int* y;
@@ -116,7 +116,7 @@ void* t_assign()
     return t_assign_self;
 }
 
-void *t_assign_self()
+static void *t_assign_self()
 {
     int x;
     int* y;
@@ -146,7 +146,7 @@ void *t_assign_self()
     return t_nested;
 }
 
-void* t_nested()
+static void* t_nested()
 {
     int x;
 

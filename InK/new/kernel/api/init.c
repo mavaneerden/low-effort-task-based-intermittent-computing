@@ -5,6 +5,7 @@
 #include "timer/timer.h"
 
 __nv bool __is_first_boot = true;
+__nv bool __reset_first_boot_flag = false;
 
 bool __ink_initialized = false;
 
@@ -24,8 +25,18 @@ bool ink_is_initialized()
  * This function is called before main() and
  * BEFORE all threads are created.
  */
-void __attribute__((constructor(1000))) __ink_init()
+void __attribute__((constructor(8347))) __ink_init()
 {
+    /* Need extra flag here, so we can detect if we are actually in first boot or not. */
+    if(!__reset_first_boot_flag)
+    {
+        __reset_first_boot_flag = true;
+    }
+    else
+    {
+        __is_first_boot = false;
+    }
+
     __fram_init();
 
     // if this is the first boot
@@ -58,13 +69,9 @@ void __attribute__((constructor(1000))) __ink_init()
  * Finalize initialization.
 
  * This function is called before main() and
- * AFTER all threads are created.
- *
- * Constructor is 20001 because the thread creation and
- * shared variable initializers should be called first.
+ * AFTER all threads are created (hence the +64).
  */
-void __attribute__((constructor(21000))) __ink_init_done()
+void __attribute__((constructor(8347 + 1000 + 65))) __ink_init_done()
 {
-    __is_first_boot = false;
     __ink_initialized = true;
 }

@@ -5,7 +5,7 @@
 #include <stddef.h>
 #include "ink/ink.h"
 
-int shared_var;
+static int shared_var;
 
 void some_func()
 {

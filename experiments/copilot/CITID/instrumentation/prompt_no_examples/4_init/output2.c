@@ -1,1 +1,50 @@
-Instrument the following code to make it CITID-compliant. Make sure the instrumented code has the same behaviour as the original. Make sure the thread runs after the program is flashed onto the microcontroller. Only show the resulting code and say nothing else.
+#include <msp430.h>
+#include <stdint.h>
+#include "gpio.h"
+#include "citid.h"
+
+uint16_t other_variable = 10;
+uint8_t blink_counter = 5;
+
+void* t_blink_on();
+void* t_blink_off();
+void* t_end();
+
+void increment_other_variable()
+{
+    other_variable++;
+}
+
+void* t_blink_on()
+{
+    GPIO_setOutputHighOnPin(GPIO_PORT_P1, GPIO_PIN0);
+    blink_counter += 1;
+    increment_other_variable();
+    __delay_cycles(400000);
+    return t_blink_off;
+}
+
+void* t_blink_off()
+{
+    GPIO_setOutputLowOnPin(GPIO_PORT_P1, GPIO_PIN0);
+    __delay_cycles(400000);
+    if (blink_counter == 10)
+    {
+        return t_end;
+    }
+    return t_blink_on;
+}
+
+void* t_end()
+{
+    blink_counter = 0;
+    return t_blink_on;
+}
+
+void* CITID_CREATE_THREAD(1, true) = t_blink_on;
+
+int main()
+{
+    citid_scheduler_run();
+    return 0;
+}
